@@ -277,6 +277,8 @@ namespace Plankton
             HoArchive.BinaryReaderEndian reader = new HoArchive.BinaryReaderEndian(filepath, false);
 
             ((assetTreeNode)archiveView.SelectedNode).asset.data = reader.ReadBytes((int)reader.BaseStream.Length).ToList();
+            
+            reader.Dispose();
         }
 
         private void newParcelTOCButton_Click(object sender, EventArgs e)
