@@ -151,12 +151,11 @@ namespace Plankton
 
         private void openCTRLOToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openDialog.FilterIndex = 0;
+            openDialog.FilterIndex = 1;
             if (openDialog.ShowDialog() != DialogResult.OK){
                 return;
             }
-
-            if(openDialog.FilterIndex != 0) { return; }
+            if(openDialog.FilterIndex != 1) { return; }
 
             string filePath = openDialog.FileName;
 
@@ -263,7 +262,11 @@ namespace Plankton
 
         private void exportRawDataButton_Click(object sender, EventArgs e)
         {
+            TreeNode node = archiveView.SelectedNode;
+            TOCEntry asset =((assetTreeNode)node).asset;
+
             saveDialog.DefaultExt = ".dat";
+            saveDialog.FileName = handler.GetName(asset.uidSelf) + " [" + System.Convert.ToHexString(BitConverter.GetBytes(asset.uidSelf).Reverse().ToArray()) + "]";
 
             if (saveDialog.ShowDialog() != DialogResult.OK) { return; }
 
@@ -271,7 +274,7 @@ namespace Plankton
 
             if(filepath == null) { return; }
 
-            (((assetTreeNode)archiveView.SelectedNode).asset).Update(0x40);
+            asset.Update(0x40);
 
 
             HoArchive.BinaryWriterEndian writer = new HoArchive.BinaryWriterEndian(filepath, false);
@@ -279,6 +282,10 @@ namespace Plankton
             writer.WriteE(((assetTreeNode)archiveView.SelectedNode).asset.data.ToArray());
 
             writer.Dispose();
+
+            archiveView.Focus();
+            archiveView.SelectedNode = node;
+            archiveView.SelectedNode.EnsureVisible();
         }
 
         private void importRawDataButton_Click(object sender, EventArgs e)
@@ -407,7 +414,7 @@ namespace Plankton
             string filePath = openDialog.FileName;
             string errorcode = "ERR_INTERNAL_FAILURE";
 
-            if (openDialog.FilterIndex == 0) { errorcode = handler.NewFrom(filePath); }
+            if (openDialog.FilterIndex == 1) { errorcode = handler.NewFrom(filePath); }
             else{ errorcode = handler.NewFromLSET(filePath); }
 
             if (errorcode != "")
@@ -415,6 +422,7 @@ namespace Plankton
                 MessageBox.Show(errorcode, "Error");
                 return;
             }
+            handler.path = "";
 
             HoArchive.Header header = handler.Archive.Header;
             string stats = "Magic: " + header.cMagic + "\n";
@@ -684,7 +692,7 @@ namespace Plankton
 
             if (keyData == (Keys.Control | Keys.C))
             {
-                if (archiveView.SelectedNode is assetTreeNode)
+                if (archiveView.SelectedNode is assetTreeNode && archiveView.Focused)
                 {
                     HoArchive.TOCEntry asset = ((assetTreeNode)archiveView.SelectedNode).asset;
                     Clipboard.SetText("HOASSET - " + asset.Serialize() + "; " + handler.GetNameEntry(asset.uidSelf).Serialize());
