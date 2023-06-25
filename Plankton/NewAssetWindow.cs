@@ -15,6 +15,9 @@ namespace Plankton
 {
     public partial class NewAssetWindow : Form
     {
+        public bool endian;
+        public string target;
+        public string platform;
         public List<string> hexpattern;
         public OpenFileDialog openDialog;
         public HoArchive.ParcelDebug debugParcel;
@@ -27,7 +30,7 @@ namespace Plankton
 
             openDialog = new OpenFileDialog();
 
-            hexpattern = new List<string>() { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" };
+            hexpattern = new List<string>() { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "a", "b", "c", "d", "e", "f"};
             wmlTypeIDComboBox.DataSource = Enum.GetValues(typeof(HoArchive.wmlTypeID)).Cast<HoArchive.wmlTypeID>().OrderBy(e => e.ToString()).ToList();
             wmlTypeIDComboBox.SelectedIndex = 0;
             blobAlignTextBox.Text = "4";
@@ -55,8 +58,14 @@ namespace Plankton
 
                 reader.Dispose();
             }
+            Asset.AssetEntity entity;
+            try {entity = Asset.AssetCaster.ReadAsset(new HoArchive.MemoryStreamEndian(data.ToArray(), endian), wmlTypeID, target, platform) ; }
+            catch {
+                MessageBox.Show("Error", "Error Casting Asset");
+                return;
+            }
 
-            HoArchive.TOCEntry entry = new HoArchive.TOCEntry(uidSelf, wmlTypeID, blobAlign_in: blobAlign, subType_in: subType, blobFlags_in: blobFlags, data_in: data);
+            HoArchive.TOCEntry entry = new HoArchive.TOCEntry(uidSelf, wmlTypeID, blobAlign_in: blobAlign, subType_in: subType, blobFlags_in: blobFlags, data_in: data, entity_in: entity);
             HoArchive.NameTableEntry nameTableEntry = new HoArchive.NameTableEntry(uidSelf, name);
             assetTreeNode node = new assetTreeNode(entry, name);
 

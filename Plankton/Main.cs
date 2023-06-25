@@ -1,4 +1,6 @@
 ﻿
+using HoArchive;
+using SB09WiiAsset;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.ServiceModel.Syndication;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
@@ -18,30 +21,32 @@ namespace Plankton
     public partial class Plankton : Form  
     {
         CSHO.Handler handler;
-        Asset.AssetKey assetkey;
         OpenFileDialog openDialog;
         SaveFileDialog saveDialog;
+        FolderBrowserDialog folderBrowserDialog;
         EditHeaderWindow editHeaderWindow;
         NewParcelWindow newParcelWindow;
         NewAssetWindow newAssetWindow;
+        ExportAllWindow exportAllWindow;
         int searchResultCount;
         string currentSearch;
         searchType currentSearchState;
         public Plankton()
         {
             handler = new CSHO.Handler();
-            assetkey = new Asset.AssetKey();
             openDialog = new OpenFileDialog();
             saveDialog = new SaveFileDialog();
+            folderBrowserDialog = new FolderBrowserDialog();
             editHeaderWindow = null;
             newParcelWindow = null;
             newAssetWindow = null;
+            exportAllWindow = null;
             searchResultCount = -1;
             currentSearch = "";
             currentSearchState = searchType.None;
 
             openDialog.InitialDirectory = "c:\\";
-            openDialog.Filter = "HO Archives (*.ho)|*.ho|All Files (*.*)|*.*";
+            openDialog.Filter = "HO Archives (*.ho)|*.ho|LSET Files (*.lset)|*.lset";
             openDialog.FilterIndex = 0;
             InitializeComponent();
         }
@@ -111,12 +116,17 @@ namespace Plankton
         {
             if (editHeaderWindow != null) { editHeaderWindow.Close(); }
         }
+        public void closeExportAllWindow()
+        {
+            if(exportAllWindow != null) { exportAllWindow.Close(); }
+        }
 
         public void closeToolWindows()
         {
             closeEditHeaderWindow();
             closeNewParcelWindow();
             closeNewAssetWindow();
+
         }
 
         private void hideAllClassGroupBoxes()
@@ -145,6 +155,8 @@ namespace Plankton
             if (openDialog.ShowDialog() != DialogResult.OK){
                 return;
             }
+
+            if(openDialog.FilterIndex != 0) { return; }
 
             string filePath = openDialog.FileName;
 
@@ -209,6 +221,7 @@ namespace Plankton
                     tableGroupBox.Visible = false;
 
                     assetPropertyGrid.SelectedObject = ((assetTreeNode)archiveView.SelectedNode).asset;
+                    entityPropertyGrid.SelectedObject = ((assetTreeNode)archiveView.SelectedNode).asset.entity;
                     renameAssetTextBox.Text = archiveView.SelectedNode.Text;
                     break;
 
@@ -258,6 +271,9 @@ namespace Plankton
 
             if(filepath == null) { return; }
 
+            (((assetTreeNode)archiveView.SelectedNode).asset).Update(0x40);
+
+
             HoArchive.BinaryWriterEndian writer = new HoArchive.BinaryWriterEndian(filepath, false);
 
             writer.WriteE(((assetTreeNode)archiveView.SelectedNode).asset.data.ToArray());
@@ -276,8 +292,23 @@ namespace Plankton
 
             HoArchive.BinaryReaderEndian reader = new HoArchive.BinaryReaderEndian(filepath, false);
 
-            ((assetTreeNode)archiveView.SelectedNode).asset.data = reader.ReadBytes((int)reader.BaseStream.Length).ToList();
-            
+            HoArchive.TOCEntry asset = ((assetTreeNode)archiveView.SelectedNode).asset;
+            List<byte> data = reader.ReadBytes((int)reader.BaseStream.Length).ToList();
+
+            Asset.AssetEntity entity;
+            try { entity = Asset.AssetCaster.ReadAsset(new HoArchive.MemoryStreamEndian(data.ToArray(), handler.endian), asset.wmlTypeID, handler.Archive.Header.target, handler.Archive.Header.platform); }
+            catch
+            {
+                MessageBox.Show("Error", "Error Casting Asset");
+                return;
+            }
+            asset.entity = entity;
+            asset.data = data;
+
+            entityPropertyGrid.SelectedObject = entity;
+            entityPropertyGrid.Refresh();
+
+
             reader.Dispose();
         }
 
@@ -374,8 +405,10 @@ namespace Plankton
             }
 
             string filePath = openDialog.FileName;
+            string errorcode = "ERR_INTERNAL_FAILURE";
 
-            string errorcode = handler.NewFrom(filePath);
+            if (openDialog.FilterIndex == 0) { errorcode = handler.NewFrom(filePath); }
+            else{ errorcode = handler.NewFromLSET(filePath); }
 
             if (errorcode != "")
             {
@@ -416,6 +449,7 @@ namespace Plankton
         {
             if (handler.Archive == null) { return; }
 
+            
             saveDialog.DefaultExt = ".ho";
             
             if (saveDialog.ShowDialog() != DialogResult.OK) { return; }
@@ -449,18 +483,32 @@ namespace Plankton
             newAssetWindow.uidSelfTextBox.Text = string.Format("{0:X}", handler.GenerateAssetID());
             newAssetWindow.tocTreeNode = (tocTreeNode)archiveView.SelectedNode;
 
+            HoArchive.ParcelDebug parcelDebug = GetAvailableParcelDebug();
+
+
+            newAssetWindow.endian = handler.endian;
+            newAssetWindow.target = handler.Archive.Header.target;
+            newAssetWindow.platform = handler.Archive.Header.platform;
+            newAssetWindow.debugParcel = parcelDebug;
+            newAssetWindow.treeView = archiveView;
+            newAssetWindow.Show();
+        }
+
+        private HoArchive.ParcelDebug GetAvailableParcelDebug()
+        {
             HoArchive.ParcelDebug parcelDebug = null;
 
-            foreach (HoArchive.ParcelBase parcel in handler.GetParcels()){ 
-                if(parcel is HoArchive.ParcelDebug) { if (((HoArchive.ParcelDebug)parcel).delete != true) { parcelDebug = (HoArchive.ParcelDebug)parcel; break; } }
+            foreach (HoArchive.ParcelBase parcel in handler.GetParcels())
+            {
+                if (parcel is HoArchive.ParcelDebug) { if (((HoArchive.ParcelDebug)parcel).delete != true) { parcelDebug = (HoArchive.ParcelDebug)parcel; break; } }
             }
-            
+
             if (parcelDebug == null)
             {
-                
+
                 foreach (HoArchive.ParcelBase table in handler.GetTables())
                 {
-                    if(((HoArchive.Table)table).TableHeader.tableTypeTag == "SECT" & ((HoArchive.Table)table).delete != true)
+                    if (((HoArchive.Table)table).TableHeader.tableTypeTag == "SECT" & ((HoArchive.Table)table).delete != true)
                     {
                         parcelDebug = new HoArchive.ParcelDebug();
                         ((HoArchive.Table)table).Parcels.Add(parcelDebug);
@@ -486,12 +534,8 @@ namespace Plankton
                 newsecttable.MetaTableEntries.Add(new List<HoArchive.SliceMeta>() { new HoArchive.ParcelDebugSliceMeta() });
             }
 
-            newAssetWindow.debugParcel = parcelDebug;
-            newAssetWindow.treeView = archiveView;
-            newAssetWindow.Show();
+            return parcelDebug;
         }
-
-
 
         private void searchAssetIDButton_Click(object sender, EventArgs e)
         {
@@ -546,7 +590,7 @@ namespace Plankton
             }
             else if(currentSearchState == searchType.Data)
             {
-                List<byte> data = hexStringToByteList(currentSearch);
+                List<byte> data = hexStringToByteList(currentSearch.Replace(" ", ""));
 
 
                 if(data == null) { return nodes; }
@@ -638,6 +682,70 @@ namespace Plankton
                 return true;
             }
 
+            if (keyData == (Keys.Control | Keys.C))
+            {
+                if (archiveView.SelectedNode is assetTreeNode)
+                {
+                    HoArchive.TOCEntry asset = ((assetTreeNode)archiveView.SelectedNode).asset;
+                    Clipboard.SetText("HOASSET - " + asset.Serialize() + "; " + handler.GetNameEntry(asset.uidSelf).Serialize());
+                    return true;
+                }
+            }
+            if (keyData == (Keys.Control | Keys.V) && handler.Archive != null) {
+                string clipboardText = Clipboard.GetText(TextDataFormat.Text);
+
+                if(clipboardText.Split(" - ")[0] != "HOASSET") { return false; }
+
+                clipboardText = clipboardText.Split(" - ")[1];
+
+                string[] assetstrings = clipboardText.Split("; ")[0].Split(", ");
+                string[] namestrings = clipboardText.Split("; ")[1].Split(", ");
+
+                MessageBox.Show(clipboardText);
+                MessageBox.Show(String.Join(", ", assetstrings));
+                MessageBox.Show(String.Join(", ", namestrings));
+
+
+                uint blobAlign = UInt32.Parse(assetstrings[0]);
+                ulong uidSelf = UInt64.Parse(assetstrings[1]);
+
+                if(handler.GetAsset(uidSelf) != null) { uidSelf = handler.GenerateAssetID(); }
+
+                HoArchive.wmlTypeID wmlTypeID = (wmlTypeID)UInt32.Parse(assetstrings[2]);
+                ushort subType = UInt16.Parse(assetstrings[3]);
+                ushort blobFlags = UInt16.Parse(assetstrings[4]);
+                List<byte> data = Convert.FromBase64String(assetstrings[5]).ToList();
+                MemoryStreamEndian stream = new MemoryStreamEndian(data.ToArray(), handler.endian);
+                Asset.AssetEntity entity = Asset.AssetCaster.ReadAsset(stream, wmlTypeID, handler.Archive.Header.target, handler.Archive.Header.platform);
+                stream.Dispose();
+
+                uint typeID = UInt32.Parse(namestrings[1]);
+                string name = namestrings[2];
+
+                HoArchive.TOCEntry asset = new HoArchive.TOCEntry(uidSelf, wmlTypeID, blobAlign, subType, blobFlags, data, entity);
+                assetTreeNode assetnode = new assetTreeNode(asset, name);
+                HoArchive.NameTableEntry nametableentry = new HoArchive.NameTableEntry(uidSelf, name, typeID);
+
+                tocTreeNode node;
+                HoArchive.ParcelDebug parcelDebug = GetAvailableParcelDebug();
+
+                if (archiveView.SelectedNode is assetTreeNode)
+                {
+                    node = (tocTreeNode)archiveView.SelectedNode.Parent;
+                }
+
+                else if (archiveView.SelectedNode is tocTreeNode)
+                {
+                    node = (tocTreeNode)archiveView.SelectedNode;
+                }
+                else { return false; }
+
+                node.toc.Entries.Add(asset);
+                node.Nodes.Add(assetnode);
+                parcelDebug.NameTableEntries.Add(nametableentry);
+            }
+
+
             
 
 
@@ -723,7 +831,60 @@ namespace Plankton
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        
+        private void entityPropertyGrid_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
+        {
+            HoArchive.TOCEntry asset = ((assetTreeNode)archiveView.SelectedNode).asset;
+            HoArchive.MemoryStreamEndian stream = new HoArchive.MemoryStreamEndian(false);
+            if (asset.entity != null && Asset.AvailableAssetsTEMP.available.Contains(asset.wmlTypeID))
+            {
+                asset.entity.Update(asset);
+                asset.entity.Save(stream);
+                asset.data = stream.ToArray().ToList<byte>();
+            }
+            stream.Dispose();
+
+            entityPropertyGrid.Refresh();
+        }
+
+        private void exportAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(handler.Archive == null) { return; }
+            closeExportAllWindow();
+            exportAllWindow = new ExportAllWindow();
+            exportAllWindow.handler = handler;
+            exportAllWindow.Show();
+        }
+
+        private void entityPropertyGrid_Click(object sender, EventArgs e)
+        {
+            entityPropertyGrid_SelectedGridItemChanged(sender, null);
+        }
+
+        private void entityPropertyGrid_Paint(object sender, PaintEventArgs e)
+        {
+            entityPropertyGrid_SelectedGridItemChanged(sender, null);
+        }
+
+        private void updateEntityButton_Click(object sender, EventArgs e)
+        {
+            entityPropertyGrid_SelectedGridItemChanged(sender, null);
+        }
+
+        private void exportLSETToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (handler.Archive == null) { return; }
+
+
+            if (folderBrowserDialog.ShowDialog() != DialogResult.OK) { return; }
+
+
+            string filepath = folderBrowserDialog.SelectedPath;
+
+            if (filepath == null) { return; }
+
+            handler.ExportLSET(filepath);
+        }
     }
     public class assetTreeNode : TreeNode
     {

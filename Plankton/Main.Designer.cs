@@ -41,9 +41,12 @@
             this.editHeaderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ArchiveTreeGroup = new System.Windows.Forms.GroupBox();
             this.archiveView = new System.Windows.Forms.TreeView();
             this.assetGroupBox = new System.Windows.Forms.GroupBox();
+            this.updateEntityButton = new System.Windows.Forms.Button();
+            this.entityPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.renameAssetTextBox = new System.Windows.Forms.TextBox();
             this.deleteAssetButton = new System.Windows.Forms.Button();
             this.importRawDataButton = new System.Windows.Forms.Button();
@@ -80,6 +83,7 @@
             this.searchForNameButton = new System.Windows.Forms.Button();
             this.searchAssetIDButton = new System.Windows.Forms.Button();
             this.searchTextBox = new System.Windows.Forms.TextBox();
+            this.exportLSETToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.ArchiveTreeGroup.SuspendLayout();
             this.assetGroupBox.SuspendLayout();
@@ -178,7 +182,9 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.reloadTreeToolStripMenuItem});
+            this.reloadTreeToolStripMenuItem,
+            this.exportAllToolStripMenuItem,
+            this.exportLSETToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -190,6 +196,13 @@
             this.reloadTreeToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.reloadTreeToolStripMenuItem.Text = "Reload tree [CTRL+R]";
             this.reloadTreeToolStripMenuItem.Click += new System.EventHandler(this.reloadTreeToolStripMenuItem_Click);
+            // 
+            // exportAllToolStripMenuItem
+            // 
+            this.exportAllToolStripMenuItem.Name = "exportAllToolStripMenuItem";
+            this.exportAllToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.exportAllToolStripMenuItem.Text = "Export All";
+            this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click);
             // 
             // ArchiveTreeGroup
             // 
@@ -214,6 +227,8 @@
             // 
             // assetGroupBox
             // 
+            this.assetGroupBox.Controls.Add(this.updateEntityButton);
+            this.assetGroupBox.Controls.Add(this.entityPropertyGrid);
             this.assetGroupBox.Controls.Add(this.renameAssetTextBox);
             this.assetGroupBox.Controls.Add(this.deleteAssetButton);
             this.assetGroupBox.Controls.Add(this.importRawDataButton);
@@ -226,6 +241,31 @@
             this.assetGroupBox.TabStop = false;
             this.assetGroupBox.Text = "Asset Options";
             this.assetGroupBox.Visible = false;
+            // 
+            // updateEntityButton
+            // 
+            this.updateEntityButton.Location = new System.Drawing.Point(6, 241);
+            this.updateEntityButton.Name = "updateEntityButton";
+            this.updateEntityButton.Size = new System.Drawing.Size(299, 23);
+            this.updateEntityButton.TabIndex = 9;
+            this.updateEntityButton.Text = "Update Entity";
+            this.updateEntityButton.UseVisualStyleBackColor = true;
+            this.updateEntityButton.Click += new System.EventHandler(this.updateEntityButton_Click);
+            // 
+            // entityPropertyGrid
+            // 
+            this.entityPropertyGrid.BackColor = System.Drawing.SystemColors.Control;
+            this.entityPropertyGrid.HelpVisible = false;
+            this.entityPropertyGrid.Location = new System.Drawing.Point(6, 270);
+            this.entityPropertyGrid.Name = "entityPropertyGrid";
+            this.entityPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            this.entityPropertyGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.entityPropertyGrid.Size = new System.Drawing.Size(299, 521);
+            this.entityPropertyGrid.TabIndex = 8;
+            this.entityPropertyGrid.ToolbarVisible = false;
+            this.entityPropertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.entityPropertyGrid_SelectedGridItemChanged);
+            this.entityPropertyGrid.Click += new System.EventHandler(this.entityPropertyGrid_Click);
+            this.entityPropertyGrid.Paint += new System.Windows.Forms.PaintEventHandler(this.entityPropertyGrid_Paint);
             // 
             // renameAssetTextBox
             // 
@@ -564,6 +604,13 @@
             this.searchTextBox.Size = new System.Drawing.Size(299, 23);
             this.searchTextBox.TabIndex = 0;
             // 
+            // exportLSETToolStripMenuItem
+            // 
+            this.exportLSETToolStripMenuItem.Name = "exportLSETToolStripMenuItem";
+            this.exportLSETToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.exportLSETToolStripMenuItem.Text = "Export LSET";
+            this.exportLSETToolStripMenuItem.Click += new System.EventHandler(this.exportLSETToolStripMenuItem_Click);
+            // 
             // Plankton
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -657,6 +704,10 @@
         private System.Windows.Forms.Button nextButton;
         private System.Windows.Forms.Button previousButton;
         private System.Windows.Forms.Button searchForDataButton;
+        private System.Windows.Forms.PropertyGrid entityPropertyGrid;
+        private System.Windows.Forms.ToolStripMenuItem exportAllToolStripMenuItem;
+        private System.Windows.Forms.Button updateEntityButton;
+        private System.Windows.Forms.ToolStripMenuItem exportLSETToolStripMenuItem;
     }
 }
 

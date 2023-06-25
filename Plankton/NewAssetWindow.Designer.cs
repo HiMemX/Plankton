@@ -172,11 +172,9 @@
             // 
             // assetKeyBindingSource
             // 
-            this.assetKeyBindingSource.DataSource = typeof(Asset.AssetKey);
             // 
             // assetKeyBindingSource1
             // 
-            this.assetKeyBindingSource1.DataSource = typeof(Asset.AssetKey);
             // 
             // nameTextBox
             // 
