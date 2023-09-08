@@ -10,9 +10,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Plankton.Plankton;
 
 namespace Plankton
 {
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public partial class NewAssetWindow : Form
     {
         public bool endian;

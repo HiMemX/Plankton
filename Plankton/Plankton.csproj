@@ -9,12 +9,16 @@
     <ApplicationIcon>Plankton.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSHO">
+      <HintPath>..\..\..\..\Desktop\Misc Tools\Plankton\Release\CSHO.dll</HintPath>
+    </Reference>
     <Reference Include="CSHO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Be.Windows.Forms.HexBox.Net5" Version="1.8.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />

@@ -8,6 +8,9 @@
     <Compile Update="ExportAllWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="InternalEditors\DirectEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Main.cs">
       <SubType>Form</SubType>
     </Compile>

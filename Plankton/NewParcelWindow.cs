@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Plankton.Plankton;
 
 namespace Plankton
 {
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public partial class NewParcelWindow : Form
     {
         public tableTreeNode currentNode;
