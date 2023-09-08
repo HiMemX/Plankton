@@ -1,24 +1,16 @@
 ﻿
 using HoArchive;
-using SB09WiiAsset;
+using Plankton.InternalEditors;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.ServiceModel.Syndication;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Plankton
 {
-    public partial class Plankton : Form  
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public partial class Plankton : Form
     {
         CSHO.Handler handler;
         OpenFileDialog openDialog;
@@ -50,7 +42,7 @@ namespace Plankton
             openDialog.FilterIndex = 0;
             InitializeComponent();
         }
-
+        public static byte[] assetForHexEditor;
         private void toolStripContainer1_ContentPanel_Load(object sender, EventArgs e)
         {
 
@@ -62,7 +54,7 @@ namespace Plankton
             string tempbytestring = "";
             byte convertresult;
 
-            foreach(char c in hex)
+            foreach (char c in hex)
             {
                 tempbytestring += c.ToString();
 
@@ -118,7 +110,7 @@ namespace Plankton
         }
         public void closeExportAllWindow()
         {
-            if(exportAllWindow != null) { exportAllWindow.Close(); }
+            if (exportAllWindow != null) { exportAllWindow.Close(); }
         }
 
         public void closeToolWindows()
@@ -152,10 +144,11 @@ namespace Plankton
         private void openCTRLOToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openDialog.FilterIndex = 1;
-            if (openDialog.ShowDialog() != DialogResult.OK){
+            if (openDialog.ShowDialog() != DialogResult.OK)
+            {
                 return;
             }
-            if(openDialog.FilterIndex != 1) { return; }
+            if (openDialog.FilterIndex != 1) { return; }
 
             string filePath = openDialog.FileName;
 
@@ -177,7 +170,7 @@ namespace Plankton
             stats += "Creator: " + header.creator + "\n";
             stats += "Comment: " + header.comment + "\n";
             stats += "Hash: " + header.hash + "\n";
-            
+
             updateTree();
             updateToolBar();
 
@@ -188,7 +181,7 @@ namespace Plankton
 
         private void reloadTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
             handler.Update();
             updateTree();
         }
@@ -263,7 +256,7 @@ namespace Plankton
         private void exportRawDataButton_Click(object sender, EventArgs e)
         {
             TreeNode node = archiveView.SelectedNode;
-            TOCEntry asset =((assetTreeNode)node).asset;
+            TOCEntry asset = ((assetTreeNode)node).asset;
 
             saveDialog.DefaultExt = ".dat";
             saveDialog.FileName = handler.GetName(asset.uidSelf) + " [" + System.Convert.ToHexString(BitConverter.GetBytes(asset.uidSelf).Reverse().ToArray()) + "]";
@@ -272,7 +265,7 @@ namespace Plankton
 
             string filepath = saveDialog.FileName;
 
-            if(filepath == null) { return; }
+            if (filepath == null) { return; }
 
             asset.Update(0x40);
 
@@ -358,7 +351,7 @@ namespace Plankton
 
         private void deleteTableButton_Click(object sender, EventArgs e)
         {
-            if(((tableTreeNode)archiveView.SelectedNode).tableentry == null) { return; }
+            if (((tableTreeNode)archiveView.SelectedNode).tableentry == null) { return; }
             ((tableTreeNode)archiveView.SelectedNode).table.delete = true;
             archiveView.SelectedNode.Parent.Nodes.Remove(archiveView.SelectedNode);
         }
@@ -374,7 +367,7 @@ namespace Plankton
 
             string errorcode = handler.Save();
 
-            if(errorcode != "")
+            if (errorcode != "")
             {
                 MessageBox.Show(errorcode, "Error");
                 return;
@@ -396,7 +389,7 @@ namespace Plankton
 
         private void deleteStringTableEntryButton_Click(object sender, EventArgs e)
         {
-            if(stringTableListBox.Items.Count == 0 || stringTableListBox.SelectedIndex == -1) { return; }
+            if (stringTableListBox.Items.Count == 0 || stringTableListBox.SelectedIndex == -1) { return; }
 
 
             ((tableTreeNode)archiveView.SelectedNode).table.StringTable.StringTableEntries.RemoveAt(stringTableListBox.SelectedIndex);
@@ -415,7 +408,7 @@ namespace Plankton
             string errorcode = "ERR_INTERNAL_FAILURE";
 
             if (openDialog.FilterIndex == 1) { errorcode = handler.NewFrom(filePath); }
-            else{ errorcode = handler.NewFromLSET(filePath); }
+            else { errorcode = handler.NewFromLSET(filePath); }
 
             if (errorcode != "")
             {
@@ -444,7 +437,7 @@ namespace Plankton
 
         private void editHeaderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
 
             closeEditHeaderWindow();
 
@@ -457,9 +450,9 @@ namespace Plankton
         {
             if (handler.Archive == null) { return; }
 
-            
+
             saveDialog.DefaultExt = ".ho";
-            
+
             if (saveDialog.ShowDialog() != DialogResult.OK) { return; }
 
 
@@ -547,18 +540,18 @@ namespace Plankton
 
         private void searchAssetIDButton_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
             currentSearchState = searchType.AssetID;
 
             string text = searchTextBox.Text.Replace(" ", "");
             long output;
 
-            if(!long.TryParse(text, NumberStyles.HexNumber, null, out output)){return;}
+            if (!long.TryParse(text, NumberStyles.HexNumber, null, out output)) { return; }
 
             assetTreeNode node = ((tableTreeNode)archiveView.Nodes[0]).getAssetNode((ulong)output);
 
-            
-            if(node == null) { return; }
+
+            if (node == null) { return; }
 
             archiveView.SelectedNode = node;
             archiveView.Focus();
@@ -588,7 +581,8 @@ namespace Plankton
         private List<assetTreeNode> getFilteredNodes()
         {
             List<assetTreeNode> nodes = new List<assetTreeNode>();
-            if (currentSearchState == searchType.Name) {
+            if (currentSearchState == searchType.Name)
+            {
                 List<HoArchive.NameTableEntry> nameTableEntries = handler.GetNameEntries(currentSearch);
 
                 foreach (HoArchive.NameTableEntry entry in nameTableEntries)
@@ -596,12 +590,12 @@ namespace Plankton
                     nodes.Add(((tableTreeNode)archiveView.Nodes[0]).getAssetNode(entry.uidAsset));
                 }
             }
-            else if(currentSearchState == searchType.Data)
+            else if (currentSearchState == searchType.Data)
             {
                 List<byte> data = hexStringToByteList(currentSearch.Replace(" ", ""));
 
 
-                if(data == null) { return nodes; }
+                if (data == null) { return nodes; }
 
                 List<HoArchive.TOCEntry> entries = handler.GetAssetsFromDataSnippet(data);
 
@@ -610,19 +604,20 @@ namespace Plankton
                     nodes.Add(((tableTreeNode)archiveView.Nodes[0]).getAssetNode(entry.uidSelf));
                 }
             }
-            
+
 
             return nodes;
         }
 
-        private void nextSearchResult() { 
-            if(currentSearch == "") { return; }
+        private void nextSearchResult()
+        {
+            if (currentSearch == "") { return; }
 
             List<assetTreeNode> nodes = getFilteredNodes();
 
             searchResultCount++;
 
-            if(searchResultCount >= nodes.Count) { searchResultCount--;  return; }
+            if (searchResultCount >= nodes.Count) { searchResultCount--; return; }
 
             archiveView.SelectedNode = nodes[searchResultCount];
             archiveView.Focus();
@@ -641,7 +636,7 @@ namespace Plankton
             archiveView.SelectedNode = nodes[searchResultCount];
             archiveView.Focus();
         }
-        
+
 
         private void nextButton_Click(object sender, EventArgs e)
         {
@@ -678,7 +673,7 @@ namespace Plankton
             }
 
             // MISC
-            
+
             if (keyData == (Keys.Control | Keys.H))
             {
                 editHeaderToolStripMenuItem_Click(null, null);
@@ -699,10 +694,11 @@ namespace Plankton
                     return true;
                 }
             }
-            if (keyData == (Keys.Control | Keys.V) && handler.Archive != null) {
+            if (keyData == (Keys.Control | Keys.V) && handler.Archive != null)
+            {
                 string clipboardText = Clipboard.GetText(TextDataFormat.Text);
 
-                if(clipboardText.Split(" - ")[0] != "HOASSET") { return false; }
+                if (clipboardText.Split(" - ")[0] != "HOASSET") { return false; }
 
                 clipboardText = clipboardText.Split(" - ")[1];
 
@@ -717,7 +713,7 @@ namespace Plankton
                 uint blobAlign = UInt32.Parse(assetstrings[0]);
                 ulong uidSelf = UInt64.Parse(assetstrings[1]);
 
-                if(handler.GetAsset(uidSelf) != null) { uidSelf = handler.GenerateAssetID(); }
+                if (handler.GetAsset(uidSelf) != null) { uidSelf = handler.GenerateAssetID(); }
 
                 HoArchive.wmlTypeID wmlTypeID = (wmlTypeID)UInt32.Parse(assetstrings[2]);
                 ushort subType = UInt16.Parse(assetstrings[3]);
@@ -754,21 +750,22 @@ namespace Plankton
             }
 
 
-            
+
 
 
 
             // NODE OPERATIONS
             if (archiveView.SelectedNode == null) { return base.ProcessCmdKey(ref msg, keyData); }
 
-            if(archiveView.SelectedNode is assetTreeNode)
+            if (archiveView.SelectedNode is assetTreeNode)
             {
-                if (keyData == (Keys.Delete)){
+                if (keyData == (Keys.Delete))
+                {
                     deleteAssetButton_Click(null, null);
                     return true;
-                }    
+                }
             }
-            if(archiveView.SelectedNode is tocTreeNode)
+            if (archiveView.SelectedNode is tocTreeNode)
             {
                 if (keyData == (Keys.Delete))
                 {
@@ -856,7 +853,7 @@ namespace Plankton
 
         private void exportAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
             closeExportAllWindow();
             exportAllWindow = new ExportAllWindow();
             exportAllWindow.handler = handler;
@@ -893,133 +890,180 @@ namespace Plankton
 
             handler.ExportLSET(filepath);
         }
-    }
-    public class assetTreeNode : TreeNode
-    {
-        public HoArchive.TOCEntry asset;
-        public assetTreeNode(HoArchive.TOCEntry asset_in, string tag_in) : base(tag_in)
-        {
-            asset = asset_in;
-        }
-    }
-    public class tocTreeNode : TreeNode
-    {
-        public HoArchive.ParcelTOC toc;
-        public tocTreeNode(CSHO.Handler handler, HoArchive.ParcelTOC toc_in) : base("(ParcelTOC)")
-        {
-            toc = toc_in;
 
-            foreach(HoArchive.TOCEntry asset in toc.Entries)
+        private void btnDirectEdit_Click(object sender, EventArgs e)
+        {
+            TreeNode node = archiveView.SelectedNode;
+            TOCEntry asset = ((assetTreeNode)node).asset;
+
+            asset.Update(0x40);
+
+
+
+
+            assetForHexEditor = ((assetTreeNode)archiveView.SelectedNode).asset.data.ToArray();
+            DirectEditorWindow directEditorWindow = new DirectEditorWindow();
+            directEditorWindow.ShowDialog();
+
+            archiveView.Focus();
+            archiveView.SelectedNode = node;
+            archiveView.SelectedNode.EnsureVisible();
+        }
+
+        public void HexBox_CopiedHex(object sender, EventArgs e)
+        {
+            var hex = Clipboard.GetText();
+            var hexHex = hex.Split(' ');
+            var hexArr = new byte[hexHex.Length];
+            for (var i = 0; i < hexHex.Length; i++)
             {
-                Nodes.Add(new assetTreeNode(asset, handler.GetName(asset.uidSelf)));
+                hexArr[i] = byte.Parse(hexHex[i], NumberStyles.AllowHexSpecifier);
+            }
+
+
+            HoArchive.TOCEntry asset = ((assetTreeNode)archiveView.SelectedNode).asset;
+            
+            Asset.AssetEntity entity;
+            try { entity = Asset.AssetCaster.ReadAsset(new HoArchive.MemoryStreamEndian(hexArr.ToArray(), handler.endian), asset.wmlTypeID, handler.Archive.Header.target, handler.Archive.Header.platform); }
+            catch
+            {
+                MessageBox.Show("Error", "Error Casting Asset");
+                return;
+            }
+            asset.entity = entity;
+            asset.data = hexArr.ToList();
+
+            entityPropertyGrid.SelectedObject = entity;
+            entityPropertyGrid.Refresh();
+        }
+
+    }
+        public class assetTreeNode : TreeNode
+        {
+            public HoArchive.TOCEntry asset;
+            public assetTreeNode(HoArchive.TOCEntry asset_in, string tag_in) : base(tag_in)
+            {
+                asset = asset_in;
             }
         }
-
-        public assetTreeNode getAssetNode(ulong assetid)
+        public class tocTreeNode : TreeNode
         {
-            foreach(assetTreeNode node in Nodes)
+            public HoArchive.ParcelTOC toc;
+            public tocTreeNode(CSHO.Handler handler, HoArchive.ParcelTOC toc_in) : base("(ParcelTOC)")
             {
-                if (node.asset.uidSelf == assetid)
+                toc = toc_in;
+
+                foreach (HoArchive.TOCEntry asset in toc.Entries)
                 {
-                    return node;
+                    Nodes.Add(new assetTreeNode(asset, handler.GetName(asset.uidSelf)));
                 }
             }
-            return null;
-        }
 
-        
-        
-    }
-
-    public class parcelTreeNode : TreeNode
-    {
-        public HoArchive.Parcel parcel;
-        public HoArchive.TableEntry tableentry;
-
-        public parcelTreeNode(HoArchive.Parcel parcel_in, HoArchive.TableEntry tableentry_in, string tag_in) : base(tag_in)
-        {
-            parcel = parcel_in;
-            tableentry = tableentry_in;
-        }
-
-        public assetTreeNode getAssetNode(ulong assetid)
-        {
-            assetTreeNode output;
-            foreach (tocTreeNode node in Nodes)
+            public assetTreeNode getAssetNode(ulong assetid)
             {
-                output = node.getAssetNode(assetid);
-                if (output != null) { return output; }
-            }
-            return null;
-        }
-        
-
-        public parcelTreeNode(CSHO.Handler handler, HoArchive.Parcel parcel_in, HoArchive.TableEntry tableentry_in, string tag_in) : base(tag_in)
-        {
-            parcel = parcel_in;
-            tableentry = tableentry_in;
-
-            foreach(HoArchive.ParcelTOC toc in parcel.ParcelTOCs)
-            {
-                Nodes.Add(new tocTreeNode(handler, toc));
-            }
-        }
-
-        
-    }
-
-    public class tableTreeNode : TreeNode
-    {
-        public HoArchive.Table table;
-        public HoArchive.TableEntry tableentry;
-
-        public tableTreeNode(HoArchive.Table table_in, string tag_in, HoArchive.TableEntry tableentry_in = null) : base(tag_in)
-        {
-            table = table_in;
-            tableentry = tableentry_in;
-        }
-
-        public tableTreeNode(CSHO.Handler handler, HoArchive.Table table_in, string tag_in, HoArchive.TableEntry tableentry_in = null) : base(tag_in)
-        {
-            table = table_in;
-            tableentry = tableentry_in;
-
-            for(int i=0; i<table.Parcels.Count; i++)
-            {
-                switch (table.TableEntries[i].sectionType)
+                foreach (assetTreeNode node in Nodes)
                 {
-                    case "SECT":
-                        Nodes.Add(new tableTreeNode(handler, (HoArchive.Table)table.Parcels[i], ((HoArchive.Table)table.Parcels[i]).TableHeader.tableTypeTag, table.TableEntries[i]));
-                        break;
-                    case "PD  ":
-                        break;
-                    default:
-                        Nodes.Add(new parcelTreeNode(handler, (HoArchive.Parcel)table.Parcels[i], table.TableEntries[i], table.TableEntries[i].sectionType));
-                        break;
+                    if (node.asset.uidSelf == assetid)
+                    {
+                        return node;
+                    }
+                }
+                return null;
+            }
+
+
+
+        }
+
+        public class parcelTreeNode : TreeNode
+        {
+            public HoArchive.Parcel parcel;
+            public HoArchive.TableEntry tableentry;
+
+            public parcelTreeNode(HoArchive.Parcel parcel_in, HoArchive.TableEntry tableentry_in, string tag_in) : base(tag_in)
+            {
+                parcel = parcel_in;
+                tableentry = tableentry_in;
+            }
+
+            public assetTreeNode getAssetNode(ulong assetid)
+            {
+                assetTreeNode output;
+                foreach (tocTreeNode node in Nodes)
+                {
+                    output = node.getAssetNode(assetid);
+                    if (output != null) { return output; }
+                }
+                return null;
+            }
+
+
+            public parcelTreeNode(CSHO.Handler handler, HoArchive.Parcel parcel_in, HoArchive.TableEntry tableentry_in, string tag_in) : base(tag_in)
+            {
+                parcel = parcel_in;
+                tableentry = tableentry_in;
+
+                foreach (HoArchive.ParcelTOC toc in parcel.ParcelTOCs)
+                {
+                    Nodes.Add(new tocTreeNode(handler, toc));
                 }
             }
+
+
         }
 
-        public assetTreeNode getAssetNode(ulong assetid)
+        public class tableTreeNode : TreeNode
         {
-            assetTreeNode output = null;
-            foreach (TreeNode node in Nodes)
+            public HoArchive.Table table;
+            public HoArchive.TableEntry tableentry;
+
+            public tableTreeNode(HoArchive.Table table_in, string tag_in, HoArchive.TableEntry tableentry_in = null) : base(tag_in)
             {
-                if(node is tableTreeNode) { output = ((tableTreeNode)node).getAssetNode(assetid); }
-                else if(node is parcelTreeNode) { output = ((parcelTreeNode)node).getAssetNode(assetid); }
-
-                if(output != null) { return output; }
+                table = table_in;
+                tableentry = tableentry_in;
             }
-            return null;
-        }
-        
-    }
 
-    public enum searchType
-    {
-        None,
-        Name,
-        AssetID,
-        Data
-    }
+            public tableTreeNode(CSHO.Handler handler, HoArchive.Table table_in, string tag_in, HoArchive.TableEntry tableentry_in = null) : base(tag_in)
+            {
+                table = table_in;
+                tableentry = tableentry_in;
+
+                for (int i = 0; i < table.Parcels.Count; i++)
+                {
+                    switch (table.TableEntries[i].sectionType)
+                    {
+                        case "SECT":
+                            Nodes.Add(new tableTreeNode(handler, (HoArchive.Table)table.Parcels[i], ((HoArchive.Table)table.Parcels[i]).TableHeader.tableTypeTag, table.TableEntries[i]));
+                            break;
+                        case "PD  ":
+                            break;
+                        default:
+                            Nodes.Add(new parcelTreeNode(handler, (HoArchive.Parcel)table.Parcels[i], table.TableEntries[i], table.TableEntries[i].sectionType));
+                            break;
+                    }
+                }
+            }
+
+            public assetTreeNode getAssetNode(ulong assetid)
+            {
+                assetTreeNode output = null;
+                foreach (TreeNode node in Nodes)
+                {
+                    if (node is tableTreeNode) { output = ((tableTreeNode)node).getAssetNode(assetid); }
+                    else if (node is parcelTreeNode) { output = ((parcelTreeNode)node).getAssetNode(assetid); }
+
+                    if (output != null) { return output; }
+                }
+                return null;
+            }
+
+        }
+
+        public enum searchType
+        {
+            None,
+            Name,
+            AssetID,
+            Data
+        }
 }
