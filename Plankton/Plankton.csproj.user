@@ -8,6 +8,9 @@
     <Compile Update="ExportAllWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="GenericTextWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -15,6 +18,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="NewParcelWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="PropertyGridWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Special Editors\TextureEditor.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

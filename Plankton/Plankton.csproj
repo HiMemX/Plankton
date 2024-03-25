@@ -13,6 +13,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
     </Reference>
+    <Reference Include="libWiiSharp">
+      <HintPath>..\..\..\..\Programme\libWiiSharp-master\bin\Release\libWiiSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />

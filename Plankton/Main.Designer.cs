@@ -42,6 +42,10 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportLSETToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.assetWidgetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewScriptEventsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewBinaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ArchiveTreeGroup = new System.Windows.Forms.GroupBox();
             this.archiveView = new System.Windows.Forms.TreeView();
             this.assetGroupBox = new System.Windows.Forms.GroupBox();
@@ -77,13 +81,15 @@
             this.deleteTableButton = new System.Windows.Forms.Button();
             this.tablePropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.searchGroupBox = new System.Windows.Forms.GroupBox();
+            this.openFirstMatch = new System.Windows.Forms.Button();
             this.nextButton = new System.Windows.Forms.Button();
             this.previousButton = new System.Windows.Forms.Button();
             this.searchForDataButton = new System.Windows.Forms.Button();
             this.searchForNameButton = new System.Windows.Forms.Button();
             this.searchAssetIDButton = new System.Windows.Forms.Button();
             this.searchTextBox = new System.Windows.Forms.TextBox();
-            this.exportLSETToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.specialEditorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textureEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.ArchiveTreeGroup.SuspendLayout();
             this.assetGroupBox.SuspendLayout();
@@ -105,7 +111,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
-            this.toolsToolStripMenuItem});
+            this.toolsToolStripMenuItem,
+            this.specialEditorsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
@@ -184,7 +191,8 @@
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reloadTreeToolStripMenuItem,
             this.exportAllToolStripMenuItem,
-            this.exportLSETToolStripMenuItem});
+            this.exportLSETToolStripMenuItem,
+            this.assetWidgetsToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -204,29 +212,66 @@
             this.exportAllToolStripMenuItem.Text = "Export All";
             this.exportAllToolStripMenuItem.Click += new System.EventHandler(this.exportAllToolStripMenuItem_Click);
             // 
+            // exportLSETToolStripMenuItem
+            // 
+            this.exportLSETToolStripMenuItem.Name = "exportLSETToolStripMenuItem";
+            this.exportLSETToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.exportLSETToolStripMenuItem.Text = "Export LSET";
+            this.exportLSETToolStripMenuItem.Click += new System.EventHandler(this.exportLSETToolStripMenuItem_Click);
+            // 
+            // assetWidgetsToolStripMenuItem
+            // 
+            this.assetWidgetsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewScriptEventsToolStripMenuItem,
+            this.viewBinaryToolStripMenuItem});
+            this.assetWidgetsToolStripMenuItem.Name = "assetWidgetsToolStripMenuItem";
+            this.assetWidgetsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.assetWidgetsToolStripMenuItem.Text = "Asset Widgets";
+            // 
+            // viewScriptEventsToolStripMenuItem
+            // 
+            this.viewScriptEventsToolStripMenuItem.Name = "viewScriptEventsToolStripMenuItem";
+            this.viewScriptEventsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.viewScriptEventsToolStripMenuItem.Text = "View Script Events";
+            this.viewScriptEventsToolStripMenuItem.Click += new System.EventHandler(this.viewScriptEventsToolStripMenuItem_Click);
+            // 
+            // viewBinaryToolStripMenuItem
+            // 
+            this.viewBinaryToolStripMenuItem.Name = "viewBinaryToolStripMenuItem";
+            this.viewBinaryToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.viewBinaryToolStripMenuItem.Text = "View Binary";
+            this.viewBinaryToolStripMenuItem.Click += new System.EventHandler(this.viewBinaryToolStripMenuItem_Click);
+            // 
             // ArchiveTreeGroup
             // 
+            this.ArchiveTreeGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ArchiveTreeGroup.Controls.Add(this.archiveView);
             this.ArchiveTreeGroup.Location = new System.Drawing.Point(13, 31);
             this.ArchiveTreeGroup.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ArchiveTreeGroup.Name = "ArchiveTreeGroup";
             this.ArchiveTreeGroup.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.ArchiveTreeGroup.Size = new System.Drawing.Size(787, 827);
+            this.ArchiveTreeGroup.Size = new System.Drawing.Size(725, 827);
             this.ArchiveTreeGroup.TabIndex = 1;
             this.ArchiveTreeGroup.TabStop = false;
             this.ArchiveTreeGroup.Text = "Archive Tree";
             // 
             // archiveView
             // 
-            this.archiveView.Location = new System.Drawing.Point(7, 22);
+            this.archiveView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.archiveView.HideSelection = false;
+            this.archiveView.Location = new System.Drawing.Point(4, 19);
             this.archiveView.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.archiveView.Name = "archiveView";
-            this.archiveView.Size = new System.Drawing.Size(772, 798);
+            this.archiveView.Size = new System.Drawing.Size(717, 805);
             this.archiveView.TabIndex = 0;
             this.archiveView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.archiveView_AfterSelect);
             // 
             // assetGroupBox
             // 
+            this.assetGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.assetGroupBox.Controls.Add(this.updateEntityButton);
             this.assetGroupBox.Controls.Add(this.entityPropertyGrid);
             this.assetGroupBox.Controls.Add(this.renameAssetTextBox);
@@ -234,9 +279,9 @@
             this.assetGroupBox.Controls.Add(this.importRawDataButton);
             this.assetGroupBox.Controls.Add(this.exportRawDataButton);
             this.assetGroupBox.Controls.Add(this.assetPropertyGrid);
-            this.assetGroupBox.Location = new System.Drawing.Point(807, 31);
+            this.assetGroupBox.Location = new System.Drawing.Point(745, 31);
             this.assetGroupBox.Name = "assetGroupBox";
-            this.assetGroupBox.Size = new System.Drawing.Size(311, 827);
+            this.assetGroupBox.Size = new System.Drawing.Size(373, 827);
             this.assetGroupBox.TabIndex = 2;
             this.assetGroupBox.TabStop = false;
             this.assetGroupBox.Text = "Asset Options";
@@ -246,21 +291,22 @@
             // 
             this.updateEntityButton.Location = new System.Drawing.Point(6, 241);
             this.updateEntityButton.Name = "updateEntityButton";
-            this.updateEntityButton.Size = new System.Drawing.Size(299, 23);
+            this.updateEntityButton.Size = new System.Drawing.Size(361, 23);
             this.updateEntityButton.TabIndex = 9;
-            this.updateEntityButton.Text = "Update Entity";
+            this.updateEntityButton.Text = "Open Editor";
             this.updateEntityButton.UseVisualStyleBackColor = true;
             this.updateEntityButton.Click += new System.EventHandler(this.updateEntityButton_Click);
             // 
             // entityPropertyGrid
             // 
+            this.entityPropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.entityPropertyGrid.BackColor = System.Drawing.SystemColors.Control;
             this.entityPropertyGrid.HelpVisible = false;
             this.entityPropertyGrid.Location = new System.Drawing.Point(6, 270);
             this.entityPropertyGrid.Name = "entityPropertyGrid";
             this.entityPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
             this.entityPropertyGrid.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.entityPropertyGrid.Size = new System.Drawing.Size(299, 521);
+            this.entityPropertyGrid.Size = new System.Drawing.Size(361, 521);
             this.entityPropertyGrid.TabIndex = 8;
             this.entityPropertyGrid.ToolbarVisible = false;
             this.entityPropertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.entityPropertyGrid_SelectedGridItemChanged);
@@ -271,16 +317,17 @@
             // 
             this.renameAssetTextBox.Location = new System.Drawing.Point(6, 183);
             this.renameAssetTextBox.Name = "renameAssetTextBox";
-            this.renameAssetTextBox.Size = new System.Drawing.Size(299, 23);
+            this.renameAssetTextBox.Size = new System.Drawing.Size(361, 23);
             this.renameAssetTextBox.TabIndex = 7;
             this.renameAssetTextBox.TextChanged += new System.EventHandler(this.renameAssetTextBox_TextChanged);
             // 
             // deleteAssetButton
             // 
+            this.deleteAssetButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.deleteAssetButton.BackColor = System.Drawing.Color.Red;
             this.deleteAssetButton.Location = new System.Drawing.Point(6, 797);
             this.deleteAssetButton.Name = "deleteAssetButton";
-            this.deleteAssetButton.Size = new System.Drawing.Size(299, 23);
+            this.deleteAssetButton.Size = new System.Drawing.Size(361, 23);
             this.deleteAssetButton.TabIndex = 3;
             this.deleteAssetButton.Text = "Delete Asset";
             this.deleteAssetButton.UseVisualStyleBackColor = false;
@@ -288,9 +335,9 @@
             // 
             // importRawDataButton
             // 
-            this.importRawDataButton.Location = new System.Drawing.Point(158, 212);
+            this.importRawDataButton.Location = new System.Drawing.Point(191, 212);
             this.importRawDataButton.Name = "importRawDataButton";
-            this.importRawDataButton.Size = new System.Drawing.Size(147, 23);
+            this.importRawDataButton.Size = new System.Drawing.Size(176, 23);
             this.importRawDataButton.TabIndex = 2;
             this.importRawDataButton.Text = "Import Raw Data";
             this.importRawDataButton.UseVisualStyleBackColor = true;
@@ -300,7 +347,7 @@
             // 
             this.exportRawDataButton.Location = new System.Drawing.Point(6, 212);
             this.exportRawDataButton.Name = "exportRawDataButton";
-            this.exportRawDataButton.Size = new System.Drawing.Size(147, 23);
+            this.exportRawDataButton.Size = new System.Drawing.Size(179, 23);
             this.exportRawDataButton.TabIndex = 1;
             this.exportRawDataButton.Text = "Export Raw Data";
             this.exportRawDataButton.UseVisualStyleBackColor = true;
@@ -313,7 +360,7 @@
             this.assetPropertyGrid.Location = new System.Drawing.Point(6, 22);
             this.assetPropertyGrid.Name = "assetPropertyGrid";
             this.assetPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.assetPropertyGrid.Size = new System.Drawing.Size(299, 155);
+            this.assetPropertyGrid.Size = new System.Drawing.Size(361, 155);
             this.assetPropertyGrid.TabIndex = 0;
             this.assetPropertyGrid.ToolbarVisible = false;
             // 
@@ -331,12 +378,14 @@
             // 
             // parcelGroupBox
             // 
+            this.parcelGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.parcelGroupBox.Controls.Add(this.deleteParcelButton);
             this.parcelGroupBox.Controls.Add(this.newParcelTOCButton);
             this.parcelGroupBox.Controls.Add(this.parcelPropertyGrid);
-            this.parcelGroupBox.Location = new System.Drawing.Point(807, 31);
+            this.parcelGroupBox.Location = new System.Drawing.Point(745, 31);
             this.parcelGroupBox.Name = "parcelGroupBox";
-            this.parcelGroupBox.Size = new System.Drawing.Size(311, 827);
+            this.parcelGroupBox.Size = new System.Drawing.Size(373, 827);
             this.parcelGroupBox.TabIndex = 3;
             this.parcelGroupBox.TabStop = false;
             this.parcelGroupBox.Text = "Parcel Options";
@@ -344,11 +393,12 @@
             // 
             // deleteParcelButton
             // 
+            this.deleteParcelButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.deleteParcelButton.BackColor = System.Drawing.Color.Red;
             this.deleteParcelButton.ForeColor = System.Drawing.SystemColors.ControlText;
             this.deleteParcelButton.Location = new System.Drawing.Point(6, 797);
             this.deleteParcelButton.Name = "deleteParcelButton";
-            this.deleteParcelButton.Size = new System.Drawing.Size(299, 23);
+            this.deleteParcelButton.Size = new System.Drawing.Size(361, 23);
             this.deleteParcelButton.TabIndex = 2;
             this.deleteParcelButton.Text = "Delete Parcel";
             this.deleteParcelButton.UseVisualStyleBackColor = false;
@@ -356,9 +406,10 @@
             // 
             // newParcelTOCButton
             // 
+            this.newParcelTOCButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.newParcelTOCButton.Location = new System.Drawing.Point(6, 373);
             this.newParcelTOCButton.Name = "newParcelTOCButton";
-            this.newParcelTOCButton.Size = new System.Drawing.Size(299, 23);
+            this.newParcelTOCButton.Size = new System.Drawing.Size(361, 23);
             this.newParcelTOCButton.TabIndex = 1;
             this.newParcelTOCButton.Text = "New ParcelTOC";
             this.newParcelTOCButton.UseVisualStyleBackColor = true;
@@ -366,21 +417,24 @@
             // 
             // parcelPropertyGrid
             // 
+            this.parcelPropertyGrid.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.parcelPropertyGrid.HelpVisible = false;
             this.parcelPropertyGrid.Location = new System.Drawing.Point(6, 22);
             this.parcelPropertyGrid.Name = "parcelPropertyGrid";
             this.parcelPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.parcelPropertyGrid.Size = new System.Drawing.Size(299, 345);
+            this.parcelPropertyGrid.Size = new System.Drawing.Size(361, 345);
             this.parcelPropertyGrid.TabIndex = 0;
             this.parcelPropertyGrid.ToolbarVisible = false;
             // 
             // parcelTOCGroupBox
             // 
+            this.parcelTOCGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.parcelTOCGroupBox.Controls.Add(this.newAssetButton);
             this.parcelTOCGroupBox.Controls.Add(this.deleteParcelTOCButton);
-            this.parcelTOCGroupBox.Location = new System.Drawing.Point(807, 31);
+            this.parcelTOCGroupBox.Location = new System.Drawing.Point(745, 31);
             this.parcelTOCGroupBox.Name = "parcelTOCGroupBox";
-            this.parcelTOCGroupBox.Size = new System.Drawing.Size(311, 827);
+            this.parcelTOCGroupBox.Size = new System.Drawing.Size(373, 827);
             this.parcelTOCGroupBox.TabIndex = 4;
             this.parcelTOCGroupBox.TabStop = false;
             this.parcelTOCGroupBox.Text = "ParcelTOC Options";
@@ -390,7 +444,7 @@
             // 
             this.newAssetButton.Location = new System.Drawing.Point(6, 22);
             this.newAssetButton.Name = "newAssetButton";
-            this.newAssetButton.Size = new System.Drawing.Size(299, 23);
+            this.newAssetButton.Size = new System.Drawing.Size(361, 23);
             this.newAssetButton.TabIndex = 1;
             this.newAssetButton.Text = "New Asset";
             this.newAssetButton.UseVisualStyleBackColor = true;
@@ -398,11 +452,12 @@
             // 
             // deleteParcelTOCButton
             // 
+            this.deleteParcelTOCButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.deleteParcelTOCButton.BackColor = System.Drawing.Color.Red;
             this.deleteParcelTOCButton.ForeColor = System.Drawing.SystemColors.ControlText;
             this.deleteParcelTOCButton.Location = new System.Drawing.Point(6, 797);
             this.deleteParcelTOCButton.Name = "deleteParcelTOCButton";
-            this.deleteParcelTOCButton.Size = new System.Drawing.Size(299, 23);
+            this.deleteParcelTOCButton.Size = new System.Drawing.Size(361, 23);
             this.deleteParcelTOCButton.TabIndex = 0;
             this.deleteParcelTOCButton.Text = "Delete ParcelTOC";
             this.deleteParcelTOCButton.UseVisualStyleBackColor = false;
@@ -410,14 +465,16 @@
             // 
             // tableGroupBox
             // 
+            this.tableGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableGroupBox.Controls.Add(this.newParcelButton);
             this.tableGroupBox.Controls.Add(this.stringTableGroupBox);
             this.tableGroupBox.Controls.Add(this.tableHeaderPropertyGrid);
             this.tableGroupBox.Controls.Add(this.deleteTableButton);
             this.tableGroupBox.Controls.Add(this.tablePropertyGrid);
-            this.tableGroupBox.Location = new System.Drawing.Point(807, 31);
+            this.tableGroupBox.Location = new System.Drawing.Point(745, 31);
             this.tableGroupBox.Name = "tableGroupBox";
-            this.tableGroupBox.Size = new System.Drawing.Size(311, 827);
+            this.tableGroupBox.Size = new System.Drawing.Size(373, 827);
             this.tableGroupBox.TabIndex = 5;
             this.tableGroupBox.TabStop = false;
             this.tableGroupBox.Text = "Table Options";
@@ -425,9 +482,10 @@
             // 
             // newParcelButton
             // 
+            this.newParcelButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.newParcelButton.Location = new System.Drawing.Point(6, 768);
             this.newParcelButton.Name = "newParcelButton";
-            this.newParcelButton.Size = new System.Drawing.Size(299, 23);
+            this.newParcelButton.Size = new System.Drawing.Size(361, 23);
             this.newParcelButton.TabIndex = 7;
             this.newParcelButton.Text = "New Parcel";
             this.newParcelButton.UseVisualStyleBackColor = true;
@@ -435,6 +493,7 @@
             // 
             // stringTableGroupBox
             // 
+            this.stringTableGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.stringTableGroupBox.Controls.Add(this.deleteStringTableEntryButton);
             this.stringTableGroupBox.Controls.Add(this.newStringTableEntryButton);
             this.stringTableGroupBox.Controls.Add(this.stringTableEntryTextBox);
@@ -443,16 +502,17 @@
             this.stringTableGroupBox.Controls.Add(this.domainStringTextBox);
             this.stringTableGroupBox.Location = new System.Drawing.Point(6, 534);
             this.stringTableGroupBox.Name = "stringTableGroupBox";
-            this.stringTableGroupBox.Size = new System.Drawing.Size(299, 228);
+            this.stringTableGroupBox.Size = new System.Drawing.Size(361, 228);
             this.stringTableGroupBox.TabIndex = 6;
             this.stringTableGroupBox.TabStop = false;
             this.stringTableGroupBox.Text = "String Table";
             // 
             // deleteStringTableEntryButton
             // 
-            this.deleteStringTableEntryButton.Location = new System.Drawing.Point(152, 170);
+            this.deleteStringTableEntryButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.deleteStringTableEntryButton.Location = new System.Drawing.Point(185, 170);
             this.deleteStringTableEntryButton.Name = "deleteStringTableEntryButton";
-            this.deleteStringTableEntryButton.Size = new System.Drawing.Size(141, 23);
+            this.deleteStringTableEntryButton.Size = new System.Drawing.Size(170, 23);
             this.deleteStringTableEntryButton.TabIndex = 9;
             this.deleteStringTableEntryButton.Text = "Delete Entry";
             this.deleteStringTableEntryButton.UseVisualStyleBackColor = true;
@@ -460,9 +520,10 @@
             // 
             // newStringTableEntryButton
             // 
+            this.newStringTableEntryButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.newStringTableEntryButton.Location = new System.Drawing.Point(6, 170);
             this.newStringTableEntryButton.Name = "newStringTableEntryButton";
-            this.newStringTableEntryButton.Size = new System.Drawing.Size(141, 23);
+            this.newStringTableEntryButton.Size = new System.Drawing.Size(173, 23);
             this.newStringTableEntryButton.TabIndex = 8;
             this.newStringTableEntryButton.Text = "Add New Entry";
             this.newStringTableEntryButton.UseVisualStyleBackColor = true;
@@ -470,13 +531,15 @@
             // 
             // stringTableEntryTextBox
             // 
+            this.stringTableEntryTextBox.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.stringTableEntryTextBox.Location = new System.Drawing.Point(6, 141);
             this.stringTableEntryTextBox.Name = "stringTableEntryTextBox";
-            this.stringTableEntryTextBox.Size = new System.Drawing.Size(287, 23);
+            this.stringTableEntryTextBox.Size = new System.Drawing.Size(349, 23);
             this.stringTableEntryTextBox.TabIndex = 7;
             // 
             // domainStringLabel
             // 
+            this.domainStringLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.domainStringLabel.AutoSize = true;
             this.domainStringLabel.Location = new System.Drawing.Point(6, 202);
             this.domainStringLabel.Name = "domainStringLabel";
@@ -486,18 +549,20 @@
             // 
             // stringTableListBox
             // 
+            this.stringTableListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.stringTableListBox.FormattingEnabled = true;
             this.stringTableListBox.ItemHeight = 15;
             this.stringTableListBox.Location = new System.Drawing.Point(6, 20);
             this.stringTableListBox.Name = "stringTableListBox";
-            this.stringTableListBox.Size = new System.Drawing.Size(287, 124);
+            this.stringTableListBox.Size = new System.Drawing.Size(349, 124);
             this.stringTableListBox.TabIndex = 4;
             // 
             // domainStringTextBox
             // 
+            this.domainStringTextBox.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.domainStringTextBox.Location = new System.Drawing.Point(96, 199);
             this.domainStringTextBox.Name = "domainStringTextBox";
-            this.domainStringTextBox.Size = new System.Drawing.Size(197, 23);
+            this.domainStringTextBox.Size = new System.Drawing.Size(259, 23);
             this.domainStringTextBox.TabIndex = 5;
             this.domainStringTextBox.TextChanged += new System.EventHandler(this.domainStringTextBox_TextChanged);
             // 
@@ -507,16 +572,17 @@
             this.tableHeaderPropertyGrid.Location = new System.Drawing.Point(6, 373);
             this.tableHeaderPropertyGrid.Name = "tableHeaderPropertyGrid";
             this.tableHeaderPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.tableHeaderPropertyGrid.Size = new System.Drawing.Size(299, 155);
+            this.tableHeaderPropertyGrid.Size = new System.Drawing.Size(361, 155);
             this.tableHeaderPropertyGrid.TabIndex = 3;
             this.tableHeaderPropertyGrid.ToolbarVisible = false;
             // 
             // deleteTableButton
             // 
+            this.deleteTableButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.deleteTableButton.BackColor = System.Drawing.Color.Red;
             this.deleteTableButton.Location = new System.Drawing.Point(6, 797);
             this.deleteTableButton.Name = "deleteTableButton";
-            this.deleteTableButton.Size = new System.Drawing.Size(299, 23);
+            this.deleteTableButton.Size = new System.Drawing.Size(361, 23);
             this.deleteTableButton.TabIndex = 2;
             this.deleteTableButton.Text = "Delete Table";
             this.deleteTableButton.UseVisualStyleBackColor = false;
@@ -528,30 +594,43 @@
             this.tablePropertyGrid.Location = new System.Drawing.Point(6, 22);
             this.tablePropertyGrid.Name = "tablePropertyGrid";
             this.tablePropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.tablePropertyGrid.Size = new System.Drawing.Size(299, 345);
+            this.tablePropertyGrid.Size = new System.Drawing.Size(361, 345);
             this.tablePropertyGrid.TabIndex = 1;
             this.tablePropertyGrid.ToolbarVisible = false;
             // 
             // searchGroupBox
             // 
+            this.searchGroupBox.Controls.Add(this.openFirstMatch);
             this.searchGroupBox.Controls.Add(this.nextButton);
             this.searchGroupBox.Controls.Add(this.previousButton);
             this.searchGroupBox.Controls.Add(this.searchForDataButton);
             this.searchGroupBox.Controls.Add(this.searchForNameButton);
             this.searchGroupBox.Controls.Add(this.searchAssetIDButton);
             this.searchGroupBox.Controls.Add(this.searchTextBox);
-            this.searchGroupBox.Location = new System.Drawing.Point(13, 857);
+            this.searchGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.searchGroupBox.Location = new System.Drawing.Point(0, 869);
             this.searchGroupBox.Name = "searchGroupBox";
-            this.searchGroupBox.Size = new System.Drawing.Size(1105, 52);
+            this.searchGroupBox.Size = new System.Drawing.Size(1130, 52);
             this.searchGroupBox.TabIndex = 6;
             this.searchGroupBox.TabStop = false;
             this.searchGroupBox.Text = "Search";
             // 
+            // openFirstMatch
+            // 
+            this.openFirstMatch.Location = new System.Drawing.Point(678, 22);
+            this.openFirstMatch.Name = "openFirstMatch";
+            this.openFirstMatch.Size = new System.Drawing.Size(116, 23);
+            this.openFirstMatch.TabIndex = 6;
+            this.openFirstMatch.Text = "Open First Match";
+            this.openFirstMatch.UseVisualStyleBackColor = true;
+            this.openFirstMatch.Click += new System.EventHandler(this.openFirstMatch_Click);
+            // 
             // nextButton
             // 
-            this.nextButton.Location = new System.Drawing.Point(861, 21);
+            this.nextButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.nextButton.Location = new System.Drawing.Point(978, 21);
             this.nextButton.Name = "nextButton";
-            this.nextButton.Size = new System.Drawing.Size(116, 23);
+            this.nextButton.Size = new System.Drawing.Size(69, 23);
             this.nextButton.TabIndex = 5;
             this.nextButton.Text = "Next";
             this.nextButton.UseVisualStyleBackColor = true;
@@ -559,9 +638,10 @@
             // 
             // previousButton
             // 
-            this.previousButton.Location = new System.Drawing.Point(983, 21);
+            this.previousButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.previousButton.Location = new System.Drawing.Point(1053, 21);
             this.previousButton.Name = "previousButton";
-            this.previousButton.Size = new System.Drawing.Size(116, 23);
+            this.previousButton.Size = new System.Drawing.Size(71, 23);
             this.previousButton.TabIndex = 4;
             this.previousButton.Text = "Previous";
             this.previousButton.UseVisualStyleBackColor = true;
@@ -604,12 +684,20 @@
             this.searchTextBox.Size = new System.Drawing.Size(299, 23);
             this.searchTextBox.TabIndex = 0;
             // 
-            // exportLSETToolStripMenuItem
+            // specialEditorsToolStripMenuItem
             // 
-            this.exportLSETToolStripMenuItem.Name = "exportLSETToolStripMenuItem";
-            this.exportLSETToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.exportLSETToolStripMenuItem.Text = "Export LSET";
-            this.exportLSETToolStripMenuItem.Click += new System.EventHandler(this.exportLSETToolStripMenuItem_Click);
+            this.specialEditorsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.textureEditorToolStripMenuItem});
+            this.specialEditorsToolStripMenuItem.Name = "specialEditorsToolStripMenuItem";
+            this.specialEditorsToolStripMenuItem.Size = new System.Drawing.Size(102, 20);
+            this.specialEditorsToolStripMenuItem.Text = "Special Editors";
+            // 
+            // textureEditorToolStripMenuItem
+            // 
+            this.textureEditorToolStripMenuItem.Name = "textureEditorToolStripMenuItem";
+            this.textureEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.textureEditorToolStripMenuItem.Text = "Texture Editor";
+            this.textureEditorToolStripMenuItem.Click += new System.EventHandler(this.textureEditorToolStripMenuItem_Click);
             // 
             // Plankton
             // 
@@ -618,16 +706,16 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1130, 921);
             this.Controls.Add(this.assetGroupBox);
-            this.Controls.Add(this.searchGroupBox);
-            this.Controls.Add(this.parcelTOCGroupBox);
-            this.Controls.Add(this.tableGroupBox);
             this.Controls.Add(this.parcelGroupBox);
+            this.Controls.Add(this.tableGroupBox);
+            this.Controls.Add(this.parcelTOCGroupBox);
+            this.Controls.Add(this.searchGroupBox);
             this.Controls.Add(this.ArchiveTreeGroup);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.MaximumSize = new System.Drawing.Size(1146, 960);
-            this.MinimumSize = new System.Drawing.Size(1146, 960);
+            this.MaximumSize = new System.Drawing.Size(19200, 10800);
+            this.MinimumSize = new System.Drawing.Size(900, 500);
             this.Name = "Plankton";
             this.Text = "Plankton";
             this.menuStrip1.ResumeLayout(false);
@@ -708,6 +796,12 @@
         private System.Windows.Forms.ToolStripMenuItem exportAllToolStripMenuItem;
         private System.Windows.Forms.Button updateEntityButton;
         private System.Windows.Forms.ToolStripMenuItem exportLSETToolStripMenuItem;
+        private System.Windows.Forms.Button openFirstMatch;
+        private System.Windows.Forms.ToolStripMenuItem assetWidgetsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewScriptEventsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewBinaryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem specialEditorsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem textureEditorToolStripMenuItem;
     }
 }
 
