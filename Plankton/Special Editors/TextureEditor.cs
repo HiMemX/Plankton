@@ -25,11 +25,13 @@ namespace Plankton.Special_Editors
         OpenFileDialog openDialog;
         SaveFileDialog saveDialog;
 
+        TextureEditorImportPrompt prompt;
 
         public TextureEditor()
         {
             openDialog = new OpenFileDialog();
             saveDialog = new SaveFileDialog();
+            prompt = null;
 
             saveDialog.DefaultExt = ".png";
 
@@ -147,9 +149,23 @@ namespace Plankton.Special_Editors
 
             string filepath = openDialog.FileName;
 
+            prompt = new TextureEditorImportPrompt();
+            if(prompt.ShowDialog() != DialogResult.OK) { return; }
+
             combinedmap = new Bitmap(Image.FromFile(filepath));
             colormap = new Bitmap(combinedmap);
             alphamap = new Bitmap(combinedmap);
+
+            int maxsize = Math.Max(combinedmap.Height, combinedmap.Width);
+            if (prompt.imageScaleCheckbox.Checked && maxsize > 512)
+            {
+                //Size size = new Size(Math.Min(512, (int)Math.Pow(2, Math.Ceiling(Math.Log(combinedmap.Width) / Math.Log(2)))), Math.Min(512, (int)Math.Pow(2, Math.Ceiling(Math.Log(combinedmap.Height) / Math.Log(2)))));
+                
+                Size size = new Size((int)((float)combinedmap.Width / (float)maxsize * 512f), (int)((float)combinedmap.Height / (float)maxsize * 512f));
+                combinedmap = new Bitmap(combinedmap, size);
+                colormap = new Bitmap(colormap, size);
+                alphamap = new Bitmap(alphamap, size);
+            }
 
             Color oldcolor;
             bool alphaused = false;
@@ -166,6 +182,7 @@ namespace Plankton.Special_Editors
 
             DisplayImage();
 
+
             TPL tpl = new TPL();
             List<Image> images = new() { colormap };
             List<TPL_TextureFormat> formats = new() { TPL_TextureFormat.RGB565 };
@@ -178,6 +195,12 @@ namespace Plankton.Special_Editors
             }
            // MessageBox.Show(alphaused.ToString());
             tpl.CreateFromImages(images.ToArray(), formats.ToArray(), palettes.ToArray());
+
+            foreach(TPL_TextureHeader textureheader in tpl.tplTextureHeaders)
+            {
+                textureheader.WrapS = (uint)prompt.wrapSComboBox.SelectedIndex;
+                textureheader.WrapT = (uint)prompt.wrapTComboBox.SelectedIndex;
+            }
 
             MemoryStreamEndian header = new MemoryStreamEndian(new byte[0x20], false) ;
             header.Pad(0x03, 0x00);

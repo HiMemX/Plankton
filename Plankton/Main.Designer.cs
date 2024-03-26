@@ -46,6 +46,8 @@
             this.assetWidgetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewScriptEventsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewBinaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.specialEditorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textureEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ArchiveTreeGroup = new System.Windows.Forms.GroupBox();
             this.archiveView = new System.Windows.Forms.TreeView();
             this.assetGroupBox = new System.Windows.Forms.GroupBox();
@@ -88,8 +90,6 @@
             this.searchForNameButton = new System.Windows.Forms.Button();
             this.searchAssetIDButton = new System.Windows.Forms.Button();
             this.searchTextBox = new System.Windows.Forms.TextBox();
-            this.specialEditorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textureEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.ArchiveTreeGroup.SuspendLayout();
             this.assetGroupBox.SuspendLayout();
@@ -241,6 +241,21 @@
             this.viewBinaryToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.viewBinaryToolStripMenuItem.Text = "View Binary";
             this.viewBinaryToolStripMenuItem.Click += new System.EventHandler(this.viewBinaryToolStripMenuItem_Click);
+            // 
+            // specialEditorsToolStripMenuItem
+            // 
+            this.specialEditorsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.textureEditorToolStripMenuItem});
+            this.specialEditorsToolStripMenuItem.Name = "specialEditorsToolStripMenuItem";
+            this.specialEditorsToolStripMenuItem.Size = new System.Drawing.Size(102, 20);
+            this.specialEditorsToolStripMenuItem.Text = "Special Editors";
+            // 
+            // textureEditorToolStripMenuItem
+            // 
+            this.textureEditorToolStripMenuItem.Name = "textureEditorToolStripMenuItem";
+            this.textureEditorToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.textureEditorToolStripMenuItem.Text = "Texture Editor";
+            this.textureEditorToolStripMenuItem.Click += new System.EventHandler(this.textureEditorToolStripMenuItem_Click);
             // 
             // ArchiveTreeGroup
             // 
@@ -683,21 +698,6 @@
             this.searchTextBox.Name = "searchTextBox";
             this.searchTextBox.Size = new System.Drawing.Size(299, 23);
             this.searchTextBox.TabIndex = 0;
-            // 
-            // specialEditorsToolStripMenuItem
-            // 
-            this.specialEditorsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.textureEditorToolStripMenuItem});
-            this.specialEditorsToolStripMenuItem.Name = "specialEditorsToolStripMenuItem";
-            this.specialEditorsToolStripMenuItem.Size = new System.Drawing.Size(102, 20);
-            this.specialEditorsToolStripMenuItem.Text = "Special Editors";
-            // 
-            // textureEditorToolStripMenuItem
-            // 
-            this.textureEditorToolStripMenuItem.Name = "textureEditorToolStripMenuItem";
-            this.textureEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.textureEditorToolStripMenuItem.Text = "Texture Editor";
-            this.textureEditorToolStripMenuItem.Click += new System.EventHandler(this.textureEditorToolStripMenuItem_Click);
             // 
             // Plankton
             // 

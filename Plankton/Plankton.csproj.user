@@ -26,5 +26,8 @@
     <Compile Update="Special Editors\TextureEditor.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Special Editors\TextureEditorImportPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
