@@ -17,6 +17,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using Crews.Utility.TgaSharp;
+using System.Drawing.Imaging;
+using libWiiSharp;
 
 namespace Plankton
 {
@@ -993,6 +997,128 @@ namespace Plankton
         private void textureEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             textureEditorWindow.Show();
+        }
+
+        private void exportScaleformAssetAsSWFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (handler.Archive == null) { return; }
+            if (archiveView.SelectedNode == null) { return; }
+            if (!(archiveView.SelectedNode is assetTreeNode)) { return; }
+            if (((assetTreeNode)archiveView.SelectedNode).asset.wmlTypeID != wmlTypeID.ScaleformAsset) { return; }
+            if (handler.Archive.Header.platform != "WII" || handler.Archive.Header.target != "SB09") { return; }
+
+            TOCEntry asset = ((assetTreeNode)archiveView.SelectedNode).asset;
+            ScaleformAsset entity = (ScaleformAsset)asset.entity;
+
+            if (folderBrowserDialog.ShowDialog() != DialogResult.OK) { return; }
+
+            string filepath = folderBrowserDialog.SelectedPath + @"\" + archiveView.SelectedNode.Text + @"\";
+            System.IO.Directory.CreateDirectory(filepath);
+
+
+            BinaryWriterEndian file = new(filepath + archiveView.SelectedNode.Text + ".swf", false);
+            file.Write(entity.Scaleform.ToArray());
+            file.Dispose();
+
+            TOCEntry textureasset;
+            TOCEntry rawblob;
+            List<Bitmap> bitmaps;
+            foreach(ScaleformTexture texture in entity.textures)
+            {
+                //MessageBox.Show("This");
+                textureasset = handler.GetAsset(texture.ID);
+
+                if(textureasset == null)
+                {
+                    MessageBox.Show("Can't find " + texture.name + "!");
+                    continue;
+                }
+
+                rawblob = handler.GetAsset(((Texture)textureasset.entity).imageBlobID);
+
+                if (rawblob == null)
+                {
+                    MessageBox.Show("Can't find " + texture.name + "'s RawBlob!");
+                    continue;
+                }
+
+                bitmaps = SB09WiiTPL.BitmapsFromRawblob(rawblob.data.ToArray());
+                //bitmaps[2].Save(filepath + texture.name); // We only care about the combined map
+                
+                var tga = new TGA(bitmaps[2]);
+                tga.Save(filepath + texture.name);
+                //bitmaps[2].Save(filepath + texture.name + ".png");
+            }
+        }
+
+        private void importScaleformAssetFromSWFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (handler.Archive == null) { return; }
+            if (archiveView.SelectedNode == null) { return; }
+            if (!(archiveView.SelectedNode is assetTreeNode)) { return; }
+            if (((assetTreeNode)archiveView.SelectedNode).asset.wmlTypeID != wmlTypeID.ScaleformAsset) { return; }
+            if (handler.Archive.Header.platform != "WII" || handler.Archive.Header.target != "SB09") { return; }
+
+            TOCEntry asset = ((assetTreeNode)archiveView.SelectedNode).asset;
+            ScaleformAsset entity = (ScaleformAsset)asset.entity;
+
+            openDialog.Filter = importDialogFilters;
+
+            if (openDialog.ShowDialog() != DialogResult.OK) { return; }
+
+            string filepath = openDialog.FileName;
+            string[] folders = filepath.Split("\\");
+            string path = String.Join("\\", folders.Take(folders.Length - 1)); // Get's the parent folder of the file
+
+            BinaryReaderEndian reader = new(filepath, false);
+            entity.Scaleform = reader.ReadBytes((int)reader.BaseStream.Length).ToList();
+            reader.Dispose();
+
+            TOCEntry textureasset;
+            TOCEntry rawblob;
+            Bitmap colormap;
+            Bitmap alphamap;
+            Bitmap combinedmap;
+            foreach (ScaleformTexture texture in entity.textures) // Go through every texture inside the scaleform texture and update it
+            {
+                if(!File.Exists(path + "\\" + texture.name)) { continue; } // Texture doesn't exist, ignore it
+
+                textureasset = handler.GetAsset(texture.ID);
+
+                if (textureasset == null)
+                {
+                    MessageBox.Show("Can't find " + texture.name + "!");
+                    continue;
+                }
+
+                rawblob = handler.GetAsset(((Texture)textureasset.entity).imageBlobID);
+
+                if (rawblob == null)
+                {
+                    MessageBox.Show("Can't find " + texture.name + "'s RawBlob!");
+                    continue;
+                }
+
+                combinedmap = (Bitmap)TGA.FromFile(path + "\\" + texture.name);
+                colormap = new Bitmap(combinedmap);
+                alphamap = new Bitmap(combinedmap);
+
+
+                Color oldcolor;
+                bool alphaused = false;
+                for (int y = 0; y < alphamap.Height; y++)
+                {
+                    for (int x = 0; x < alphamap.Width; x++)
+                    {
+                        oldcolor = colormap.GetPixel(x, y);
+                        colormap.SetPixel(x, y, Color.FromArgb(255, oldcolor.R, oldcolor.G, oldcolor.B));
+                        alphamap.SetPixel(x, y, Color.FromArgb(255, oldcolor.A, oldcolor.A, oldcolor.A));
+                        if (oldcolor.A != 255) { alphaused = true; }
+                    }
+                }
+
+                rawblob.data = SB09WiiTPL.RawblobFromBitmaps(colormap, alphamap, alphaused, 0, 0, 1, 1).ToList();
+            }
         }
     }
     public class assetTreeNode : TreeNode

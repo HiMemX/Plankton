@@ -20,6 +20,12 @@ namespace Plankton.Special_Editors
         
             wrapSComboBox.SelectedIndex = 0;
             wrapTComboBox.SelectedIndex = 0;
+            minFilterComboBox.SelectedIndex = 0;
+            magFilterComboBox.SelectedIndex = 0;
+            wrapSComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            wrapTComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            minFilterComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            magFilterComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         private void okButton_Click(object sender, EventArgs e)

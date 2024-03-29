@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TextureEditor));
-            this.textureViewer = new System.Windows.Forms.PictureBox();
             this.imageModeComboBox = new System.Windows.Forms.ComboBox();
             this.optionsGroupBox = new System.Windows.Forms.GroupBox();
             this.rotateCButton = new System.Windows.Forms.Button();
@@ -41,22 +40,9 @@
             this.updateLabel = new System.Windows.Forms.Label();
             this.updateCheckBox = new System.Windows.Forms.CheckBox();
             this.imageModeLabel = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.textureViewer)).BeginInit();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.optionsGroupBox.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // textureViewer
-            // 
-            this.textureViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureViewer.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.textureViewer.Location = new System.Drawing.Point(12, 12);
-            this.textureViewer.Name = "textureViewer";
-            this.textureViewer.Size = new System.Drawing.Size(400, 400);
-            this.textureViewer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.textureViewer.TabIndex = 0;
-            this.textureViewer.TabStop = false;
             // 
             // imageModeComboBox
             // 
@@ -190,19 +176,28 @@
             this.imageModeLabel.TabIndex = 2;
             this.imageModeLabel.Text = "Display Mode";
             // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Location = new System.Drawing.Point(12, 12);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(401, 401);
+            this.panel1.TabIndex = 3;
+            // 
             // TextureEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(635, 425);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.optionsGroupBox);
-            this.Controls.Add(this.textureViewer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(400, 350);
             this.Name = "TextureEditor";
             this.Text = "Texture Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextureEditor_FormClosing);
-            ((System.ComponentModel.ISupportInitialize)(this.textureViewer)).EndInit();
             this.optionsGroupBox.ResumeLayout(false);
             this.optionsGroupBox.PerformLayout();
             this.ResumeLayout(false);
@@ -210,8 +205,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox textureViewer;
         private System.Windows.Forms.ComboBox imageModeComboBox;
         private System.Windows.Forms.GroupBox optionsGroupBox;
         private System.Windows.Forms.Label imageModeLabel;
@@ -223,5 +216,6 @@
         private System.Windows.Forms.Button rotateCCButton;
         private System.Windows.Forms.Button mirrorHButton;
         private System.Windows.Forms.Button mirrorVButton;
+        private System.Windows.Forms.Panel panel1;
     }
 }

@@ -34,12 +34,16 @@
             this.wrapTComboBox = new System.Windows.Forms.ComboBox();
             this.wrapTModeLabel = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
-            this.imageScaleCheckbox = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.minFilterComboBox = new System.Windows.Forms.ComboBox();
+            this.magFilterComboBox = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // wrapSComboBox
             // 
             this.wrapSComboBox.FormattingEnabled = true;
+            this.wrapSComboBox.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.wrapSComboBox.Items.AddRange(new object[] {
             "Clamp",
             "Repeat",
@@ -81,7 +85,7 @@
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(12, 96);
+            this.okButton.Location = new System.Drawing.Point(12, 128);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(235, 23);
             this.okButton.TabIndex = 4;
@@ -89,26 +93,59 @@
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
-            // imageScaleCheckbox
+            // label1
             // 
-            this.imageScaleCheckbox.AutoSize = true;
-            this.imageScaleCheckbox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.imageScaleCheckbox.Checked = true;
-            this.imageScaleCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.imageScaleCheckbox.Location = new System.Drawing.Point(12, 71);
-            this.imageScaleCheckbox.Name = "imageScaleCheckbox";
-            this.imageScaleCheckbox.Size = new System.Drawing.Size(94, 19);
-            this.imageScaleCheckbox.TabIndex = 5;
-            this.imageScaleCheckbox.Text = "Limit Size     ";
-            this.imageScaleCheckbox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.imageScaleCheckbox.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 78);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 15);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "MinFilter";
+            // 
+            // minFilterComboBox
+            // 
+            this.minFilterComboBox.FormattingEnabled = true;
+            this.minFilterComboBox.Items.AddRange(new object[] {
+            "Nearest",
+            "Linear",
+            "Nearest_Mipmap_Nearest",
+            "Linear_Mipmap_Nearest",
+            "Nearest_Mipmap_Linear",
+            "Linear_Mipmap_Linear"});
+            this.minFilterComboBox.Location = new System.Drawing.Point(93, 70);
+            this.minFilterComboBox.Name = "minFilterComboBox";
+            this.minFilterComboBox.Size = new System.Drawing.Size(154, 23);
+            this.minFilterComboBox.TabIndex = 6;
+            // 
+            // magFilterComboBox
+            // 
+            this.magFilterComboBox.FormattingEnabled = true;
+            this.magFilterComboBox.Items.AddRange(new object[] {
+            "Nearest",
+            "Linear"});
+            this.magFilterComboBox.Location = new System.Drawing.Point(93, 99);
+            this.magFilterComboBox.Name = "magFilterComboBox";
+            this.magFilterComboBox.Size = new System.Drawing.Size(154, 23);
+            this.magFilterComboBox.TabIndex = 7;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 107);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(57, 15);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "MagFilter";
             // 
             // TextureEditorImportPrompt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(259, 131);
-            this.Controls.Add(this.imageScaleCheckbox);
+            this.ClientSize = new System.Drawing.Size(259, 162);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.magFilterComboBox);
+            this.Controls.Add(this.minFilterComboBox);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.wrapTModeLabel);
             this.Controls.Add(this.wrapTComboBox);
@@ -131,6 +168,9 @@
         private System.Windows.Forms.Button okButton;
         public System.Windows.Forms.ComboBox wrapSComboBox;
         public System.Windows.Forms.ComboBox wrapTComboBox;
-        public System.Windows.Forms.CheckBox imageScaleCheckbox;
+        private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.ComboBox minFilterComboBox;
+        public System.Windows.Forms.ComboBox magFilterComboBox;
+        private System.Windows.Forms.Label label2;
     }
 }

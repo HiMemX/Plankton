@@ -46,6 +46,7 @@
             this.assetWidgetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewScriptEventsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewBinaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportScaleformAssetAsSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.specialEditorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ArchiveTreeGroup = new System.Windows.Forms.GroupBox();
@@ -90,6 +91,7 @@
             this.searchForNameButton = new System.Windows.Forms.Button();
             this.searchAssetIDButton = new System.Windows.Forms.Button();
             this.searchTextBox = new System.Windows.Forms.TextBox();
+            this.importScaleformAssetFromSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.ArchiveTreeGroup.SuspendLayout();
             this.assetGroupBox.SuspendLayout();
@@ -223,7 +225,9 @@
             // 
             this.assetWidgetsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.viewScriptEventsToolStripMenuItem,
-            this.viewBinaryToolStripMenuItem});
+            this.viewBinaryToolStripMenuItem,
+            this.exportScaleformAssetAsSWFToolStripMenuItem,
+            this.importScaleformAssetFromSWFToolStripMenuItem});
             this.assetWidgetsToolStripMenuItem.Name = "assetWidgetsToolStripMenuItem";
             this.assetWidgetsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.assetWidgetsToolStripMenuItem.Text = "Asset Widgets";
@@ -231,16 +235,23 @@
             // viewScriptEventsToolStripMenuItem
             // 
             this.viewScriptEventsToolStripMenuItem.Name = "viewScriptEventsToolStripMenuItem";
-            this.viewScriptEventsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.viewScriptEventsToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
             this.viewScriptEventsToolStripMenuItem.Text = "View Script Events";
             this.viewScriptEventsToolStripMenuItem.Click += new System.EventHandler(this.viewScriptEventsToolStripMenuItem_Click);
             // 
             // viewBinaryToolStripMenuItem
             // 
             this.viewBinaryToolStripMenuItem.Name = "viewBinaryToolStripMenuItem";
-            this.viewBinaryToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.viewBinaryToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
             this.viewBinaryToolStripMenuItem.Text = "View Binary";
             this.viewBinaryToolStripMenuItem.Click += new System.EventHandler(this.viewBinaryToolStripMenuItem_Click);
+            // 
+            // exportScaleformAssetAsSWFToolStripMenuItem
+            // 
+            this.exportScaleformAssetAsSWFToolStripMenuItem.Name = "exportScaleformAssetAsSWFToolStripMenuItem";
+            this.exportScaleformAssetAsSWFToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
+            this.exportScaleformAssetAsSWFToolStripMenuItem.Text = "Export ScaleformAsset as .SWF";
+            this.exportScaleformAssetAsSWFToolStripMenuItem.Click += new System.EventHandler(this.exportScaleformAssetAsSWFToolStripMenuItem_Click);
             // 
             // specialEditorsToolStripMenuItem
             // 
@@ -699,6 +710,13 @@
             this.searchTextBox.Size = new System.Drawing.Size(299, 23);
             this.searchTextBox.TabIndex = 0;
             // 
+            // importScaleformAssetFromSWFToolStripMenuItem
+            // 
+            this.importScaleformAssetFromSWFToolStripMenuItem.Name = "importScaleformAssetFromSWFToolStripMenuItem";
+            this.importScaleformAssetFromSWFToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
+            this.importScaleformAssetFromSWFToolStripMenuItem.Text = "Import ScaleformAsset from .SWF";
+            this.importScaleformAssetFromSWFToolStripMenuItem.Click += new System.EventHandler(this.importScaleformAssetFromSWFToolStripMenuItem_Click);
+            // 
             // Plankton
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -802,6 +820,8 @@
         private System.Windows.Forms.ToolStripMenuItem viewBinaryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem specialEditorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textureEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportScaleformAssetAsSWFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importScaleformAssetFromSWFToolStripMenuItem;
     }
 }
 
