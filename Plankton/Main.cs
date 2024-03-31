@@ -1120,6 +1120,37 @@ namespace Plankton
                 rawblob.data = SB09WiiTPL.RawblobFromBitmaps(colormap, alphamap, alphaused, 0, 0, 1, 1).ToList();
             }
         }
+
+        private void exportAllTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(handler.Archive == null) { return; }
+            if (handler.Archive.Header.platform != "WII" || handler.Archive.Header.target != "SB09") { return; }
+
+            if (folderBrowserDialog.ShowDialog() != DialogResult.OK) { return; }
+
+            string filepath = folderBrowserDialog.SelectedPath + @"\" + Path.GetFileName(handler.path) + @" Textures\";
+            System.IO.Directory.CreateDirectory(filepath);
+
+            List<TOCEntry> assets = handler.GetAssets();
+
+            TOCEntry rawblob;
+            List<Bitmap> maps;
+            foreach (TOCEntry asset in assets)
+            {
+                if(asset.wmlTypeID != wmlTypeID.Texture) { continue; }
+
+                rawblob = handler.GetAsset(((Texture)asset.entity).imageBlobID);
+
+                if (rawblob == null)
+                {
+                    MessageBox.Show("Can't find " + handler.GetName(asset.uidSelf) + "'s RawBlob!");
+                    continue;
+                }
+
+                maps = SB09WiiTPL.BitmapsFromRawblob(rawblob.data.ToArray());
+                maps[2].Save(filepath + handler.GetName(asset.uidSelf) + " [" + asset.uidSelf.ToString("X16") + "].png");
+            }
+        }
     }
     public class assetTreeNode : TreeNode
     {
