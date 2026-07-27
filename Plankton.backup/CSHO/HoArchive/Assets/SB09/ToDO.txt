@@ -1,2 +1,0 @@
--Add Constructors to LinkAsset etc.
--Add Update and Save functions

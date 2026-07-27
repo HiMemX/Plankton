@@ -1,9 +1,0 @@
-	Archive
-Header		MasterTable (Table)
-
-Nodes:
-Archive.cs -> Contains Link to Header
-		& Link to MasterTable (Table)
-
-Data:
-Header.cs -> Contains Information about the Archive (Target, Compiler, Username, Time etc.)

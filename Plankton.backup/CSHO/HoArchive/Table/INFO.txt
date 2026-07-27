@@ -1,2 +1,0 @@
-		Table
-TableHeader	[TableEntry]	StringTable	
