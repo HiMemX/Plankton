@@ -1,7 +1,7 @@
 ﻿#version 400 core
 #include "common.glsl"
 
-out int FlagsOut;
+flat out int FlagsOut;
 out vec2 UV1;
 out vec2 UV2;
 out vec2 UV3;
@@ -9,7 +9,7 @@ out vec4 Color;
 out vec3 Normal;
 
 out vec2 lightkitUV;
-out int lightkitidx;
+flat out int lightkitidx;
 out vec4 lightKitLighting;
 out float viewDepth;
 out vec2 environmentUV;

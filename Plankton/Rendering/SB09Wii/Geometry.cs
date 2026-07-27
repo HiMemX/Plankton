@@ -122,16 +122,16 @@ namespace Plankton.Rendering.SB09Wii
             elementCount = indexblob.Count;
 
 
+            // Init vertex array
+            Helpers.GenerateVertexArrayHandle(VertexArray);
+            GL.BindVertexArray(VertexArray.handle);
 
             // Initiate VertexBuffer
             Helpers.GenerateHandle(VertexBuffer);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffer.handle);
-            GL.BufferData(BufferTarget.ArrayBuffer, combinedvertexblob.Count * 4, combinedvertexblob.ToArray(), BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, combinedvertexblob.Count * sizeof(float), combinedvertexblob.ToArray(), BufferUsageHint.StaticDraw);
 
 
-            // Init vertex array
-            Helpers.GenerateVertexArrayHandle(VertexArray);
-            GL.BindVertexArray(VertexArray.handle);
 
             List<ChannelInfo> unsortedinfos = info.GetChannelInfos();
             int offset = 0;
@@ -157,7 +157,7 @@ namespace Plankton.Rendering.SB09Wii
             // Init element buffer
             Helpers.GenerateHandle(ElementBuffer);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBuffer.handle);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indexblob.Count * 4, indexblob.ToArray(), BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indexblob.Count * sizeof(int), indexblob.ToArray(), BufferUsageHint.StaticDraw);
 
             // Copy texturebuffers
             List<TextureBase> textures = GetTextures(resourcePool, (MaterialBase)material);

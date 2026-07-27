@@ -1,0 +1,89 @@
+{
+  "binds": [
+    {
+      "name": "Move Backward",
+      "tag": "backward",
+      "key": 83
+    },
+    {
+      "name": "Move Forward",
+      "tag": "forward",
+      "key": 87
+    },
+    {
+      "name": "Move Left",
+      "tag": "left",
+      "key": 65
+    },
+    {
+      "name": "Move Right",
+      "tag": "right",
+      "key": 68
+    },
+    {
+      "name": "Move Up",
+      "tag": "up",
+      "key": 69
+    },
+    {
+      "name": "Move Down",
+      "tag": "down",
+      "key": 81
+    },
+    {
+      "name": "Pan Left",
+      "tag": "panLeft",
+      "key": 74
+    },
+    {
+      "name": "Pan Right",
+      "tag": "panRight",
+      "key": 76
+    },
+    {
+      "name": "Pan Up",
+      "tag": "panUp",
+      "key": 73
+    },
+    {
+      "name": "Pan Down",
+      "tag": "panDown",
+      "key": 75
+    },
+    {
+      "name": "Increase Speed",
+      "tag": "speedUp",
+      "key": 77
+    },
+    {
+      "name": "Decrease Speed",
+      "tag": "speedDown",
+      "key": 78
+    },
+    {
+      "name": "Focus on Object",
+      "tag": "focusOnObject",
+      "key": 70
+    },
+    {
+      "name": "Move Object",
+      "tag": "moveObject",
+      "key": 71
+    },
+    {
+      "name": "Rotate Object",
+      "tag": "rotateObject",
+      "key": 82
+    },
+    {
+      "name": "Scale Object",
+      "tag": "scaleObject",
+      "key": 66
+    },
+    {
+      "name": "Duplicate Object",
+      "tag": "duplicateObject",
+      "key": 65604
+    }
+  ]
+}

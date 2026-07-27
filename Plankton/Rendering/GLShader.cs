@@ -61,8 +61,9 @@ namespace Plankton.Rendering
             if (success == 0)
             {
                 string infoLog = GL.GetProgramInfoLog(Handle);
-                Console.WriteLine(infoLog);
+                MessageBox.Show(infoLog);
             }
+
 
             // Cleanup
             GL.DetachShader(Handle, VertexShader);

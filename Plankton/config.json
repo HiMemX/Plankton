@@ -1,0 +1,15 @@
+{
+  "allPluginPaths": [
+    "DiscordRichPresencePlugin.dll"
+  ],
+  "loadedPluginPaths": [
+    "DiscordRichPresencePlugin.dll"
+  ],
+  "renderingConfiguration": {
+    "alphaTransparency": true,
+    "enableFog": true,
+    "backgroundColor": "#FF000000",
+    "movementSpeed": 0.3,
+    "rotationSpeed": 0.07
+  }
+}

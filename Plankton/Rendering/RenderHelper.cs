@@ -44,13 +44,14 @@ namespace Plankton.Rendering
             string basepath = "Rendering/Shaders/Line/";
             LineShader = new Shader(basepath + "LineShader.vert", basepath + "LineShader.frag");
 
+            // Create and bind a VAO (Vertex Array Object)
+            linevao = GL.GenVertexArray();
+            GL.BindVertexArray(linevao);
+
             linevbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, linevbo);
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(linevertices.Length * sizeof(float)), linevertices, BufferUsageHint.StaticDraw);
 
-            // Create and bind a VAO (Vertex Array Object)
-            linevao = GL.GenVertexArray();
-            GL.BindVertexArray(linevao);
 
             // Specify how the vertex data is laid out in the buffer (positions)
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
@@ -60,14 +61,15 @@ namespace Plankton.Rendering
         {
             string basepath = "Rendering/Shaders/Point/";
             PointShader = new Shader(basepath + "PointShader.vert", basepath + "PointShader.frag");
+            
+            // Create and bind a VAO (Vertex Array Object)
+            pointvao = GL.GenVertexArray();
+            GL.BindVertexArray(pointvao);
 
             pointvbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, pointvbo);
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(pointvertex.Length * sizeof(float)), pointvertex, BufferUsageHint.StaticDraw);
 
-            // Create and bind a VAO (Vertex Array Object)
-            pointvao = GL.GenVertexArray();
-            GL.BindVertexArray(pointvao);
 
             // Specify how the vertex data is laid out in the buffer (positions)
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);

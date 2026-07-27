@@ -5,7 +5,7 @@
 uniform vec4 color;
 
 out vec4 solidcolor;
-out uint fragFlags;
+flat out uint fragFlags;
 
 
 
