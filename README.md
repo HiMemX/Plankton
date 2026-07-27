@@ -16,6 +16,26 @@ Editor for file type <b>.ho</b>
 
 3D Editor currently only supports Spongebob's Truth or Square Wii.
 
+<h2>Controls</h2>
+<h3>Camera</h3>
+Pan: Middle Mouse Button / IJKL<br>
+Zoom: Mouse Wheel<br>
+Moving around: Shift + Middle Mouse Button / WASD EQ<br>
+
+<h3>Editing</h3>
+<p>
+Select: Left Mouse Button (Click or Box Select), Hold shift to keep old selection<br>
+Grab: G<br>
+Rotate: R<br>
+Scale: B<br>
+Axis selection: XYZ, Hold shift to exclude an axis<br>
+Duplicate Object: Shift + D<br>
+Focus on Object: F<br>
+</p>
+
+For customization, go to Edit -> Edit Preferences
+
+
 <h2>Dependencies</h2>
 - OpenTK <br>
 - Assimp <br>
