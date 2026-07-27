@@ -1,5 +1,4 @@
-﻿
-using Asset;
+﻿using Asset;
 using HoArchive;
 using Plankton.Special_Editors;
 using SB09WiiAsset;
@@ -21,10 +20,13 @@ using System.Xml.Linq;
 using Crews.Utility.TgaSharp;
 using System.Drawing.Imaging;
 using libWiiSharp;
+using Plankton.Special_Editors.Level_Editor;
+using CSHO;
+using PluginApi;
 
 namespace Plankton
 {
-    public partial class Plankton : Form  
+    public partial class MainApp : Form
     {
         CSHO.Handler handler;
         OpenFileDialog openDialog;
@@ -34,18 +36,27 @@ namespace Plankton
         NewParcelWindow newParcelWindow;
         NewAssetWindow newAssetWindow;
         ExportAllWindow exportAllWindow;
+        SearchWindow searchWindow;
+        UserPreferencesWindow userPreferencesWindow;
+
+        LevelEditor levelEditorWindow { get { return (LevelEditor)tabPage3DEditor.Controls[0]; } }
 
         // Special Editors
         TextureEditor textureEditorWindow;
 
         int searchResultCount;
         string currentSearch;
-        searchType currentSearchState;
-
+        
         string openDialogArchiveFilters = "HO Archives (*.ho)|*.ho|LSET Files (*.lset)|*.lset";
         string importDialogFilters = "Any|*.*";
 
-        public Plankton()
+        string configFilePath = "config.json";
+
+        List<PluginHost> pluginHosts = new();
+        event EventHandler<FileEventArgs>? OpenedArchive;
+        event EventHandler<FileEventArgs>? ClosedArchive;
+
+        public MainApp()
         {
             handler = new CSHO.Handler();
             openDialog = new OpenFileDialog();
@@ -55,9 +66,9 @@ namespace Plankton
             newParcelWindow = null;
             newAssetWindow = null;
             exportAllWindow = null;
+            searchWindow = null;
             searchResultCount = -1;
             currentSearch = "";
-            currentSearchState = searchType.None;
 
             openDialog.InitialDirectory = "c:\\";
             openDialog.Filter = openDialogArchiveFilters;
@@ -66,7 +77,78 @@ namespace Plankton
             // Special Editors
             textureEditorWindow = new TextureEditor();
 
+
+
+
+
+
             InitializeComponent();
+
+            // User preferences
+            userPreferencesWindow = new UserPreferencesWindow(configFilePath, LoadPlugin);
+
+            
+            // Model editor
+            modelEditor.InitRenderer();
+
+
+            // 3D editor
+            LevelEditor levelEditorWindow = new LevelEditor();
+            levelEditorWindow.Dock = DockStyle.Fill;
+            tabPage3DEditor.Controls.Add(levelEditorWindow);
+            
+            levelEditorWindow.handler = handler;
+            levelEditorWindow.InitRenderer();
+            levelEditorWindow.archiveView = archiveView;
+            levelEditorWindow.MainEditorNewAssetCallback = (TOCEntry entry) =>
+            {
+                archiveView.SelectedNode = ((tableTreeNode)archiveView.Nodes[0]).getAssetNode(entry.uidSelf);
+            };
+            levelEditorWindow.MainEditorFocusCallback = () => { mainTabControl.SelectedIndex = 0; };
+            
+
+            // Events
+            OpenedArchive += (object s, FileEventArgs e) => { foreach (PluginHost host in pluginHosts) { host.InvokeOpenedArchive(s, e); } };
+            ClosedArchive += (object s, FileEventArgs e) => { foreach (PluginHost host in pluginHosts) { host.InvokeClosedArchive(s, e); } };
+
+        }
+
+
+
+        private void LoadPlugin(string pluginpath)
+        {
+            PluginHost host = new PluginHost();
+            pluginHosts.Add(host);
+
+            Assembly asm;
+            try
+            {
+                asm = Assembly.LoadFrom(pluginpath);
+            }
+            catch
+            {
+                Debug.debugWindow.AddEntry("LoadPlugin", "Couldn't find plugin: " + pluginpath, DebugEntryType.ERROR);
+                return;
+            }
+
+            var pluginTypes = asm.GetTypes()
+                .Where(t => typeof(IPlugin).IsAssignableFrom(t) &&
+                            t.IsClass &&
+                            !t.IsAbstract);
+
+            foreach (var t in pluginTypes)
+            {
+                var plugin = (IPlugin)Activator.CreateInstance(t);
+                try {
+                    plugin.Initialize(host);
+                    
+                    Debug.debugWindow.AddEntry("LoadPlugin", "Successfully loaded plugin: " + plugin.Name, DebugEntryType.SUCCESS);
+                }
+                catch(Exception e)
+                {
+                    Debug.debugWindow.AddEntry("LoadPlugin", "Failed to load plugin: " + plugin.Name + ": " + e.Message, DebugEntryType.ERROR);
+                }
+            }
         }
 
 
@@ -76,7 +158,7 @@ namespace Plankton
             string tempbytestring = "";
             byte convertresult;
 
-            foreach(char c in hex)
+            foreach (char c in hex)
             {
                 tempbytestring += c.ToString();
 
@@ -116,6 +198,11 @@ namespace Plankton
             if (newAssetWindow != null) { newAssetWindow.Close(); }
         }
 
+        public void closeSearchWindow()
+        {
+            if (searchWindow != null) { searchWindow.Close(); }
+        }
+
         public void closeNewParcelWindow()
         {
             if (newParcelWindow != null) { newParcelWindow.Close(); }
@@ -127,7 +214,7 @@ namespace Plankton
         }
         public void closeExportAllWindow()
         {
-            if(exportAllWindow != null) { exportAllWindow.Close(); }
+            if (exportAllWindow != null) { exportAllWindow.Close(); }
         }
 
         public void closeToolWindows()
@@ -135,7 +222,7 @@ namespace Plankton
             closeEditHeaderWindow();
             closeNewParcelWindow();
             closeNewAssetWindow();
-
+            closeSearchWindow();
         }
 
         private void hideAllClassGroupBoxes()
@@ -162,10 +249,11 @@ namespace Plankton
         {
             openDialog.Filter = openDialogArchiveFilters;
             openDialog.FilterIndex = 1;
-            if (openDialog.ShowDialog() != DialogResult.OK){
+            if (openDialog.ShowDialog() != DialogResult.OK)
+            {
                 return;
             }
-            if(openDialog.FilterIndex != 1) { return; }
+            if (openDialog.FilterIndex != 1) { return; }
 
             string filePath = openDialog.FileName;
 
@@ -177,6 +265,12 @@ namespace Plankton
                 return;
             }
 
+            foreach (ParcelTOC toc in handler.GetParcelTOCs())
+            {
+                toc.OnAddTOCEntry.Add(levelEditorWindow.AddAndInit);
+            }
+
+
             HoArchive.Header header = handler.Archive.Header;
             string stats = "Magic: " + header.cMagic + "\n";
             stats += "Compilation Date: " + header.timeString; // No linefeed, timestring already has one
@@ -187,20 +281,32 @@ namespace Plankton
             stats += "Creator: " + header.creator + "\n";
             stats += "Comment: " + header.comment + "\n";
             stats += "Hash: " + header.hash + "\n";
-            
+
             updateTree();
             updateToolBar();
 
             Text = "Plankton - " + filePath;
 
-            MessageBox.Show(stats, "Success");
+
+            levelEditorWindow.CollectResourcePools();
+
+            OpenedArchive?.Invoke(this, new FileEventArgs(
+                    Path.GetFileName(filePath),
+                    header.target
+                ));
+
+            //MessageBox.Show(stats, "Success");
+
+
         }
 
         private void reloadTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
             handler.Update();
             updateTree();
+
+            levelEditorWindow.CollectResourcePools();
         }
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -209,6 +315,8 @@ namespace Plankton
             Text = "Plankton";
             updateTree();
             updateToolBar();
+
+            ClosedArchive?.Invoke(this, FileEventArgs.Empty);
         }
 
         private void toolsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -224,6 +332,8 @@ namespace Plankton
             switch (nodeType)
             {
                 case "Plankton.assetTreeNode":
+
+
                     parcelGroupBox.Visible = false;
                     parcelTOCGroupBox.Visible = false;
                     assetGroupBox.Visible = true;
@@ -233,6 +343,8 @@ namespace Plankton
                     entityPropertyGrid.SelectedObject = ((assetTreeNode)archiveView.SelectedNode).asset.entity;
                     renameAssetTextBox.Text = archiveView.SelectedNode.Text;
 
+                    levelEditorWindow.SetSelectedContainer(((assetTreeNode)archiveView.SelectedNode).asset);
+
                     break;
 
                 case "Plankton.tocTreeNode":
@@ -240,6 +352,7 @@ namespace Plankton
                     parcelTOCGroupBox.Visible = true;
                     assetGroupBox.Visible = false;
                     tableGroupBox.Visible = false;
+
 
                     break;
 
@@ -269,12 +382,14 @@ namespace Plankton
                     break;
             }
 
+
+
             UpdateSpecialEditors();
         }
 
         private void UpdateSpecialEditors()
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
 
             textureEditorWindow.Update(handler, archiveView.SelectedNode);
         }
@@ -283,7 +398,7 @@ namespace Plankton
         private void exportRawDataButton_Click(object sender, EventArgs e)
         {
             TreeNode node = archiveView.SelectedNode;
-            TOCEntry asset =((assetTreeNode)node).asset;
+            TOCEntry asset = ((assetTreeNode)node).asset;
 
             saveDialog.DefaultExt = ".dat";
             saveDialog.FileName = handler.GetName(asset.uidSelf) + " [" + System.Convert.ToHexString(BitConverter.GetBytes(asset.uidSelf).Reverse().ToArray()) + "]";
@@ -292,7 +407,7 @@ namespace Plankton
 
             string filepath = saveDialog.FileName;
 
-            if(filepath == null) { return; }
+            if (filepath == null) { return; }
 
             asset.Update(0x40);
 
@@ -331,6 +446,7 @@ namespace Plankton
             }
             asset.entity = entity;
             asset.data = data;
+            asset.Update(0x40, true);
 
             entityPropertyGrid.SelectedObject = entity;
             entityPropertyGrid.Refresh();
@@ -342,7 +458,7 @@ namespace Plankton
         private void newParcelTOCButton_Click(object sender, EventArgs e)
         {
             handler.NewParcelTOC(((parcelTreeNode)archiveView.SelectedNode).parcel);
-
+            ((parcelTreeNode)archiveView.SelectedNode).parcel.ParcelTOCs.Last().OnAddTOCEntry.Add(levelEditorWindow.AddAndInit);
 
             archiveView.SelectedNode.Nodes.Add(new tocTreeNode(handler, ((parcelTreeNode)archiveView.SelectedNode).parcel.ParcelTOCs.Last()));
             archiveView.SelectedNode.Expand();
@@ -364,6 +480,8 @@ namespace Plankton
         {
             ((tocTreeNode)archiveView.SelectedNode).toc.delete = true;
             archiveView.SelectedNode.Parent.Nodes.Remove(archiveView.SelectedNode);
+
+            levelEditorWindow.RecollectResourcePools();
         }
 
         private void renameAssetTextBox_TextChanged(object sender, EventArgs e)
@@ -378,7 +496,7 @@ namespace Plankton
 
         private void deleteTableButton_Click(object sender, EventArgs e)
         {
-            if(((tableTreeNode)archiveView.SelectedNode).tableentry == null) { return; }
+            if (((tableTreeNode)archiveView.SelectedNode).tableentry == null) { return; }
             ((tableTreeNode)archiveView.SelectedNode).table.delete = true;
             archiveView.SelectedNode.Parent.Nodes.Remove(archiveView.SelectedNode);
         }
@@ -392,9 +510,31 @@ namespace Plankton
         {
             if (handler.Archive == null) { return; }
 
-            string errorcode = handler.Save();
+            /*foreach(TOCEntry entry in handler.GetAssets())
+            {
+                if(entry.uidSelf == 0xEA3BDD4542F4977C)
+                {
+                    MessageBox.Show(((SB09WiiAsset.Camera)entry.entity).fov.ToString());
+                }
+            }*/
 
-            if(errorcode != "")
+            if (handler.path == "")
+            {
+                saveAsCTRLSHIFTSToolStripMenuItem_Click(sender, e);
+                return;
+            }
+
+            string errorcode = handler.Save();
+            /*
+            foreach (TOCEntry entry in handler.GetAssets())
+            {
+                if (entry.uidSelf == 0xEA3BDD4542F4977C)
+                {
+                    MessageBox.Show(((SB09WiiAsset.Camera)entry.entity).fov.ToString());
+                }
+            }*/
+
+            if (errorcode != "")
             {
                 MessageBox.Show(errorcode, "Error");
                 return;
@@ -416,7 +556,7 @@ namespace Plankton
 
         private void deleteStringTableEntryButton_Click(object sender, EventArgs e)
         {
-            if(stringTableListBox.Items.Count == 0 || stringTableListBox.SelectedIndex == -1) { return; }
+            if (stringTableListBox.Items.Count == 0 || stringTableListBox.SelectedIndex == -1) { return; }
 
 
             ((tableTreeNode)archiveView.SelectedNode).table.StringTable.StringTableEntries.RemoveAt(stringTableListBox.SelectedIndex);
@@ -436,7 +576,7 @@ namespace Plankton
             string errorcode = "ERR_INTERNAL_FAILURE";
 
             if (openDialog.FilterIndex == 1) { errorcode = handler.NewFrom(filePath); }
-            else{ errorcode = handler.NewFromLSET(filePath); }
+            else { errorcode = handler.NewFromLSET(filePath); }
 
             if (errorcode != "")
             {
@@ -460,12 +600,14 @@ namespace Plankton
             updateToolBar();
             Text = "Plankton";
 
+            levelEditorWindow.CollectResourcePools();
+
             MessageBox.Show(stats, "Success");
         }
 
         private void editHeaderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
 
             closeEditHeaderWindow();
 
@@ -478,9 +620,9 @@ namespace Plankton
         {
             if (handler.Archive == null) { return; }
 
-            
+
             saveDialog.DefaultExt = ".ho";
-            
+
             if (saveDialog.ShowDialog() != DialogResult.OK) { return; }
 
 
@@ -568,18 +710,18 @@ namespace Plankton
 
         private void searchAssetIDButton_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
-            currentSearchState = searchType.AssetID;
+            if (handler.Archive == null) { return; }
 
             string text = searchTextBox.Text.Replace(" ", "");
+            text = text.Split("x").Last();
             long output;
 
-            if(!long.TryParse(text, NumberStyles.HexNumber, null, out output)){return;}
+            if (!long.TryParse(text, NumberStyles.HexNumber, null, out output)) { return; }
 
             assetTreeNode node = ((tableTreeNode)archiveView.Nodes[0]).getAssetNode((ulong)output);
 
-            
-            if(node == null) { return; }
+
+            if (node == null) { return; }
 
             archiveView.SelectedNode = node;
             archiveView.Focus();
@@ -589,61 +731,111 @@ namespace Plankton
         {
             if (handler.Archive == null) { return; }
 
-            searchResultCount = -1;
-            currentSearch = searchTextBox.Text;
-            currentSearchState = searchType.Name;
+            closeSearchWindow();
+            searchWindow = new SearchWindow();
+            searchWindow.treeView = archiveView;
 
-            nextSearchResult();
+            //searchResultCount = -1;
+            //currentSearch = searchTextBox.Text;
+            //currentSearchState = searchType.Data;
+
+            //nextSearchResult();
+
+            List<assetTreeNode> nodes = getFilteredNodes(searchTextBox.Text, searchType.Name);
+
+
+            string displayText;
+            foreach (assetTreeNode node in nodes)
+            {
+                if (node.asset.delete) { continue; }
+
+                displayText = "(" + node.asset.wmlTypeID.ToString() + ") " + node.Text;
+                searchWindow.assetListBox.Items.Add(displayText);
+                searchWindow.nodes.Add(node);
+                searchWindow.shownnodes.Add(node);
+
+            }
+            searchWindow.Text = "Name Search Results for: " + searchTextBox.Text;
+            searchWindow.Show();
         }
         private void searchForDataButton_Click(object sender, EventArgs e)
         {
             if (handler.Archive == null) { return; }
 
-            searchResultCount = -1;
-            currentSearch = searchTextBox.Text;
-            currentSearchState = searchType.Data;
+            closeSearchWindow();
+            searchWindow = new SearchWindow();
+            searchWindow.treeView = archiveView;
 
-            nextSearchResult();
+            //searchResultCount = -1;
+            //currentSearch = searchTextBox.Text;
+            //currentSearchState = searchType.Data;
+
+            //nextSearchResult();
+
+            List<assetTreeNode> nodes = getFilteredNodes(searchTextBox.Text, searchType.Data);
+
+
+            string displayText;
+            foreach (assetTreeNode node in nodes)
+            {
+                if (node.asset.delete) { continue; }
+
+                displayText = "(" + node.asset.wmlTypeID.ToString() + ") " + node.Text;
+                searchWindow.assetListBox.Items.Add(displayText);
+                searchWindow.nodes.Add(node);
+                searchWindow.shownnodes.Add(node);
+
+            }
+            searchWindow.Text = "Data Search Results for: " + searchTextBox.Text;
+            searchWindow.Show();
         }
 
-        private List<assetTreeNode> getFilteredNodes()
+
+        private List<assetTreeNode> getFilteredNodes(string searchterm, searchType searchtype)
         {
             List<assetTreeNode> nodes = new List<assetTreeNode>();
-            if (currentSearchState == searchType.Name) {
-                List<HoArchive.NameTableEntry> nameTableEntries = handler.GetNameEntries(currentSearch);
+            assetTreeNode node;
+            if (searchtype == searchType.Name)
+            {
+                List<HoArchive.NameTableEntry> nameTableEntries = handler.GetNameEntries(searchterm);
 
                 foreach (HoArchive.NameTableEntry entry in nameTableEntries)
                 {
-                    nodes.Add(((tableTreeNode)archiveView.Nodes[0]).getAssetNode(entry.uidAsset));
+                    node = ((tableTreeNode)archiveView.Nodes[0]).getAssetNode(entry.uidAsset);
+                    if (node == null) { continue; }
+                    nodes.Add(node);
                 }
             }
-            else if(currentSearchState == searchType.Data)
+            else if (searchtype == searchType.Data)
             {
-                List<byte> data = hexStringToByteList(currentSearch.Replace(" ", ""));
+                List<byte> data = hexStringToByteList(searchterm.Replace(" ", ""));
 
 
-                if(data == null) { return nodes; }
+                if (data == null) { return nodes; }
 
                 List<HoArchive.TOCEntry> entries = handler.GetAssetsFromDataSnippet(data);
 
                 foreach (HoArchive.TOCEntry entry in entries)
                 {
-                    nodes.Add(((tableTreeNode)archiveView.Nodes[0]).getAssetNode(entry.uidSelf));
+                    node = ((tableTreeNode)archiveView.Nodes[0]).getAssetNode(entry.uidSelf);
+                    if (node == null) { continue; }
+                    nodes.Add(node);
                 }
             }
-            
+
 
             return nodes;
         }
 
-        private void nextSearchResult() { 
-            if(currentSearch == "") { return; }
+        private void nextSearchResult()
+        {
+            if (currentSearch == "") { return; }
 
-            List<assetTreeNode> nodes = getFilteredNodes();
+            List<assetTreeNode> nodes = getFilteredNodes("", searchType.Data);
 
             searchResultCount++;
 
-            if(searchResultCount >= nodes.Count) { searchResultCount--;  return; }
+            if (searchResultCount >= nodes.Count) { searchResultCount--; return; }
 
             archiveView.SelectedNode = nodes[searchResultCount];
             archiveView.Focus();
@@ -653,7 +845,7 @@ namespace Plankton
         {
             if (currentSearch == "" || searchResultCount <= 0) { return; }
 
-            List<assetTreeNode> nodes = getFilteredNodes();
+            List<assetTreeNode> nodes = getFilteredNodes("", searchType.Data);
 
             searchResultCount--;
 
@@ -662,7 +854,7 @@ namespace Plankton
             archiveView.SelectedNode = nodes[searchResultCount];
             archiveView.Focus();
         }
-        
+
 
         private void nextButton_Click(object sender, EventArgs e)
         {
@@ -699,7 +891,7 @@ namespace Plankton
             }
 
             // MISC
-            
+
             if (keyData == (Keys.Control | Keys.H))
             {
                 editHeaderToolStripMenuItem_Click(null, null);
@@ -720,25 +912,23 @@ namespace Plankton
                     return true;
                 }
             }
-            if (keyData == (Keys.Control | Keys.V) && handler.Archive != null) {
+            if (keyData == (Keys.Control | Keys.V) && handler.Archive != null)
+            {
                 string clipboardText = Clipboard.GetText(TextDataFormat.Text);
 
-                if(clipboardText.Split(" - ")[0] != "HOASSET") { return false; }
+                if (clipboardText.Split(" - ")[0] != "HOASSET") { return false; }
 
                 clipboardText = clipboardText.Split(" - ")[1];
 
                 string[] assetstrings = clipboardText.Split("; ")[0].Split(", ");
                 string[] namestrings = clipboardText.Split("; ")[1].Split(", ");
 
-                MessageBox.Show(clipboardText);
-                MessageBox.Show(String.Join(", ", assetstrings));
-                MessageBox.Show(String.Join(", ", namestrings));
 
 
                 uint blobAlign = UInt32.Parse(assetstrings[0]);
                 ulong uidSelf = UInt64.Parse(assetstrings[1]);
 
-                if(handler.GetAsset(uidSelf) != null) { uidSelf = handler.GenerateAssetID(); }
+                if (handler.GetAsset(uidSelf) != null) { uidSelf = handler.GenerateAssetID(); }
 
                 HoArchive.wmlTypeID wmlTypeID = (wmlTypeID)UInt32.Parse(assetstrings[2]);
                 ushort subType = UInt16.Parse(assetstrings[3]);
@@ -769,27 +959,30 @@ namespace Plankton
                 }
                 else { return false; }
 
-                node.toc.Entries.Add(asset);
+                node.toc.AddTOCEntry(asset);
                 node.Nodes.Add(assetnode);
                 parcelDebug.NameTableEntries.Add(nametableentry);
+
+                return true;
             }
 
 
-            
+
 
 
 
             // NODE OPERATIONS
             if (archiveView.SelectedNode == null) { return base.ProcessCmdKey(ref msg, keyData); }
 
-            if(archiveView.SelectedNode is assetTreeNode)
+            if (archiveView.SelectedNode is assetTreeNode)
             {
-                if (keyData == (Keys.Delete)){
+                if (keyData == (Keys.Delete))
+                {
                     deleteAssetButton_Click(null, null);
                     return true;
-                }    
+                }
             }
-            if(archiveView.SelectedNode is tocTreeNode)
+            if (archiveView.SelectedNode is tocTreeNode)
             {
                 if (keyData == (Keys.Delete))
                 {
@@ -871,7 +1064,6 @@ namespace Plankton
                 asset.data = stream.ToArray().ToList<byte>();
             }
             stream.Dispose();
-
             //((assetTreeNode)archiveView.SelectedNode).;
 
             entityPropertyGrid.Refresh();
@@ -879,7 +1071,7 @@ namespace Plankton
 
         private void exportAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
             closeExportAllWindow();
             exportAllWindow = new ExportAllWindow();
             exportAllWindow.handler = handler;
@@ -907,7 +1099,7 @@ namespace Plankton
         {
             PropertyGridWindow popout = new PropertyGridWindow();
             popout.Text = asset.wmlTypeID.ToString() + " - " + handler.GetName(asset.uidSelf);
-            popout.propertyGrid1.SelectedObject = asset.entity;
+            popout.SetObject(asset);
             popout.assetIDLabel.Text = "ID: " + ((ulong)asset.uidSelf).ToString("X16"); ;
             popout.Show();
         }
@@ -934,6 +1126,7 @@ namespace Plankton
             if (handler.Archive == null) { return; }
 
             string text = searchTextBox.Text.Replace(" ", "");
+            text = text.Split("x").Last();
             long output;
 
             if (!long.TryParse(text, NumberStyles.HexNumber, null, out output)) { return; }
@@ -947,11 +1140,11 @@ namespace Plankton
 
         private void viewScriptEventsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
-            if(archiveView.SelectedNode == null) { return; }
-            if(!(archiveView.SelectedNode is assetTreeNode)) { return; }
-            if(((assetTreeNode)archiveView.SelectedNode).asset.wmlTypeID != wmlTypeID.Script) { return; }
-            if(handler.Archive.Header.platform != "WII" || handler.Archive.Header.target != "SB09") { return; }
+            if (handler.Archive == null) { return; }
+            if (archiveView.SelectedNode == null) { return; }
+            if (!(archiveView.SelectedNode is assetTreeNode)) { return; }
+            if (((assetTreeNode)archiveView.SelectedNode).asset.wmlTypeID != wmlTypeID.Script) { return; }
+            if (handler.Archive.Header.platform != "WII" || handler.Archive.Header.target != "SB09") { return; }
 
             string content = "";
 
@@ -963,12 +1156,12 @@ namespace Plankton
 
             ulong target;
             float time;
-            for(int i=0; i<count; i++)
+            for (int i = 0; i < count; i++)
             {
                 time = stream.ReadFloat32E();
                 stream.ReadBytes(0x04);
                 target = stream.ReadUInt64E();
-                content += ((SB09WiiEvent)stream.ReadUInt32E()).ToString() + " => " + handler.GetName(target) + " [" + target.ToString("X16") + "], T: " + time.ToString() + "\r\n";
+                content += ((Event)stream.ReadUInt32E()).ToString() + " => " + handler.GetName(target) + " [" + target.ToString("X16") + "], T: " + time.ToString() + "\r\n";
                 stream.ReadBytes(0x0C);
             }
 
@@ -1023,12 +1216,12 @@ namespace Plankton
             TOCEntry textureasset;
             TOCEntry rawblob;
             List<Bitmap> bitmaps;
-            foreach(ScaleformTexture texture in entity.textures)
+            foreach (ScaleformTexture texture in entity.textures)
             {
                 //MessageBox.Show("This");
                 textureasset = handler.GetAsset(texture.ID);
 
-                if(textureasset == null)
+                if (textureasset == null)
                 {
                     MessageBox.Show("Can't find " + texture.name + "!");
                     continue;
@@ -1044,7 +1237,7 @@ namespace Plankton
 
                 bitmaps = SB09WiiTPL.BitmapsFromRawblob(rawblob.data.ToArray());
                 //bitmaps[2].Save(filepath + texture.name); // We only care about the combined map
-                
+
                 var tga = new TGA(bitmaps[2]);
                 tga.Save(filepath + texture.name);
                 //bitmaps[2].Save(filepath + texture.name + ".png");
@@ -1081,7 +1274,7 @@ namespace Plankton
             Bitmap combinedmap;
             foreach (ScaleformTexture texture in entity.textures) // Go through every texture inside the scaleform texture and update it
             {
-                if(!File.Exists(path + "\\" + texture.name)) { continue; } // Texture doesn't exist, ignore it
+                if (!File.Exists(path + "\\" + texture.name)) { continue; } // Texture doesn't exist, ignore it
 
                 textureasset = handler.GetAsset(texture.ID);
 
@@ -1090,8 +1283,9 @@ namespace Plankton
                     MessageBox.Show("Can't find " + texture.name + "!");
                     continue;
                 }
-
+                //MessageBox.Show(((Texture)textureasset.entity).imageBlobID.ToString("X16"));
                 rawblob = handler.GetAsset(((Texture)textureasset.entity).imageBlobID);
+
 
                 if (rawblob == null)
                 {
@@ -1099,7 +1293,9 @@ namespace Plankton
                     continue;
                 }
 
+
                 combinedmap = (Bitmap)TGA.FromFile(path + "\\" + texture.name);
+                if (combinedmap == null) { combinedmap = (Bitmap)Bitmap.FromFile(path + "\\" + texture.name); }
                 colormap = new Bitmap(combinedmap);
                 alphamap = new Bitmap(combinedmap);
 
@@ -1118,12 +1314,14 @@ namespace Plankton
                 }
 
                 rawblob.data = SB09WiiTPL.RawblobFromBitmaps(colormap, alphamap, alphaused, 0, 0, 1, 1).ToList();
+
+
             }
         }
 
         private void exportAllTexturesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(handler.Archive == null) { return; }
+            if (handler.Archive == null) { return; }
             if (handler.Archive.Header.platform != "WII" || handler.Archive.Header.target != "SB09") { return; }
 
             if (folderBrowserDialog.ShowDialog() != DialogResult.OK) { return; }
@@ -1137,7 +1335,7 @@ namespace Plankton
             List<Bitmap> maps;
             foreach (TOCEntry asset in assets)
             {
-                if(asset.wmlTypeID != wmlTypeID.Texture) { continue; }
+                if (asset.wmlTypeID != wmlTypeID.Texture) { continue; }
 
                 rawblob = handler.GetAsset(((Texture)asset.entity).imageBlobID);
 
@@ -1151,6 +1349,73 @@ namespace Plankton
                 maps[2].Save(filepath + handler.GetName(asset.uidSelf) + " [" + asset.uidSelf.ToString("X16") + "].png");
             }
         }
+
+        private void scriptEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (handler.Archive == null || (archiveView.SelectedNode == null)) { return; }
+            if (!(archiveView.SelectedNode is assetTreeNode)) { return; }
+            if (((assetTreeNode)archiveView.SelectedNode).asset.wmlTypeID != wmlTypeID.Script) { return; }
+            if (handler.Archive.Header.platform != "WII" || handler.Archive.Header.target != "SB09") { return; }
+
+            ScriptEditor newwindow = new();
+            newwindow.Update(handler, archiveView.SelectedNode);
+            newwindow.Show();
+        }
+
+        private void dEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Haha dEditor
+            //if (handler.Archive == null || (archiveView.SelectedNode == null)) { return; }
+            // Everything else doesn't matter, we'll load what we can and we won't load what we cannot.
+
+
+
+
+            levelEditorWindow.Show();
+
+        }
+
+        private void stringTableGroupBox_Resize(object sender, EventArgs e)
+        {
+            if (stringTableListBox.Size.Height < 10) { stringTableGroupBox.Hide(); }
+            else { stringTableGroupBox.Show(); }
+        }
+
+        private void entityPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            ((assetTreeNode)archiveView.SelectedNode).asset.Update(0x40, true);
+        }
+
+        private void editPreferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            userPreferencesWindow.Show();
+        }
+
+        private void openDebugWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Debug.debugWindow.Show();
+        }
+
+        private void importTemplateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (handler.Archive == null) return;
+
+
+            openDialog.Filter = importDialogFilters;
+
+            if (openDialog.ShowDialog() != DialogResult.OK) { return; }
+
+            string path = openDialog.FileName;
+
+            List<TOCEntry> newassets;
+            string error = handler.ImportTemplate(path, out newassets);
+            if (error != "") MessageBox.Show(error, "Error importing template");
+
+            foreach (TOCEntry asset in newassets) asset.Update(performevents: true); // Fix for loading 
+
+
+        }
+
     }
     public class assetTreeNode : TreeNode
     {
@@ -1171,6 +1436,10 @@ namespace Plankton
             {
                 Nodes.Add(new assetTreeNode(asset, handler.GetName(asset.uidSelf)));
             }
+
+            toc.OnAddTOCEntry.Add((TOCEntry entry) => {
+                Nodes.Add(new assetTreeNode(entry, handler.GetName(entry.uidSelf)));
+            });
         }
 
         public assetTreeNode getAssetNode(ulong assetid)

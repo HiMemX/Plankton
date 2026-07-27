@@ -29,53 +29,68 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PropertyGridWindow));
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-            this.assetIDLabel = new System.Windows.Forms.Label();
-            this.SuspendLayout();
+            propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            assetIDLabel = new System.Windows.Forms.Label();
+            checkBox1 = new System.Windows.Forms.CheckBox();
+            SuspendLayout();
             // 
             // propertyGrid1
             // 
-            this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.propertyGrid1.HelpVisible = false;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid1.Size = new System.Drawing.Size(403, 461);
-            this.propertyGrid1.TabIndex = 0;
-            this.propertyGrid1.ToolbarVisible = false;
+            propertyGrid1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            propertyGrid1.HelpVisible = false;
+            propertyGrid1.Location = new System.Drawing.Point(0, 0);
+            propertyGrid1.Name = "propertyGrid1";
+            propertyGrid1.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            propertyGrid1.Size = new System.Drawing.Size(403, 461);
+            propertyGrid1.TabIndex = 0;
+            propertyGrid1.ToolbarVisible = false;
+            propertyGrid1.PropertyValueChanged += propertyGrid1_PropertyValueChanged;
             // 
             // assetIDLabel
             // 
-            this.assetIDLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.assetIDLabel.AutoSize = true;
-            this.assetIDLabel.BackColor = System.Drawing.SystemColors.Control;
-            this.assetIDLabel.Location = new System.Drawing.Point(5, 464);
-            this.assetIDLabel.Name = "assetIDLabel";
-            this.assetIDLabel.Size = new System.Drawing.Size(190, 15);
-            this.assetIDLabel.TabIndex = 1;
-            this.assetIDLabel.Text = "This message should not appear";
-            this.assetIDLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            assetIDLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            assetIDLabel.AutoSize = true;
+            assetIDLabel.BackColor = System.Drawing.SystemColors.Control;
+            assetIDLabel.Location = new System.Drawing.Point(5, 464);
+            assetIDLabel.Name = "assetIDLabel";
+            assetIDLabel.Size = new System.Drawing.Size(176, 15);
+            assetIDLabel.TabIndex = 1;
+            assetIDLabel.Text = "This message should not appear";
+            assetIDLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // checkBox1
+            // 
+            checkBox1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            checkBox1.AutoSize = true;
+            checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            checkBox1.Location = new System.Drawing.Point(287, 464);
+            checkBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new System.Drawing.Size(104, 19);
+            checkBox1.TabIndex = 2;
+            checkBox1.Text = "Always On Top";
+            checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
             // 
             // PropertyGridWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(403, 485);
-            this.Controls.Add(this.assetIDLabel);
-            this.Controls.Add(this.propertyGrid1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "PropertyGridWindow";
-            this.Text = "PropertyGridWindow";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(403, 485);
+            Controls.Add(checkBox1);
+            Controls.Add(assetIDLabel);
+            Controls.Add(propertyGrid1);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Name = "PropertyGridWindow";
+            Text = "PropertyGridWindow";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         public System.Windows.Forms.PropertyGrid propertyGrid1;
         public System.Windows.Forms.Label assetIDLabel;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

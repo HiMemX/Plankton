@@ -69,9 +69,9 @@ namespace Plankton
             HoArchive.NameTableEntry nameTableEntry = new HoArchive.NameTableEntry(uidSelf, name);
             assetTreeNode node = new assetTreeNode(entry, name);
 
-            tocTreeNode.Nodes.Add(node);
-            tocTreeNode.toc.Entries.Add(entry);
             debugParcel.NameTableEntries.Add(nameTableEntry);
+            tocTreeNode.Nodes.Add(node);
+            tocTreeNode.toc.AddTOCEntry(entry);
 
             treeView.SelectedNode = node;
             treeView.Focus();

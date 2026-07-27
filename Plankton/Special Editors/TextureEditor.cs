@@ -1,6 +1,7 @@
 ﻿using CSHO;
 using HoArchive;
 using libWiiSharp;
+using SB09WiiAsset;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +15,7 @@ using System.Windows.Forms;
 
 namespace Plankton.Special_Editors
 {
-    
+
 
     public partial class TextureEditor : Form
     {
@@ -71,9 +72,9 @@ namespace Plankton.Special_Editors
 
                 currTexture = rawblob;
             }
-            else if(entry.wmlTypeID == wmlTypeID.RawBlob)
+            else if (entry.wmlTypeID == wmlTypeID.RawBlob)
             {
-                if(!entry.data.Skip(0x20).Take(0x04).SequenceEqual(new byte[] { 0x00, 0x20, 0xAF, 0x30 })) { return; }
+                if (!entry.data.Skip(0x20).Take(0x04).SequenceEqual(new byte[] { 0x00, 0x20, 0xAF, 0x30 })) { return; }
 
                 currTexture = entry;
             }
@@ -92,7 +93,10 @@ namespace Plankton.Special_Editors
             alphamap = maps[1];
             combinedmap = maps[2];
 
+
+
             DisplayImage();
+
         }
 
         private void TextureEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -143,12 +147,13 @@ namespace Plankton.Special_Editors
             string filepath = openDialog.FileName;
 
             prompt = new TextureEditorImportPrompt();
-            if(prompt.ShowDialog() != DialogResult.OK) { return; }
+            if (prompt.ShowDialog() != DialogResult.OK) { return; }
 
             combinedmap = new Bitmap(Image.FromFile(filepath));
             colormap = new Bitmap(combinedmap);
             alphamap = new Bitmap(combinedmap);
 
+            //Debug.debugWindow.AddEntry("importButton_Click", combinedmap.Height.ToString());
 
             Color oldcolor;
             bool alphaused = false;
@@ -159,16 +164,20 @@ namespace Plankton.Special_Editors
                     oldcolor = colormap.GetPixel(x, y);
                     colormap.SetPixel(x, y, Color.FromArgb(255, oldcolor.R, oldcolor.G, oldcolor.B));
                     alphamap.SetPixel(x, y, Color.FromArgb(255, oldcolor.A, oldcolor.A, oldcolor.A));
-                    if(oldcolor.A != 255) { alphaused = true; }
+                    if (oldcolor.A != 255) { alphaused = true; }
                 }
             }
 
-            currTexture.data = SB09WiiTPL.RawblobFromBitmaps(colormap, alphamap, alphaused,
+            ((RawBlob)currTexture.entity).data = SB09WiiTPL.RawblobFromBitmaps(colormap, alphamap, alphaused,
                 (uint)prompt.wrapSComboBox.SelectedIndex,
                 (uint)prompt.wrapTComboBox.SelectedIndex,
                 (uint)prompt.minFilterComboBox.SelectedIndex,
                 (uint)prompt.magFilterComboBox.SelectedIndex
             ).ToList();//header.ToArray().Concat(tpl.ToByteArray()).ToList();
+            //Debug.debugWindow.AddEntry("importButton_Click", currTexture.data.Count().ToString());
+            currTexture.Update(0x40, true);
+
+            //Debug.debugWindow.AddEntry("importButton_Click", currTexture.data.Count().ToString());
 
             LoadTexture(currTexture.data.ToArray());
         }
@@ -201,6 +210,31 @@ namespace Plankton.Special_Editors
             textureViewer.Refresh();
         }
 
+        private void stupidMipmapFixButton_Click(object sender, EventArgs e) // We are NOT including this in any release
+        {
+            Color oldcolor;
+            bool alphaused = false;
+            colormap = new Bitmap(combinedmap);
+            alphamap = new Bitmap(combinedmap);
+            for (int y = 0; y < alphamap.Height; y++)
+            {
+                for (int x = 0; x < alphamap.Width; x++)
+                {
+                    oldcolor = colormap.GetPixel(x, y);
+                    colormap.SetPixel(x, y, Color.FromArgb(255, oldcolor.R, oldcolor.G, oldcolor.B));
+                    alphamap.SetPixel(x, y, Color.FromArgb(255, oldcolor.A, oldcolor.A, oldcolor.A));
+                    if (oldcolor.A != 255) { alphaused = true; }
+                }
+            }
+
+            currTexture.data = SB09WiiTPL.RawblobFromBitmaps(colormap, alphamap, alphaused,
+                (uint)1,
+                (uint)1,
+                (uint)0,
+                (uint)0
+            ).ToList();//header.ToArray().Concat(tpl.ToByteArray()).ToList();
+            currTexture.Update(0x40, true);
+        }
     }
     public class InterpolatingPictureBox : PictureBox // https://stackoverflow.com/questions/35795032/how-to-show-an-image-in-picturebox-if-the-picture-can-be-from-10x10-to-500x500
     {

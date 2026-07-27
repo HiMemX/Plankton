@@ -5,6 +5,12 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plankton", "Plankton\Plankton.csproj", "{D6EFAF94-D6C8-47E8-951A-FB11B5E6D9BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeshExporterPlugin", "MeshExporterPlugin\MeshExporterPlugin.csproj", "{0BCE3A8D-8EF8-4F8F-8AD2-474726A87826}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginApi", "PluginApi\PluginApi.csproj", "{304FB038-FD83-4BEE-87C7-F9CCBE1DFBDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordRichPresencePlugin", "DiscordRichPresence\DiscordRichPresencePlugin.csproj", "{909F0320-E72B-485E-BF54-28C3AFFD28EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{D6EFAF94-D6C8-47E8-951A-FB11B5E6D9BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6EFAF94-D6C8-47E8-951A-FB11B5E6D9BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6EFAF94-D6C8-47E8-951A-FB11B5E6D9BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BCE3A8D-8EF8-4F8F-8AD2-474726A87826}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BCE3A8D-8EF8-4F8F-8AD2-474726A87826}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BCE3A8D-8EF8-4F8F-8AD2-474726A87826}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BCE3A8D-8EF8-4F8F-8AD2-474726A87826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{304FB038-FD83-4BEE-87C7-F9CCBE1DFBDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{304FB038-FD83-4BEE-87C7-F9CCBE1DFBDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{304FB038-FD83-4BEE-87C7-F9CCBE1DFBDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{304FB038-FD83-4BEE-87C7-F9CCBE1DFBDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{909F0320-E72B-485E-BF54-28C3AFFD28EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{909F0320-E72B-485E-BF54-28C3AFFD28EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{909F0320-E72B-485E-BF54-28C3AFFD28EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{909F0320-E72B-485E-BF54-28C3AFFD28EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

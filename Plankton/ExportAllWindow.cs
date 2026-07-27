@@ -31,7 +31,14 @@ namespace Plankton
 
                 asset.Update(0x40);
 
-                HoArchive.BinaryWriterEndian writer = new HoArchive.BinaryWriterEndian(path + "/" + asset.wmlTypeID.ToString() + "/" + handler.GetName(asset.uidSelf) + " [" + asset.uidSelf.ToString("X8") + "].dat", false);
+                // In case name contains weird stuff
+                string name = handler.GetName(asset.uidSelf);
+                foreach (var c in Path.GetInvalidFileNameChars())
+                {
+                    name = name.Replace(c, '_');
+                }
+
+                HoArchive.BinaryWriterEndian writer = new HoArchive.BinaryWriterEndian(path + "/" + asset.wmlTypeID.ToString() + "/" + name + " [" + asset.uidSelf.ToString("X8") + "].dat", false);
 
                 writer.WriteE(asset.data.ToArray());
                 writer.Dispose();

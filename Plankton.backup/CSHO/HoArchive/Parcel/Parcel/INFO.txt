@@ -1,0 +1,14 @@
+	Parcel
+	[ParcelTOC]
+TOCHeader    [TOCEntry]
+
+
+Nodes:
+Parcel.cs -> Contains list of ParcelTOCs (TableOfContents)
+ParcelTOC.cs -> Contains link to TOCHeader (TableOfContents Entry)
+		& Contains list of TOCEntrys (TableOfContents Header)
+
+Data:
+ParcelSliceMeta.cs -> Contains Information on how the Parcel is divided
+TOCHeader.cs -> Contains a TableOfContents Header
+TOCEntry.cs -> Contains a TableOfContents Entry

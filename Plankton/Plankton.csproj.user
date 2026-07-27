@@ -2,6 +2,15 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="Custom Controls\EmbeddedCollectionEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Rendering\Custom Controls\GeometryBaseRenderer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="DebugWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="EditHeaderWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -23,10 +32,58 @@
     <Compile Update="PropertyGridWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Rendering\Custom Controls\GeometryBaseRendererResourcePoolManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Rendering\Custom Controls\GeometryBaseRendererUserInput.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="SearchWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\CustomControls\FloatInputBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\CustomControls\Vector3InputBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\CustomControls\VectorField.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\ExportWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\LevelEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\LevelEditorGLEvents.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\LevelEditorInitFunctions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\LevelEditorRendering.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Level Editor\Loading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Special Editors\LinkAssetEditor\LinkAssetEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Special Editors\Model Editor\ModelEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Special Editors\ScriptEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Special Editors\TextureEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Special Editors\TextureEditorImportPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserPreferencesWindow.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

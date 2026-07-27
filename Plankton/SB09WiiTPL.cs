@@ -18,10 +18,20 @@ namespace Plankton
         {
             TPL tpl = TPL.Load(rawblob.Skip(0x20).ToArray());
 
-            Bitmap colormap = new Bitmap(tpl.ExtractTexture(0));
-            Bitmap combinedmap = new Bitmap(tpl.ExtractTexture(0));
+            Bitmap texture = tpl.ExtractTexture(0);
+
+            
+
+            Bitmap combinedmap= texture;
+            Bitmap colormap = new Bitmap(texture);
             Bitmap alphamap = new Bitmap(colormap.Width, colormap.Height);
 
+            if (tpl.tplTextureHeaders[0].TextureFormat == 6)
+            {
+                byte[] datatest = tpl.FromRGBA8(tpl.textureData[0], tpl.tplTextureHeaders[0].TextureWidth, tpl.tplTextureHeaders[0].TextureHeight);
+                Debug.debugWindow.AddEntry("BitmapsFromRawblob", DebugEntryType.NORMAL, datatest[0], datatest[1], datatest[2], datatest[3]);
+                Debug.debugWindow.AddEntry("LoadTexture",combinedmap.GetPixel(0, 0).ToString());
+            }
             if (tpl.NumOfTextures == 2)
             { // Second channel is used for alpha transparency
                 alphamap = new Bitmap(tpl.ExtractTexture(1));
@@ -39,8 +49,29 @@ namespace Plankton
                         combinedmap.SetPixel(x, y, newcolor);
                     }
                 }
+                return new List<Bitmap>() { colormap, alphamap, combinedmap };
+
             }
-            return new List<Bitmap>() { colormap, alphamap, combinedmap};
+
+            for(int y=0; y<alphamap.Height; y++)
+            {
+                for (int x = 0; x < alphamap.Width; x++)
+                {
+                    Color pixel = combinedmap.GetPixel(x, y);
+                    colormap.SetPixel(x, y, Color.FromArgb(255, pixel.R, pixel.G, pixel.B));
+                    alphamap.SetPixel(x, y, Color.FromArgb(255, pixel.A, pixel.A, pixel.A));
+                }
+            }
+            return new List<Bitmap>() { colormap, alphamap, combinedmap };
+
+        }
+
+        public static bool HasAlpha(byte[] rawblob)
+        {
+
+            TPL tpl = TPL.Load(rawblob.Skip(0x20).ToArray());
+
+            return tpl.NumOfTextures == 2;
         }
 
         public static byte[] RawblobFromBitmaps(Bitmap colormap, Bitmap alphamap, bool alphaused, uint wrapS, uint wrapT, uint minFilter, uint magFilter)
