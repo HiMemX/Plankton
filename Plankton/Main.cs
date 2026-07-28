@@ -87,7 +87,7 @@ namespace Plankton
             // User preferences
             userPreferencesWindow = new UserPreferencesWindow(configFilePath, LoadPlugin);
 
-            
+            //MessageBox.Show("Test");
             // Model editor
             //modelEditor.InitRenderer();
 

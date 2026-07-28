@@ -70,18 +70,20 @@ namespace Plankton.Special_Editors.Level_Editor
         {
             renderer.MakeCurrent();
             renderer.renderhelper.Clear();
-            Parallel.For(0, editableContainers.Count, i =>
+
+            int i = 0;
+            foreach(EditableContainer container in editableContainers)
             {
-                EditableContainer container = editableContainers[i];
-                if (container.isInstanced) { return; }
-                if (!ContainerTypeIsChecked(container.GetType())) { return; }
+                i++;
+                if (container.isInstanced) { continue; }
+                if (!ContainerTypeIsChecked(container.GetType())) { continue; }
 
 
                 enumInstanceFlags flags = 0;
                 if (selectedContainer != null) flags = (selectedContainers.Contains(container)) ? enumInstanceFlags.OUTLINE : 0;
 
-                container.AddRenderInstances(new PrimitiveInstance(Matrix4x4.Identity, Color4.White, i + 1, flags), renderer.renderhelper);
-            });
+                container.AddRenderInstances(new PrimitiveInstance(Matrix4x4.Identity, Color4.White, i, flags), renderer.renderhelper);
+            }
             renderer.renderhelper.Buffer();
 
         }

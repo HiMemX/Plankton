@@ -37,7 +37,7 @@ namespace Plankton.Rendering
             if (success == 0)
             {
                 string infoLog = GL.GetShaderInfoLog(VertexShader);
-                MessageBox.Show(infoLog, vertexPath);
+                throw new Exception(infoLog);
             }
 
             GL.CompileShader(FragmentShader);
@@ -46,7 +46,7 @@ namespace Plankton.Rendering
             if (success == 0)
             {
                 string infoLog = GL.GetShaderInfoLog(FragmentShader);
-                MessageBox.Show(infoLog, fragmentPath);
+                throw new Exception(infoLog);
             }
 
             // Attach
@@ -61,7 +61,7 @@ namespace Plankton.Rendering
             if (success == 0)
             {
                 string infoLog = GL.GetProgramInfoLog(Handle);
-                MessageBox.Show(infoLog);
+                throw new Exception(infoLog);
             }
 
 
@@ -80,28 +80,23 @@ namespace Plankton.Rendering
             // Replace "#include "FILEPATH";
             // With whatever is inside FILEPATH
             string newcode = "";
-            try
+            
+            string[] lines = code.Split("\n");
+            foreach (string line in lines)
             {
-                string[] lines = code.Split("\n");
-                foreach (string line in lines)
+                if (line.Length < 8 || line.Substring(0, 8) != "#include")
                 {
-                    if (line.Length < 8 || line.Substring(0, 8) != "#include")
-                    {
-                        newcode += line + "\n";
-                        continue;
-                    }
-
-                    string path = line.Substring(line.IndexOf('"') + 1, line.LastIndexOf('"') - line.IndexOf('"') - 1);
-                    string text = Preprocess(basepath, File.ReadAllText(basepath + "/" + path));
-
-                    newcode += text + "\n";
+                    newcode += line + "\n";
+                    continue;
                 }
 
+                string path = line.Substring(line.IndexOf('"') + 1, line.LastIndexOf('"') - line.IndexOf('"') - 1);
+                string text = Preprocess(basepath, File.ReadAllText(basepath + "/" + path));
+
+                newcode += text + "\n";
             }
-            catch (Exception e)
-            {
-                Debug.debugWindow.AddEntry("Shader.Preprocess", e.ToString());
-            }
+
+            
             return newcode;
 
         }
