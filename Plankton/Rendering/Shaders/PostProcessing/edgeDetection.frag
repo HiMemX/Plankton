@@ -20,7 +20,7 @@ void main() {
 
     // detect edge by color difference
     float diff = length(right - left) + length(up - down);
-    float edge = diff > 0.005 ? 1.0 : 0.0;
+    float edge = diff > 0.0005 ? 1.0 : 0.0;
 
     FragColor = edgeColor * edge;
 }

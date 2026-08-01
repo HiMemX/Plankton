@@ -30,6 +30,7 @@ namespace Plankton.Rendering.Base
             GL.BindVertexArray(VertexArray.handle);
             GL.DrawElementsInstanced(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, elementCount, DrawElementsType.UnsignedInt, (IntPtr)0, CulledInstanceInfos.Count);
 
+            GL.BindVertexArray(0);
         }
 
         public virtual void RenderInstance(int instanceindex)
@@ -44,6 +45,8 @@ namespace Plankton.Rendering.Base
                 IntPtr.Zero,
                 1,
                 instanceindex);
+
+            GL.BindVertexArray(0);
         }
 
 
@@ -72,5 +75,7 @@ namespace Plankton.Rendering.Base
 
         public List<List<float>> vertexdata;
         public List<int> indexdata;
+
+        public int maximumInstanceCount = 65536 * 256;
     }
 }

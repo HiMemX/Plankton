@@ -89,7 +89,7 @@ namespace Plankton
 
             //MessageBox.Show("Test");
             // Model editor
-            //modelEditor.InitRenderer();
+            modelEditor.InitRenderer();
 
 
             // 3D editor

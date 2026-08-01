@@ -14,56 +14,247 @@ namespace Plankton
 {
     internal static class SB09WiiTPL
     {
-        public static List<Bitmap> BitmapsFromRawblob(byte[] rawblob)
+        public static unsafe List<Bitmap> BitmapsFromRawblob(byte[] rawblob)
         {
-            TPL tpl = TPL.Load(rawblob.Skip(0x20).ToArray());
+            if (rawblob == null)
+                throw new ArgumentNullException(nameof(rawblob));
 
-            Bitmap texture = tpl.ExtractTexture(0);
+            if (rawblob.Length <= 0x20)
+                throw new ArgumentException("The raw blob is too small.", nameof(rawblob));
 
-            
+            // Faster and lower-overhead than Skip(...).ToArray().
+            byte[] tplData = new byte[rawblob.Length - 0x20];
+            Buffer.BlockCopy(rawblob, 0x20, tplData, 0, tplData.Length);
 
-            Bitmap combinedmap= texture;
-            Bitmap colormap = new Bitmap(texture);
-            Bitmap alphamap = new Bitmap(colormap.Width, colormap.Height);
+            TPL tpl = TPL.Load(tplData);
 
-            if (tpl.tplTextureHeaders[0].TextureFormat == 6)
+            Bitmap combinedMap = null;
+            Bitmap colorMap = null;
+            Bitmap alphaMap = null;
+
+            try
             {
-                byte[] datatest = tpl.FromRGBA8(tpl.textureData[0], tpl.tplTextureHeaders[0].TextureWidth, tpl.tplTextureHeaders[0].TextureHeight);
-                Debug.debugWindow.AddEntry("BitmapsFromRawblob", DebugEntryType.NORMAL, datatest[0], datatest[1], datatest[2], datatest[3]);
-                Debug.debugWindow.AddEntry("LoadTexture",combinedmap.GetPixel(0, 0).ToString());
-            }
-            if (tpl.NumOfTextures == 2)
-            { // Second channel is used for alpha transparency
-                alphamap = new Bitmap(tpl.ExtractTexture(1));
+                // Takes ownership of the extracted Bitmap.
+                combinedMap = TakeAs32BppArgb(tpl.ExtractTexture(0));
 
-                Color oldcolor;
-                int alpha;
-                Color newcolor;
-                for (int y = 0; y < alphamap.Height; y++)
+                int width = combinedMap.Width;
+                int height = combinedMap.Height;
+
+                colorMap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+
+                if (tpl.NumOfTextures == 2)
                 {
-                    for (int x = 0; x < alphamap.Width; x++)
+                    // The second texture is returned as the alpha map and its red
+                    // channel is applied to combinedMap.
+                    alphaMap = TakeAs32BppArgb(tpl.ExtractTexture(1));
+
+                    if (alphaMap.Width != width || alphaMap.Height != height)
                     {
-                        oldcolor = colormap.GetPixel(x, y);
-                        alpha = alphamap.GetPixel(x, y).R; // Just one channel
-                        newcolor = Color.FromArgb(alpha, oldcolor.R, oldcolor.G, oldcolor.B);
-                        combinedmap.SetPixel(x, y, newcolor);
+                        throw new InvalidOperationException(
+                            "The color and alpha textures have different dimensions.");
+                    }
+
+                    ApplyExternalAlpha(combinedMap, colorMap, alphaMap);
+                }
+                else
+                {
+                    alphaMap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+                    SplitEmbeddedAlpha(combinedMap, colorMap, alphaMap);
+                }
+
+                return new List<Bitmap>(3)
+                    {
+                        colorMap,
+                        alphaMap,
+                        combinedMap
+                    };
+            }
+            catch
+            {
+                colorMap?.Dispose();
+                alphaMap?.Dispose();
+                combinedMap?.Dispose();
+                throw;
+            }
+        }
+
+        private static unsafe void ApplyExternalAlpha(
+            Bitmap combinedMap,
+            Bitmap colorMap,
+            Bitmap alphaMap)
+        {
+            Rectangle area = new Rectangle(
+                0, 0, combinedMap.Width, combinedMap.Height);
+
+            BitmapData combinedData = combinedMap.LockBits(
+                area,
+                ImageLockMode.ReadWrite,
+                PixelFormat.Format32bppArgb);
+
+            try
+            {
+                BitmapData colorData = colorMap.LockBits(
+                    area,
+                    ImageLockMode.WriteOnly,
+                    PixelFormat.Format32bppArgb);
+
+                try
+                {
+                    BitmapData alphaData = alphaMap.LockBits(
+                        area,
+                        ImageLockMode.ReadOnly,
+                        PixelFormat.Format32bppArgb);
+
+                    try
+                    {
+                        for (int y = 0; y < area.Height; y++)
+                        {
+                            uint* combinedPixels = (uint*)(
+                                (byte*)combinedData.Scan0 + y * combinedData.Stride);
+
+                            uint* colorPixels = (uint*)(
+                                (byte*)colorData.Scan0 + y * colorData.Stride);
+
+                            uint* alphaPixels = (uint*)(
+                                (byte*)alphaData.Scan0 + y * alphaData.Stride);
+
+                            for (int x = 0; x < area.Width; x++)
+                            {
+                                uint color = combinedPixels[x];
+
+                                // Preserve the original color texture.
+                                colorPixels[x] = color;
+
+                                // Format32bppArgb is represented as 0xAARRGGBB.
+                                // The alpha texture's red channel occupies bits 16-23.
+                                uint alpha = (alphaPixels[x] >> 16) & 0xFF;
+
+                                combinedPixels[x] =
+                                    (color & 0x00FFFFFFu) | (alpha << 24);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        alphaMap.UnlockBits(alphaData);
                     }
                 }
-                return new List<Bitmap>() { colormap, alphamap, combinedmap };
-
-            }
-
-            for(int y=0; y<alphamap.Height; y++)
-            {
-                for (int x = 0; x < alphamap.Width; x++)
+                finally
                 {
-                    Color pixel = combinedmap.GetPixel(x, y);
-                    colormap.SetPixel(x, y, Color.FromArgb(255, pixel.R, pixel.G, pixel.B));
-                    alphamap.SetPixel(x, y, Color.FromArgb(255, pixel.A, pixel.A, pixel.A));
+                    colorMap.UnlockBits(colorData);
                 }
             }
-            return new List<Bitmap>() { colormap, alphamap, combinedmap };
+            finally
+            {
+                combinedMap.UnlockBits(combinedData);
+            }
+        }
 
+        private static unsafe void SplitEmbeddedAlpha(
+            Bitmap combinedMap,
+            Bitmap colorMap,
+            Bitmap alphaMap)
+        {
+            Rectangle area = new Rectangle(
+                0, 0, combinedMap.Width, combinedMap.Height);
+
+            BitmapData combinedData = combinedMap.LockBits(
+                area,
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb);
+
+            try
+            {
+                BitmapData colorData = colorMap.LockBits(
+                    area,
+                    ImageLockMode.WriteOnly,
+                    PixelFormat.Format32bppArgb);
+
+                try
+                {
+                    BitmapData alphaData = alphaMap.LockBits(
+                        area,
+                        ImageLockMode.WriteOnly,
+                        PixelFormat.Format32bppArgb);
+
+                    try
+                    {
+                        for (int y = 0; y < area.Height; y++)
+                        {
+                            uint* combinedPixels = (uint*)(
+                                (byte*)combinedData.Scan0 + y * combinedData.Stride);
+
+                            uint* colorPixels = (uint*)(
+                                (byte*)colorData.Scan0 + y * colorData.Stride);
+
+                            uint* alphaPixels = (uint*)(
+                                (byte*)alphaData.Scan0 + y * alphaData.Stride);
+
+                            for (int x = 0; x < area.Width; x++)
+                            {
+                                uint pixel = combinedPixels[x];
+                                uint alpha = pixel >> 24;
+
+                                // Original RGB with a fully opaque alpha channel.
+                                colorPixels[x] = pixel | 0xFF000000u;
+
+                                // Fully opaque grayscale representation of alpha.
+                                alphaPixels[x] =
+                                    0xFF000000u | alpha * 0x00010101u;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        alphaMap.UnlockBits(alphaData);
+                    }
+                }
+                finally
+                {
+                    colorMap.UnlockBits(colorData);
+                }
+            }
+            finally
+            {
+                combinedMap.UnlockBits(combinedData);
+            }
+        }
+
+        /// <summary>
+        /// Returns the supplied bitmap directly when it is already 32-bit ARGB.
+        /// Otherwise converts it and disposes the supplied bitmap.
+        /// </summary>
+        private static Bitmap TakeAs32BppArgb(Bitmap source)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (source.PixelFormat == PixelFormat.Format32bppArgb)
+                return source;
+
+            Bitmap converted = new Bitmap(
+                source.Width,
+                source.Height,
+                PixelFormat.Format32bppArgb);
+
+            try
+            {
+                using (Graphics graphics = Graphics.FromImage(converted))
+                {
+                    graphics.DrawImageUnscaled(source, 0, 0);
+                }
+
+                return converted;
+            }
+            catch
+            {
+                converted.Dispose();
+                throw;
+            }
+            finally
+            {
+                source.Dispose();
+            }
         }
 
         public static bool HasAlpha(byte[] rawblob)

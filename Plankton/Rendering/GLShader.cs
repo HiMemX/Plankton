@@ -109,6 +109,7 @@ namespace Plankton.Rendering
         public void SetMatrix4(string name, Matrix4 mat)
         {
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
             GL.UniformMatrix4(location, true, ref mat);
         }
         public void SetMatrix4(string name, System.Numerics.Matrix4x4 mat)
@@ -117,18 +118,21 @@ namespace Plankton.Rendering
             Matrix4 opentkmat = ConverterTools.ToOpenTK(mat);
             opentkmat.Transpose();
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
             GL.UniformMatrix4(location, true, ref opentkmat);
         }
 
         public void SetInt(string name, int i)
         {
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
             GL.Uniform1(location, i);
         }
 
         public void SetFloat2(string name, float i1, float i2)
         {
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
             GL.Uniform2(location, i1, i2);
         }
 
@@ -136,34 +140,46 @@ namespace Plankton.Rendering
         {
 
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
             GL.Uniform1(location, i.Length, i);
         }
 
         public void SetFloat(string name, float f)
         {
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
             GL.Uniform1(location, f);
         }
         public void SetVector3(string name, System.Numerics.Vector3 vec3)
         {
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
+            GL.Uniform3(location, ConverterTools.ToOpenTK(vec3));
+        }
+
+        public bool CheckLocation(int location)
+        {
+            return location == -1;
+
             if (location == -1)
             {
-                Debug.debugWindow.AddEntry("SetVector3", "location = -1");
-                return;
+                //Debug.debugWindow.AddEntry("GLShader", "location = -1");
+                return true;
             }
-            GL.Uniform3(location, ConverterTools.ToOpenTK(vec3));
+            return false;
         }
 
         public void SetVector4(string name, Vector4 vec4)
         {
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
             GL.Uniform4(location, vec4);
         }
 
         public void SetColor4(string name, Color4 color)
         {
             int location = GL.GetUniformLocation(Handle, name);
+            if (CheckLocation(location)) return;
             GL.Uniform4(location, color);
         }
 

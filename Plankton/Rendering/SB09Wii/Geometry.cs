@@ -303,6 +303,7 @@ namespace Plankton.Rendering.SB09Wii
             GL.VertexAttribDivisor(13, 1);
 
 
+            GL.BindVertexArray(0);
 
 
 

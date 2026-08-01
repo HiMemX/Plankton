@@ -32,6 +32,8 @@ namespace Plankton.Rendering
         private int triIndexCount;
         private int lineIndexCount;
 
+        private int maximumInstanceCount = 65536;
+
 
         List<Vector3> triverts = new List<Vector3>();
         List<Vector3> normals = new List<Vector3>();
@@ -188,10 +190,13 @@ namespace Plankton.Rendering
             // Specify vertex attributes
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
+            GL.VertexAttribDivisor(0, 0);
 
             GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
+            GL.VertexAttribDivisor(1, 0);
 
+            GL.BindVertexArray(0);
 
 
 
@@ -199,11 +204,13 @@ namespace Plankton.Rendering
 
             _ibo = GL.GenBuffer();
 
+
             GL.BindVertexArray(tri_vao);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _ibo);
 
-            // Instance matrix
             int stride = Marshal.SizeOf<PrimitiveInstance>();
+            
+            // Instance matrix
             for (int k = 0; k < 2; k++) // Sets up ibo for tri_vao and line_vao (sneeky weeky)
             {
                 for (int i = 0; i < 4; i++)
@@ -235,6 +242,7 @@ namespace Plankton.Rendering
 
             // Unbind VAO
             GL.BindVertexArray(0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
         }
 
@@ -258,14 +266,14 @@ namespace Plankton.Rendering
         {
             GL.BindVertexArray(tri_vao);
             GL.DrawElementsInstanced(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, triIndexCount, DrawElementsType.UnsignedInt, IntPtr.Zero, instances.Count);
-
+            GL.BindVertexArray(0);
         }
 
         public void RenderNonSolid()
         {
             GL.BindVertexArray(line_vao);
             GL.DrawElementsInstanced(OpenTK.Graphics.OpenGL4.PrimitiveType.Lines, lineIndexCount, DrawElementsType.UnsignedInt, IntPtr.Zero, instances.Count);
-
+            GL.BindVertexArray(0);
         }
 
         public void Render()

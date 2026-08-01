@@ -9,6 +9,7 @@ using OpenTK.Graphics;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Plankton.Rendering
 {
@@ -20,8 +21,9 @@ namespace Plankton.Rendering
 
         public PrimitiveModelLib models;
 
+        public GLControl control;
 
-        float[] linevertices = {0,0,0,1,0,0};
+        float[] linevertices = {0,0,0,1,1,0,0,1};
         int linevbo;
         int linevao;
         Shader LineShader;
@@ -31,8 +33,11 @@ namespace Plankton.Rendering
         int pointvao;
         Shader PointShader;
 
-        public RenderHelper()
+        public RenderHelper(GLControl control)
         {
+            this.control = control;
+
+            MakeCurrent();
             models = new PrimitiveModelLib();
 
             InitLineResources();
@@ -54,8 +59,12 @@ namespace Plankton.Rendering
 
 
             // Specify how the vertex data is laid out in the buffer (positions)
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
+            GL.VertexAttribDivisor(0, 0);
+
+            GL.BindVertexArray(0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }
         void InitPointResources()
         {
@@ -74,6 +83,10 @@ namespace Plankton.Rendering
             // Specify how the vertex data is laid out in the buffer (positions)
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
+            GL.VertexAttribDivisor(0, 0);
+
+            GL.BindVertexArray(0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }
 
         public void AddEmpty(PrimitiveInstance instance)
@@ -112,24 +125,33 @@ namespace Plankton.Rendering
             
         }
 
+        public void MakeCurrent()
+        {
+            if (!control.Context.IsCurrent) control.MakeCurrent();
+        }
+
         public void Buffer()
         {
+            MakeCurrent();
             models.BufferAll();
         }
 
         public void Render()
         {
 
+            MakeCurrent();
             models.RenderAll();
         }
 
         public void RenderSolid()
         {
+            MakeCurrent();
             models.RenderAllSolid();
         }
 
         public void RenderNonSolid()
         {
+            MakeCurrent();
             models.RenderAllNonSolid();
         }
 
@@ -139,27 +161,40 @@ namespace Plankton.Rendering
         }
 
 
-        void SetupPrimitiveShader(Shader shader)
+        /*void SetupPrimitiveShader(Shader shader)
         {
+            shader.Use();
+            shader.SetMatrix4("view", view);
+            shader.SetMatrix4("project", projection);
+            shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
+        }*/
+
+        public void SetupRegularShader()
+        {
+            Shader shader = models.shaders.regular;
             shader.Use();
             shader.SetMatrix4("view", view);
             shader.SetMatrix4("project", projection);
             shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
         }
 
-        public void SetupRegularShader()
-        {
-            SetupPrimitiveShader(models.shaders.regular);
-        }
-
         public void SetupSelectionShader()
         {
-            SetupPrimitiveShader(models.shaders.selection);
+            Shader shader = models.shaders.selection;
+            shader.Use();
+            shader.SetMatrix4("view", view);
+            shader.SetMatrix4("project", projection);
+            shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
         }
 
         public void SetupHighlightShader(bool useHighlightColor = false)
         {
-            SetupPrimitiveShader(models.shaders.highlight);
+
+            Shader shader = models.shaders.highlight;
+            shader.Use();
+            shader.SetMatrix4("view", view);
+            shader.SetMatrix4("project", projection);
+            shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
             models.shaders.highlight.SetInt("useCustomColor", useHighlightColor ? 1 : 0);
             models.shaders.highlight.SetColor4("customColor", GlobalRenderSettings.highlightColor);
         }
@@ -195,6 +230,7 @@ namespace Plankton.Rendering
         public void EnableBlending()
         {
 
+            MakeCurrent();
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             GL.DepthMask(false);
@@ -202,15 +238,18 @@ namespace Plankton.Rendering
 
         public void DisableBlending()
         {
+            MakeCurrent();
             GL.Disable(EnableCap.Blend);
             GL.DepthMask(true);
         }
         public void EnableDepthTest()
         {
+            MakeCurrent();
             GL.Enable(EnableCap.DepthTest);
         }
         public void DisableDepthTest()
         {
+            MakeCurrent();
             GL.Disable(EnableCap.DepthTest);
         }
 
@@ -280,25 +319,32 @@ namespace Plankton.Rendering
 
         public void RenderPoint(System.Numerics.Vector3 position, Color4 color, float thickness)
         {
+            MakeCurrent();
+
             SetupPointShader(position, color);
 
             GL.PointSize(thickness);
 
             GL.BindVertexArray(pointvao);
             GL.DrawArrays(PrimitiveType.Points, 0, 1);
+            GL.BindVertexArray(0);
         }
 
         public void RenderLine(float thickness)
         {
+            MakeCurrent();
             GL.LineWidth(thickness);
 
             GL.BindVertexArray(linevao);
             GL.DrawArrays(PrimitiveType.Lines, 0, 2); // 2 vertices (1 line)
+            GL.BindVertexArray(0);
 
         }
 
         public void RenderLine(System.Numerics.Vector3 startpos, System.Numerics.Vector3 endpos, Color4 color, float thickness)
         {
+            MakeCurrent();
+
             SetupLineShader(startpos, endpos, color);
 
             RenderLine(thickness);

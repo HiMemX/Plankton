@@ -149,7 +149,7 @@ namespace Plankton.Custom_Controls
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.StencilTest);
 
-            renderhelper = new();
+            renderhelper = new(glControl);
 
             drawTimer = new();
 
@@ -205,8 +205,6 @@ namespace Plankton.Custom_Controls
         
         private void glControl_Resize(object sender, EventArgs e)
         {
-            Debug.debugWindow.AddEntry("Resize", "test");
-
             MakeCurrent();
 
             ResizeFramebuffer(this.Width, this.Height);
@@ -407,7 +405,11 @@ namespace Plankton.Custom_Controls
 
         private void SetupFogUniforms()
         {
-            if (resourcePool.fogPool.Count() <= 0) return;
+            if (resourcePool.fogPool.Count() <= 0)
+            {
+                shader.SetInt("fog.fogMode", 0);
+                return;
+            }
             SB09WiiAsset.Fog fog = (SB09WiiAsset.Fog)resourcePool.fogPool[0].entity;
 
             shader.SetFloat("fog.start", fog.start);
@@ -690,6 +692,8 @@ namespace Plankton.Custom_Controls
 
             //if (camera.frustum.isSphereInsideFrustum(new OpenTK.Vector3(2, 0, 0), 0)) Debug.debugWindow.AddEntry("Paint", "isinside!");
 
+
+            
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
 
@@ -724,11 +728,13 @@ namespace Plankton.Custom_Controls
             DrawSelectedContainerOutlines();
             double outlinebufferms = stopwatch.Elapsed.TotalMilliseconds;
 
+            
+
             glControl.SwapBuffers();    // Display the result.
 
 
             PostRender?.Invoke(this, EventArgs.Empty);
-
+            //drawTimer.Stop();
 
 
             /*DateTime _now = DateTime.Now;
@@ -747,16 +753,19 @@ namespace Plankton.Custom_Controls
             //RenderHelper.RenderLine(System.Numerics.Vector3.UnitX * -1000f, System.Numerics.Vector3.UnitX * 1000f, Color4.Red, 1);
             //RenderHelper.RenderLine(System.Numerics.Vector3.UnitY * -1000f, System.Numerics.Vector3.UnitY * 1000f, Color4.Green, 1);
             //RenderHelper.RenderLine(System.Numerics.Vector3.UnitZ * -1000f, System.Numerics.Vector3.UnitZ * 1000f, Color4.Blue, 1);
-            renderhelper.RenderLine(System.Numerics.Vector3.UnitX * -10f, System.Numerics.Vector3.UnitX * 10f, Color4.Red, 1);
-            renderhelper.RenderLine(System.Numerics.Vector3.UnitZ * -10f, System.Numerics.Vector3.UnitZ * 10f, Color4.Blue, 1);
+            int N = 10;
 
-            for (int x = -10; x <= 10; x++)
+            renderhelper.RenderLine(System.Numerics.Vector3.UnitX * -N, System.Numerics.Vector3.UnitX * N, Color4.Red, 1);
+            renderhelper.RenderLine(System.Numerics.Vector3.UnitZ * -N, System.Numerics.Vector3.UnitZ * N, Color4.Blue, 1);
+
+
+            for (int x = -N; x <= N; x++)
             {
-                renderhelper.RenderLine(System.Numerics.Vector3.UnitX * -10f + x * System.Numerics.Vector3.UnitZ, System.Numerics.Vector3.UnitX * 10f + x * System.Numerics.Vector3.UnitZ, Color4.Gray, 1);
+                renderhelper.RenderLine(System.Numerics.Vector3.UnitX * -N + x * System.Numerics.Vector3.UnitZ, System.Numerics.Vector3.UnitX * N + x * System.Numerics.Vector3.UnitZ, Color4.Gray, 1);
             }
-            for (int x = -10; x <= 10; x++)
+            for (int x = -N; x <= N; x++)
             {
-                renderhelper.RenderLine(System.Numerics.Vector3.UnitZ * -10f + x * System.Numerics.Vector3.UnitX, System.Numerics.Vector3.UnitZ * 10f + x * System.Numerics.Vector3.UnitX, Color4.Gray, 1);
+                renderhelper.RenderLine(System.Numerics.Vector3.UnitZ * -N + x * System.Numerics.Vector3.UnitX, System.Numerics.Vector3.UnitZ * N + x * System.Numerics.Vector3.UnitX, Color4.Gray, 1);
             }
         }
 
