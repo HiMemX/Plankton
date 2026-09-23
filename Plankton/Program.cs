@@ -21,7 +21,7 @@ namespace Plankton
             Application.EnableVisualStyles();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainApp());
+            Application.Run(new CoreForm());
         }
     }
 }

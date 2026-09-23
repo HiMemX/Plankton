@@ -5,6 +5,7 @@ namespace MeshExporterPlugin
 {
     public class MeshExporter : IPlugin
     {
+        public string Id => "plankton.mesh-exporter";
         public string Name => "MeshExporter";
         public string Description => "Adds the option to export Models using Assimp";
 

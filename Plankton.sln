@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plankton", "Plankton\Plankton.csproj", "{D6EFAF94-D6C8-47E8-951A-FB11B5E6D9BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plankton.Legacy", "Plankton\Plankton.Legacy.csproj", "{D6EFAF94-D6C8-47E8-951A-FB11B5E6D9BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeshExporterPlugin", "MeshExporterPlugin\MeshExporterPlugin.csproj", "{0BCE3A8D-8EF8-4F8F-8AD2-474726A87826}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginApi", "PluginApi\PluginApi.csproj", "{304FB038-FD83-4BEE-87C7-F9CCBE1DFBDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordRichPresencePlugin", "DiscordRichPresence\DiscordRichPresencePlugin.csproj", "{909F0320-E72B-485E-BF54-28C3AFFD28EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plankton.Core", "Plankton.Core\Plankton.Core.csproj", "{BF334329-BB96-4757-8E36-BEF998AB73A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,17 @@ Global
 		{909F0320-E72B-485E-BF54-28C3AFFD28EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{909F0320-E72B-485E-BF54-28C3AFFD28EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{909F0320-E72B-485E-BF54-28C3AFFD28EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF334329-BB96-4757-8E36-BEF998AB73A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF334329-BB96-4757-8E36-BEF998AB73A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF334329-BB96-4757-8E36-BEF998AB73A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF334329-BB96-4757-8E36-BEF998AB73A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0BCE3A8D-8EF8-4F8F-8AD2-474726A87826} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{909F0320-E72B-485E-BF54-28C3AFFD28EF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1F05FB7F-0650-420C-B0D6-1299F61F5AEE}

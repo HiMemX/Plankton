@@ -1,33 +1,25 @@
 ﻿using System.Windows.Forms;
+using System.Windows.Forms.Design;
 
 namespace PluginApi
 {
     public interface IPlugin
     {
-        public string Name { get; }
-        public string Description { get; }
-        public void Initialize(IHost host);
+        string Id { get; }
+        string Name { get; }
+        string Description { get; }
+
+        void Initialize(IHost host);
     }
 
     public interface IHost
     {
-        public event EventHandler<FileEventArgs>? OpenedArchive;
-        public event EventHandler<FileEventArgs>? ClosedArchive;
+        IArchiveService Archive { get; }
+        ICommandService Commands { get; }
+        IEditorService Editors { get; }
+        IUIService UI { get; }
     }
-
-    public sealed class FileEventArgs : EventArgs
-    {
-        public string filename = "";
-        public string gamestring = "";
-
-        public static FileEventArgs Empty => new FileEventArgs();
-
-        public FileEventArgs(string filename="", string gamestring = "")
-        {
-            this.filename = filename;
-            this.gamestring = gamestring;
-        }
-
-    }
+    
+    
 
 }

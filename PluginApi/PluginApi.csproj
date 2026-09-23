@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Krypton.Docking" Version="85.24.10.288" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CSHO">
+      <HintPath>..\..\..\..\Desktop\Projects\CSHO\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms">
       <HintPath>..\..\..\..\..\..\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\6.0.36\ref\net6.0\System.Windows.Forms.dll</HintPath>
     </Reference>

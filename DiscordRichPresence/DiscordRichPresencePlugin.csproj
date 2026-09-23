@@ -14,4 +14,10 @@
     <ProjectReference Include="..\PluginApi\PluginApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="CSHO">
+      <HintPath>..\..\..\..\Desktop\Projects\CSHO\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
