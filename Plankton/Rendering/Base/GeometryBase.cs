@@ -35,6 +35,7 @@ namespace Plankton.Rendering.Base
 
         public virtual void RenderInstance(int instanceindex)
         {
+            
             if (!CanRender) { return; }
 
             GL.BindVertexArray(VertexArray.handle);

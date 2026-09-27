@@ -34,6 +34,8 @@ namespace PluginApi
         /// </summary>
         IEditor? Open(EditorTarget target);
 
+        IEditor? Open(IEditorProvider provider);
+
         /// <summary>
         /// Opens using a particular provider.
         /// Useful for an "Open With..." menu.

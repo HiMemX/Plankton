@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>_3DLevelEditorPlugin</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+	<EnableDynamicLoading>true</EnableDynamicLoading>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PluginApi\PluginApi.csproj" />
+    <ProjectReference Include="..\Rendering\Rendering.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CSHO">
+      <HintPath>..\..\..\..\Desktop\Projects\CSHO\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Level Editor\CustomControls\FloatInputBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Level Editor\CustomControls\Vector3InputBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Level Editor\CustomControls\VectorField.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Level Editor\ExportWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Level Editor\LevelEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Level Editor\LevelEditorGLEvents.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Level Editor\LevelEditorInitFunctions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Level Editor\LevelEditorRendering.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Level Editor\Loading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Level Editor\point.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Level Editor\point.vert">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,57 @@
+<Project>
+
+  <!-- Plugin-owned loose files go into the plugin build output. -->
+  <ItemGroup Condition="'$(EnableDynamicLoading)' == 'true'">
+    <None Update="**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
+    <Content Update="**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PlanktonCoreOutputDir>$(MSBuildThisFileDirectory)Plankton.Core\bin\$(Configuration)\$(TargetFramework)\</PlanktonCoreOutputDir>
+    <PluginDestination>$(PlanktonCoreOutputDir)Plugins\$(AssemblyName)\</PluginDestination>
+  </PropertyGroup>
+
+  <Target
+    Name="DeployPlanktonPlugin"
+    AfterTargets="Build"
+    Condition="'$(EnableDynamicLoading)' == 'true'">
+
+    <!-- Complete plugin output -->
+    <RemoveDir Directories="$(PluginDestination)" />
+    <MakeDir Directories="$(PluginDestination)" />
+
+    <ItemGroup>
+      <PluginOutputFiles Include="$(TargetDir)**\*.*" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(PluginOutputFiles)"
+      DestinationFiles="@(PluginOutputFiles->'$(PluginDestination)%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+
+    <!--
+      Everything in a SUBDIRECTORY of the final plugin output
+      is runtime content that should also exist relative to Plankton.Core.exe.
+
+      Excluding $(TargetDir)*.* prevents DLLs, PDBs, deps.json, etc.
+      in the output root from being copied into the Core root.
+    -->
+    <ItemGroup>
+      <PluginRuntimeFiles
+        Include="$(TargetDir)**\*.*"
+        Exclude="$(TargetDir)*.*" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(PluginRuntimeFiles)"
+      DestinationFiles="@(PluginRuntimeFiles->'$(PlanktonCoreOutputDir)%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+
+  </Target>
+
+</Project>

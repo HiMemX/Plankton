@@ -104,11 +104,6 @@
     <None Include="NewParcelWindow.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DiscordRichPresence\DiscordRichPresencePlugin.csproj" />
-    <ProjectReference Include="..\MeshExporterPlugin\MeshExporterPlugin.csproj" />
-    <ProjectReference Include="..\PluginApi\PluginApi.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Be.Windows.Forms.HexBox">
       <HintPath>..\..\..\..\Desktop\Random_stuff\HexBox\Be.Windows.Forms.HexBox.dll</HintPath>
     </Reference>
