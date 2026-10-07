@@ -87,7 +87,7 @@ namespace Plankton
             {
                 case DebugEntryType.NORMAL: return Brushes.Black;
                 case DebugEntryType.ERROR: return Brushes.Red;
-                case DebugEntryType.WARNING: return Brushes.Yellow;
+                case DebugEntryType.WARNING: return Brushes.DarkOrange;
                 case DebugEntryType.SUCCESS: return Brushes.Green;
                 default: return Brushes.Black;
             }

@@ -17,14 +17,17 @@ internal sealed class LevelEditorInstance : IEditor
 
     public LevelEditorInstance(
         IHost host,
-        EditorTarget? initialTarget = null)
+        EditorTarget? initialTarget = null,
+        LevelEditorPreferences preferences = null)
     {
         this.host = host;
+        Plankton.Debug.debugWindow.host = host; // Not the prettiest but it works for now
 
-        control = new LevelEditor
+        control = new LevelEditor(preferences)
         {
             Dock = DockStyle.Fill
         };
+
 
         control.handler = host.Archive.Current;
         control.InitRenderer();

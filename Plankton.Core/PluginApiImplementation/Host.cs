@@ -13,17 +13,20 @@ namespace Plankton.PluginApiImplementation
         public IEditorService Editors { get; }
         public ICommandService Commands { get; }
         public IUIService UI { get; }
+        public IPreferencesService Preferences { get; }
 
         public Host(
             IArchiveService archives,
             IEditorService editors,
             ICommandService commands,
-            IUIService ui)
+            IUIService ui,
+            IPreferencesService preferences)
         {
             Archive = archives;
             Editors = editors;
             Commands = commands;
             UI = ui;
+            Preferences = preferences;
         }
     }
 }

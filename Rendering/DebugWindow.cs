@@ -4,74 +4,46 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using PluginApi;
 
 namespace Plankton
 {
-    public partial class DebugWindow : Form
+    public partial class DebugWindow
     {
         private List<Brush> itembrushes = new();
+        public IHost? host = null;
 
-        public DebugWindow()
-        {
-            InitializeComponent();
-        }
 
-        public void AddEntry(string origin, DebugEntryType type = DebugEntryType.NORMAL, params double[] numbers)
-        {
 
-            string numbersString = string.Join(", ", numbers);
-
-            AddEntry(origin, numbersString, type);
-        }
-
-        public void AddEntry(string origin, DebugEntryType type = DebugEntryType.NORMAL, params float[] numbers)
-        {
-
-            string numbersString = string.Join(", ", numbers);
-
-            AddEntry(origin, numbersString, type);
-        }
-
-        public void AddEntry(string origin, DebugEntryType type = DebugEntryType.NORMAL, params int[] numbers)
-        {
-
-            string numbersString = string.Join(", ", numbers);
-
-            AddEntry(origin, numbersString, type);
-        }
 
         public void AddEntry(string origin, string message, DebugEntryType type=DebugEntryType.NORMAL)
         {
-            string formattedMessage = $"[{DateTime.Now:HH:mm:ss:fff}] [{origin}] {message}";
+            if (host == null) return;
 
-            itembrushes.Add(DebugEntryBrush.GetBrush(type));
+            switch (type) {
+                case DebugEntryType.NORMAL:
+                    host.Commands.Execute("plankton.console.add-entry", (origin, message));
+                    break;
 
-            debugListBox.Items.Add(formattedMessage);
-            debugListBox.TopIndex = debugListBox.Items.Count - 1;
-        }
+                case DebugEntryType.ERROR:
+                    host.Commands.Execute("plankton.console.add-error", (origin, message));
+                    break;
 
-        private void DebugWindow_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = true;
-            Hide();
-        }
+                case DebugEntryType.WARNING:
+                    host.Commands.Execute("plankton.console.add-warning", (origin, message));
+                    break;
 
-        private void debugListBox_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            e.DrawBackground();
-
-
-            if (e.Index >= 0)
-            {
-                e.Graphics.DrawString(debugListBox.Items[e.Index].ToString(),
-                    e.Font, itembrushes[e.Index], e.Bounds);
+                case DebugEntryType.SUCCESS:
+                    host.Commands.Execute("plankton.console.add-success", (origin, message));
+                    break;
             }
-
-            e.DrawFocusRectangle();
         }
+
+
+        
     }
 
 

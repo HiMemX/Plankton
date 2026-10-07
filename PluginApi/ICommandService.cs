@@ -8,6 +8,8 @@ namespace PluginApi
 {
     public interface ICommandService
     {
+        IReadOnlyList<CommandDefinition> Commands { get; }
+
         void Register(CommandDefinition command);
 
         bool CanExecute(string commandId, object? parameter = null);

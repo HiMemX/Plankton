@@ -1,11 +1,13 @@
 ﻿
 using PluginApi;
+using Rendering;
 
 namespace _3DLevelEditorPlugin;
 
 public sealed class LevelEditorPlugin : IPlugin
 {
     private LevelEditorProvider provider = null!;
+    private LevelEditorPreferences preferences = null;
 
     public string Id => "plankton.level-editor";
     public string Name => "Level Editor";
@@ -13,7 +15,11 @@ public sealed class LevelEditorPlugin : IPlugin
 
     public void Initialize(IHost host)
     {
-        provider = new LevelEditorProvider(host);
+        preferences = host.Preferences.Register<LevelEditorPreferences>(
+            "plankton.level-editor",
+            "Level Editor");
+        
+        provider = new LevelEditorProvider(host, preferences);
 
         host.Editors.RegisterProvider(provider);
 

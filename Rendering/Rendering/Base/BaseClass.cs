@@ -16,7 +16,7 @@ namespace Plankton.Rendering.Base
         public BaseClass(TOCEntry asset, ResourcePool resourcePool)
         {
             this.asset = asset;
-            asset.OnUpdate.Add(Update);
+            //asset.OnUpdate.Add(Update);
             this.resourcePool = resourcePool;
         }
 

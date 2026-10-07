@@ -9,9 +9,12 @@ internal sealed class LevelEditorProvider : IEditorProvider
     public string Name => "Level Editor";
     public int Priority => 100;
 
-    public LevelEditorProvider(IHost host)
+    public LevelEditorPreferences preferences = null;
+
+    public LevelEditorProvider(IHost host, LevelEditorPreferences preferences)
     {
         this.host = host;
+        this.preferences = preferences;
     }
 
     public bool CanOpen(EditorTarget target)
@@ -25,7 +28,8 @@ internal sealed class LevelEditorProvider : IEditorProvider
     {
         return new LevelEditorInstance(
             host,
-            initialTarget);
+            initialTarget,
+            preferences);
     }
 
     private bool CanHandleAsset(AssetInfo asset)

@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Plankton.EditingTools;
-using Plankton.Rendering;
+using Rendering;
 using System.Numerics;
+using Keybinds;
 
 namespace Plankton.Custom_Controls
 {
@@ -57,13 +58,15 @@ namespace Plankton.Custom_Controls
             return (Control.ModifierKeys & Keys.Control) != 0;
         }
 
-        public bool IsPressed(Keys? key_nullable)
+        public bool IsPressed(Keybind? key_nullable)
         {
             if (key_nullable == null) return false;
-            Keys key = (Keys)key_nullable;
-            bool pressed = pressedKeys.Contains(key & ~Keys.Shift) || (key & ~Keys.Shift) == 0;// && (pressedKeys.Contains(Keys.ShiftKey) || ((key & Keys.ShiftKey) == 0));
-            pressed &= ShiftPressed() == key.HasFlag(Keys.Shift);
-
+            Keys key = key_nullable.key;
+            Keys modifiers = key_nullable.modifier;
+            //bool pressed = pressedKeys.Contains(key & ~Keys.Shift) || (key & ~Keys.Shift) == 0;// && (pressedKeys.Contains(Keys.ShiftKey) || ((key & Keys.ShiftKey) == 0));
+            //pressed &= ShiftPressed() == key.HasFlag(Keys.Shift);
+            bool pressed = pressedKeys.Contains(key);
+            pressed &= Control.ModifierKeys == modifiers;
 
             return pressed;
         }
@@ -75,63 +78,65 @@ namespace Plankton.Custom_Controls
             pressedKeys.Remove((Keys)key);
         }
 
+        public void RemovePressedKey(Keybind key)
+        {
+            pressedKeys.Remove(key.key);
+        }
+
         private void HandleUserInput()
         {
             if (!handleCameraMovement) return;
 
-            if (IsPressed(LevelEditorKeybinds.Get("speedUp")))
+
+            if (IsPressed(preferences.speedUp))
             {
                 movementSpeed *= 1.05f;
             }
-            if (IsPressed(LevelEditorKeybinds.Get("speedDown")))
+            if (IsPressed(preferences.speedDown))
             {
                 movementSpeed /= 1.05f;
             }
+
             movementSpeed = Math.Min(Math.Max(movementSpeed, movementSpeedMin), movementSpeedMax);
 
             float factor = GetAdjustedMovementSpeed();
             float rotatefactor = GetAdjustedRotationSpeed();
 
-            
-            if (IsPressed(LevelEditorKeybinds.Get("forward"))) // Forward
+            if (IsPressed(preferences.forward)) // Forward
             {
                 camera.RelativeMove(-factor * Vector3.UnitX);
             }
-            if (IsPressed(LevelEditorKeybinds.Get("backward"))) // Backward
+            if (IsPressed(preferences.backward)) // Backward
             {
                 camera.RelativeMove(factor * Vector3.UnitX);
             }
-            if (IsPressed(LevelEditorKeybinds.Get("left"))) // Left
+            if (IsPressed(preferences.left)) // Left
             {
                 camera.RelativeMove(factor * Vector3.UnitZ);
             }
-            if (IsPressed(LevelEditorKeybinds.Get("right"))) // Right
+            if (IsPressed(preferences.right)) // Right
             {
                 camera.RelativeMove(-factor * Vector3.UnitZ);
             }
-            if (IsPressed(LevelEditorKeybinds.Get("up"))) // Up
+            if (IsPressed(preferences.up)) // Up
             {
                 camera.RelativeMove(factor * Vector3.UnitY);
             }
-            if (IsPressed(LevelEditorKeybinds.Get("down"))) // Down
+            if (IsPressed(preferences.down)) // Down
             {
                 camera.RelativeMove(-factor * Vector3.UnitY);
             }
 
-
-
-
-
             // Rotation
-            if (IsPressed(LevelEditorKeybinds.Get("panRight"))) // Rotate Right
+            if (IsPressed(preferences.panRight)) // Rotate Right
             {
                 camera.RotY += rotatefactor;
             }
-            if (IsPressed(LevelEditorKeybinds.Get("panLeft"))) // Rotate Left
+            if (IsPressed(preferences.panLeft)) // Rotate Left
             {
                 camera.RotY -= rotatefactor;
             }
-            if (IsPressed(LevelEditorKeybinds.Get("panUp"))) // Rotate Up
+            if (IsPressed(preferences.panUp)) // Rotate Up
             {
                 camera.RotZ += rotatefactor;
 
@@ -140,7 +145,7 @@ namespace Plankton.Custom_Controls
                     camera.RotZ = (float)Math.PI / 2.0f - 0.0001f;
                 }
             }
-            if (IsPressed(LevelEditorKeybinds.Get("panDown"))) // Rotate Down
+            if (IsPressed(preferences.panDown)) // Rotate Down
             {
                 camera.RotZ -= rotatefactor;
 
@@ -154,6 +159,8 @@ namespace Plankton.Custom_Controls
 
         private void glControl_KeyDown(object sender, KeyEventArgs e)
         {
+
+
             if (!pressedKeys.Contains(e.KeyCode))
             {
                 //MessageBox.Show(e.KeyCode.ToString());
@@ -306,8 +313,7 @@ namespace Plankton.Custom_Controls
             }
             if (e.Button == MouseButtons.Right) { mouseInfo.rightMouseDown = true; }
 
-
-
+            glControl.Focus();
             this.MouseClick?.Invoke(this, e);
         }
 

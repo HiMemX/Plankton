@@ -18,8 +18,10 @@ namespace PluginApi
         ICommandService Commands { get; }
         IEditorService Editors { get; }
         IUIService UI { get; }
+        IPreferencesService Preferences { get; }
+
     }
-    
-    
+
+
 
 }

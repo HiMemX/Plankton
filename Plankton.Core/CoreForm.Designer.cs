@@ -35,6 +35,7 @@
             mainDockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             parentPanel = new Panel();
+            editToolStripMenuItem = new ToolStripMenuItem();
             mainMenuStrip.SuspendLayout();
             parentPanel.SuspendLayout();
             SuspendLayout();
@@ -42,7 +43,7 @@
             // mainMenuStrip
             // 
             mainMenuStrip.Font = new Font("Segoe UI", 9F);
-            mainMenuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, viewToolStripMenuItem });
+            mainMenuStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem, viewToolStripMenuItem });
             mainMenuStrip.Location = new Point(0, 0);
             mainMenuStrip.Name = "mainMenuStrip";
             mainMenuStrip.RenderMode = ToolStripRenderMode.System;
@@ -81,6 +82,12 @@
             parentPanel.Size = new Size(1214, 608);
             parentPanel.TabIndex = 2;
             // 
+            // editToolStripMenuItem
+            // 
+            editToolStripMenuItem.Name = "editToolStripMenuItem";
+            editToolStripMenuItem.Size = new Size(39, 20);
+            editToolStripMenuItem.Text = "Edit";
+            // 
             // CoreForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -106,5 +113,6 @@
         private Panel parentPanel;
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme vS2015LightTheme1;
         private ToolStripMenuItem viewToolStripMenuItem;
+        private ToolStripMenuItem editToolStripMenuItem;
     }
 }

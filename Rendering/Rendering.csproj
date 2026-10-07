@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EditingTools\EditingTools.csproj" />
+    <ProjectReference Include="..\Keybinds\Keybinds.csproj" />
+    <ProjectReference Include="..\PluginApi\PluginApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,9 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DebugWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="DebugWindow.cs" />
     <Compile Update="Rendering\Custom Controls\GeometryBaseRenderer.cs">
       <SubType>UserControl</SubType>
     </Compile>

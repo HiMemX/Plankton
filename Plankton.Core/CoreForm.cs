@@ -15,6 +15,7 @@ namespace Plankton.Core
         private readonly ArchiveService archiveService;
         private readonly EditorService editorService;
         private readonly UIService uiService;
+        private readonly PreferencesService preferencesService;
 
         private readonly Host host;
         private readonly PluginLoader pluginLoader;
@@ -44,11 +45,16 @@ namespace Plankton.Core
                 ShowEditor,
                 ActivateEditor);
 
+            preferencesService = new PreferencesService();
+
+
+
             host = new Host(
                 archiveService,
                 editorService,
                 commandService,
-                uiService);
+                uiService,
+                preferencesService);
 
             // ---------------------------------------------------------
             // Register UI locations owned by CoreForm
@@ -68,10 +74,20 @@ namespace Plankton.Core
         private void RegisterCoreUI()
         {
             uiService.AddCommand("plankton.main.file", "plankton.archive.open");
+            uiService.AddCommand("plankton.main.edit", "plankton.preferences.open");
         }
 
         private void RegisterCoreCommands()
         {
+            commandService.Register(new CommandDefinition(
+                "plankton.preferences.open",
+                "Edit Preferences...",
+                parameter => {
+                    using var dialog = new PreferenceEditor.PreferencesForm(preferencesService);
+                    dialog.ShowDialog();
+                })
+            );
+
             commandService.Register(new CommandDefinition(
                 "plankton.archive.open",
                 "Open Archive...",
@@ -138,19 +154,12 @@ namespace Plankton.Core
                 "plankton.main.view",
                 ToolStripLocationKind.Menu,
                 viewToolStripMenuItem.DropDownItems);
-            /*
+
             uiService.RegisterToolStripLocation(
                 "plankton.main.edit",
                 ToolStripLocationKind.Menu,
                 editToolStripMenuItem.DropDownItems);
 
-            uiService.RegisterToolStripLocation(
-                "plankton.main.tools",
-                ToolStripLocationKind.Menu,
-                toolsToolStripMenuItem.DropDownItems);
-            */
-            // If you have a toolbar:
-            //
             uiService.RegisterToolStripLocation(
                  "plankton.main.toolbar",
                  ToolStripLocationKind.Toolbar,

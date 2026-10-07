@@ -9,6 +9,10 @@ internal sealed class CommandService : ICommandService
     private readonly Dictionary<string, CommandDefinition> commands =
         new(StringComparer.Ordinal);
 
+    public IReadOnlyList<CommandDefinition> Commands
+        => commands.Values.ToList();
+
+
     /// <summary>
     /// Internal implementation event.
     /// UIService uses this to resolve pending UI contributions.

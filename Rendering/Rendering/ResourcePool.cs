@@ -54,12 +54,12 @@ namespace Plankton.Rendering
             else if (entry.wmlTypeID == wmlTypeID.LightKitScene) lightKitScenePool.Add(entry);
             else if (entry.wmlTypeID == wmlTypeID.Fog) fogPool.Add(entry);
 
-            if (o != null)
-            {
-                o.asset.OnUpdate.Add((TOCEntry entry) => { o.UpdateAssociates(); });
-            }
+            //if (o != null)
+            //{
+            //    o.asset.OnUpdate.Add((TOCEntry entry) => { o.UpdateAssociates(); });
+            //}
 
-                return o;
+            return o;
         }
 
         public void DoActionOnPool(List<BaseClass> pool, Action<BaseClass> act)

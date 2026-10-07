@@ -25,7 +25,9 @@ using Plankton.Rendering;
 using Plankton.Custom_Controls;
 using Plankton.Special_Editors.Level_Editor.EditableContainers;
 using System.Numerics;
-
+using _3DLevelEditorPlugin;
+using Rendering;
+using Keybinds;
 
 namespace Plankton.Special_Editors.Level_Editor
 {
@@ -37,7 +39,6 @@ namespace Plankton.Special_Editors.Level_Editor
         
         
         public CSHO.Handler handler;
-        public TreeView archiveView;
 
         //public GeometryBaseRenderer renderer;
 
@@ -66,10 +67,13 @@ namespace Plankton.Special_Editors.Level_Editor
         }
 
         List<EditableContainer> editableContainers = new();
-        
-        public LevelEditor()
+
+        LevelEditorPreferences preferences;
+
+        public LevelEditor(LevelEditorPreferences preferences)
         {
             InitializeComponent();
+            this.renderer.preferences = preferences.renderingPreferences;
 
             lrsEditor.OnStartCallback = () => { SetLocRotScaleFunctions(); };
             lrsEditor.OnUpdateCallback = () => { UpdateLocRotScale(selectedContainers); };
@@ -83,6 +87,9 @@ namespace Plankton.Special_Editors.Level_Editor
             renderer.PreRender += renderer_Paint;
             renderer.Render += RenderEditorGizmos;
             renderer.PostRender += UpdateInfo;
+
+            this.preferences = preferences;
+
 
         }
 
@@ -296,7 +303,8 @@ namespace Plankton.Special_Editors.Level_Editor
 
         private void handleUserInput()
         {
-            if (renderer.IsPressed(LevelEditorKeybinds.Get("focusOnObject")))
+
+            if (renderer.IsPressed(preferences.focusOnObject))
             {
                 if (selectedContainer != null)
                 {
@@ -306,14 +314,14 @@ namespace Plankton.Special_Editors.Level_Editor
                 return;
             }
 
-            if (renderer.IsPressed(Keys.NumPad0)) // Camera Preview
+            if (renderer.IsPressed(preferences.cameraPreview)) // Camera Preview
             {
                 CameraPreviewer.PreviewCamera(renderer.camera, selectedContainer); // Does checks itself
                 return;
             }
 
             // Duplication
-            Keys? duplicatorbind = LevelEditorKeybinds.Get("duplicateObject");
+            Keybind duplicatorbind = preferences.duplicateObject;
             if (renderer.IsPressed(duplicatorbind) && (selectedContainer != null))
             {
 
@@ -326,15 +334,15 @@ namespace Plankton.Special_Editors.Level_Editor
                 // For immediate editing after duplication (More blender like)
                 lrsEditor.StartEdit(EditMode.POSITION);
 
-                renderer.RemovePressedKey(duplicatorbind & (~Control.ModifierKeys));
+                renderer.RemovePressedKey(duplicatorbind.key);
 
                 return;
             }
 
             // LocRotScaleEditor
-            Keys? moveobjectbind = LevelEditorKeybinds.Get("moveObject");
-            Keys? scaleobjectbind = LevelEditorKeybinds.Get("scaleObject");
-            Keys? rotateobjectbind = LevelEditorKeybinds.Get("rotateObject");
+            Keybind moveobjectbind = preferences.moveObject;
+            Keybind scaleobjectbind = preferences.scaleObject;
+            Keybind rotateobjectbind = preferences.rotateObject;
             if (renderer.IsPressed(moveobjectbind) && (selectedContainer != null))
             {
 
@@ -359,21 +367,27 @@ namespace Plankton.Special_Editors.Level_Editor
                 return;
             }
 
-            if (renderer.IsPressed(Keys.X) || renderer.IsPressed(Keys.X | Keys.Shift))
+            Keybind X = new Keybind(Keys.X);
+            Keybind Y = new Keybind(Keys.Y);
+            Keybind Z = new Keybind(Keys.Z);
+            Keybind X_s = new Keybind(Keys.X, Keys.Shift);
+            Keybind Y_s = new Keybind(Keys.Y, Keys.Shift);
+            Keybind Z_s = new Keybind(Keys.Z, Keys.Shift);
+            if (renderer.IsPressed(X) || renderer.IsPressed(X_s))
             {
                 lrsEditor.SetAxis(renderer.ShiftPressed() ? EditMode.AXIS_YZ : EditMode.AXIS_X);
 
                 renderer.RemovePressedKey(Keys.X);
                 return;
             }
-            if (renderer.IsPressed(Keys.Y) || renderer.IsPressed(Keys.Y | Keys.Shift))
+            if (renderer.IsPressed(Y) || renderer.IsPressed(Y_s))
             {
                 lrsEditor.SetAxis(renderer.ShiftPressed() ? EditMode.AXIS_XZ : EditMode.AXIS_Y);
 
                 renderer.RemovePressedKey(Keys.Y);
                 return;
             }
-            if (renderer.IsPressed(Keys.Z) || renderer.IsPressed(Keys.Z | Keys.Shift))
+            if (renderer.IsPressed(Z) || renderer.IsPressed(Z_s))
             {
                 lrsEditor.SetAxis(renderer.ShiftPressed() ? EditMode.AXIS_XY : EditMode.AXIS_Z);
 
