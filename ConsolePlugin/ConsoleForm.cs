@@ -8,7 +8,7 @@ using PluginApi;
 
 namespace ConsolePlugin
 {
-    internal class ConsoleForm : Form
+    internal class ConsoleForm : Control
     {
         private ListBox messageBox;
         private TextBox textBox;
@@ -94,10 +94,8 @@ namespace ConsolePlugin
             ClientSize = new Size(811, 436);
             Controls.Add(messageBox);
             Controls.Add(textBox);
-            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ConsoleForm";
             Text = "Console";
-            FormClosing += ConsoleForm_FormClosing;
             ResumeLayout(false);
             PerformLayout();
 

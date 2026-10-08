@@ -6,18 +6,21 @@ namespace ConsolePlugin
 {
     public sealed class ConsolePlugin : IPlugin
     {
+        private ConsoleProvider provider = null!;
         public string Id => "plankton.console-plugin";
         public string Name => "Console";
         public string Description => "Gives the user a Console Window that they can execute commands in as well as look at debug messages.";
 
-        internal ConsoleForm form = new();
 
         public void Initialize(IHost host)
         {
+            provider = new ConsoleProvider(host);
+            host.Editors.RegisterProvider(provider);
+
             host.Commands.Register(new CommandDefinition(
                 "plankton.console.open",
                 "Open Console...",
-                OpenConsole
+                _ => { if (provider.instance == null) host.Editors.Open(provider); }
                 ));
 
             host.Commands.Register(new CommandDefinition(
@@ -52,7 +55,6 @@ namespace ConsolePlugin
 
             host.UI.AddCommand("plankton.main.view", "plankton.console.open");
 
-            form.host = host;
         }
         
         private bool CanExecute(object? parameter)
@@ -85,12 +87,8 @@ namespace ConsolePlugin
         {
             if(parameter is not (string sender, string message)) return;
 
-            form.AddEntry(sender, message);
+            provider.AddEntry(sender, message, type);
         }
 
-        public void OpenConsole(object? parameter)
-        {
-            form.Show();
-        }
     }
 }
