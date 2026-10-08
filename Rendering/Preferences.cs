@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using Keybinds;
 using OpenTK.Mathematics;
+using Rendering.Rendering;
 
 namespace Rendering
 {
@@ -49,14 +50,8 @@ namespace Rendering
         public Keybind speedUp { get; set; } = new Keybind(Keys.M);
         public Keybind speedDown { get; set; } = new Keybind(Keys.N);
 
-        [Category("Settings")]
-        [DisplayName("Background Color")]
-        [Editor(typeof(Color4Editor), typeof(UITypeEditor))]
-        public Color4 backgroundColor { get; set; } = new Color4(0, 0, 0, 0);//new Color4(0.2f, 0.2f, 0.2f, 1f); // TEMP, absorb into user preferences
-        [DisplayName("Render Fog")]
-        public bool renderFog { get; set; } = true;
-        [DisplayName("Alpha Transparency")]
-        public bool alphaTransparency { get; set; } = true;
+        [DisplayName("Default Render Settings")]
+        public RenderSettings defaultRenderSettings { get; set; } = new();
 
     }
 

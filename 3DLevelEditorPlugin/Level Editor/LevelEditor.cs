@@ -28,6 +28,7 @@ using System.Numerics;
 using _3DLevelEditorPlugin;
 using Rendering;
 using Keybinds;
+using PluginApi;
 
 namespace Plankton.Special_Editors.Level_Editor
 {
@@ -70,10 +71,13 @@ namespace Plankton.Special_Editors.Level_Editor
 
         LevelEditorPreferences preferences;
 
+        public event EventHandler<IEnumerable<AssetInfo>>? AssetsModifiedPreview;
+
         public LevelEditor(LevelEditorPreferences preferences)
         {
             InitializeComponent();
-            this.renderer.preferences = preferences.renderingPreferences;
+            this.renderer.SetPreferences(preferences.renderingPreferences);
+            this.renderSettingsPropertyGrid.SelectedObject = this.renderer.GetRenderSettings();
 
             lrsEditor.OnStartCallback = () => { SetLocRotScaleFunctions(); };
             lrsEditor.OnUpdateCallback = () => { UpdateLocRotScale(selectedContainers); };
@@ -93,14 +97,39 @@ namespace Plankton.Special_Editors.Level_Editor
 
         }
 
+        public void UpdateAssetsEvent(AssetEventArgs e)
+        {
+            List<ulong> ids = new();
+            foreach(AssetInfo info in e.Assets)
+            {
+                ids.Add(info.Entry.uidSelf);
+            }
 
+            UpdateSuperInstances(GetContainer(ids));
+            UpdateNonInstancedContainers();
+        }
 
         public void UpdateLocRotScale(List<EditableContainer> containers)
         {
-            UpdateSuperInstances(selectedContainers);
-            UpdateNonInstancedContainers();
-
+            List<AssetInfo> infos = new();
+            foreach(EditableContainer container in containers)
+            {
+                infos.Add(new AssetInfo(handler, container.entry));
+            }
+            AssetsModifiedPreview?.Invoke(this, infos);
             //UpdateEasyEditPanelValues();
+        }
+
+        List<EditableContainer> GetContainer(List<ulong> uid)
+        {
+
+            List<EditableContainer> output = new();
+            foreach (EditableContainer container in editableContainers)
+            {
+                if (uid.Contains(container.entry.uidSelf)) { output.Add(container); }
+            }
+
+            return output;
         }
 
         EditableContainer GetContainer(ulong uid)
@@ -232,19 +261,22 @@ namespace Plankton.Special_Editors.Level_Editor
             {
                 if (selectedContainer == null) return;
                 selectedContainer.SetPosition(position);
-                UpdateRenderInstance(selectedContainer);
+                AssetsModifiedPreview?.Invoke(this, new List<AssetInfo>() { new AssetInfo(handler, selectedContainer.entry) });
+                //UpdateRenderInstance(selectedContainer);
             };
             scaleVectorInputBox.SetVector3Callback = (Vector3 scale) =>
             {
                 if (selectedContainer == null) return;
                 selectedContainer.SetScale(scale);
-                UpdateRenderInstance(selectedContainer);
+                AssetsModifiedPreview?.Invoke(this, new List<AssetInfo>() { new AssetInfo(handler, selectedContainer.entry) });
+                //UpdateRenderInstance(selectedContainer);
             };
             rotationVectorInputBox.SetVector3Callback = (Vector3 rot) =>
             {
                 if (selectedContainer == null) return;
                 selectedContainer.SetRotation(ConverterTools.ToRadians(rot));
-                UpdateRenderInstance(selectedContainer);
+                AssetsModifiedPreview?.Invoke(this, new List<AssetInfo>() { new AssetInfo(handler, selectedContainer.entry) });
+                //UpdateRenderInstance(selectedContainer);
             };
             positionVectorInputBox.SetMultiplier(0.4f);
             scaleVectorInputBox.SetMultiplier(0.4f);

@@ -53,9 +53,11 @@
             selectedPropertyGrid = new System.Windows.Forms.PropertyGrid();
             displaySettingsTabPage = new System.Windows.Forms.TabPage();
             containerTypesCheckedListBox = new System.Windows.Forms.CheckedListBox();
+            renderSettingsPropertyGrid = new System.Windows.Forms.PropertyGrid();
             eventsTabPage = new System.Windows.Forms.TabPage();
             listBox1 = new System.Windows.Forms.ListBox();
             openLinkAssetButton = new System.Windows.Forms.Button();
+            splitContainer3 = new System.Windows.Forms.SplitContainer();
             levelViewRightClickMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -74,6 +76,10 @@
             propertyGridTabPage.SuspendLayout();
             displaySettingsTabPage.SuspendLayout();
             eventsTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
+            splitContainer3.Panel1.SuspendLayout();
+            splitContainer3.Panel2.SuspendLayout();
+            splitContainer3.SuspendLayout();
             SuspendLayout();
             // 
             // levelViewRightClickMenu
@@ -326,11 +332,11 @@
             // displaySettingsTabPage
             // 
             displaySettingsTabPage.AutoScroll = true;
-            displaySettingsTabPage.Controls.Add(containerTypesCheckedListBox);
+            displaySettingsTabPage.Controls.Add(splitContainer3);
             displaySettingsTabPage.Location = new System.Drawing.Point(4, 24);
             displaySettingsTabPage.Name = "displaySettingsTabPage";
             displaySettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            displaySettingsTabPage.Size = new System.Drawing.Size(272, 368);
+            displaySettingsTabPage.Size = new System.Drawing.Size(272, 391);
             displaySettingsTabPage.TabIndex = 1;
             displaySettingsTabPage.Text = "Display";
             displaySettingsTabPage.UseVisualStyleBackColor = true;
@@ -341,11 +347,22 @@
             containerTypesCheckedListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             containerTypesCheckedListBox.FormattingEnabled = true;
             containerTypesCheckedListBox.IntegralHeight = false;
-            containerTypesCheckedListBox.Location = new System.Drawing.Point(3, 3);
+            containerTypesCheckedListBox.Location = new System.Drawing.Point(0, 0);
             containerTypesCheckedListBox.Name = "containerTypesCheckedListBox";
-            containerTypesCheckedListBox.Size = new System.Drawing.Size(266, 362);
+            containerTypesCheckedListBox.Size = new System.Drawing.Size(266, 189);
             containerTypesCheckedListBox.TabIndex = 0;
             containerTypesCheckedListBox.ItemCheck += containerTypesCheckedListBox_ItemCheck;
+            // 
+            // renderSettingsPropertyGrid
+            // 
+            renderSettingsPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            renderSettingsPropertyGrid.HelpVisible = false;
+            renderSettingsPropertyGrid.Location = new System.Drawing.Point(0, 0);
+            renderSettingsPropertyGrid.Name = "renderSettingsPropertyGrid";
+            renderSettingsPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
+            renderSettingsPropertyGrid.Size = new System.Drawing.Size(266, 192);
+            renderSettingsPropertyGrid.TabIndex = 1;
+            renderSettingsPropertyGrid.ToolbarVisible = false;
             // 
             // eventsTabPage
             // 
@@ -354,7 +371,7 @@
             eventsTabPage.Location = new System.Drawing.Point(4, 24);
             eventsTabPage.Name = "eventsTabPage";
             eventsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            eventsTabPage.Size = new System.Drawing.Size(272, 368);
+            eventsTabPage.Size = new System.Drawing.Size(272, 391);
             eventsTabPage.TabIndex = 2;
             eventsTabPage.Text = "Events";
             eventsTabPage.UseVisualStyleBackColor = true;
@@ -367,19 +384,37 @@
             listBox1.ItemHeight = 15;
             listBox1.Location = new System.Drawing.Point(3, 3);
             listBox1.Name = "listBox1";
-            listBox1.Size = new System.Drawing.Size(266, 339);
+            listBox1.Size = new System.Drawing.Size(266, 362);
             listBox1.TabIndex = 1;
             // 
             // openLinkAssetButton
             // 
             openLinkAssetButton.Dock = System.Windows.Forms.DockStyle.Bottom;
-            openLinkAssetButton.Location = new System.Drawing.Point(3, 342);
+            openLinkAssetButton.Location = new System.Drawing.Point(3, 365);
             openLinkAssetButton.Name = "openLinkAssetButton";
             openLinkAssetButton.Size = new System.Drawing.Size(266, 23);
             openLinkAssetButton.TabIndex = 2;
             openLinkAssetButton.Text = "Open LinkAssetEditor";
             openLinkAssetButton.UseVisualStyleBackColor = true;
             openLinkAssetButton.Click += openLinkAssetButton_Click;
+            // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer3.Location = new System.Drawing.Point(3, 3);
+            splitContainer3.Name = "splitContainer3";
+            splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            splitContainer3.Panel1.Controls.Add(containerTypesCheckedListBox);
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(renderSettingsPropertyGrid);
+            splitContainer3.Size = new System.Drawing.Size(266, 385);
+            splitContainer3.SplitterDistance = 189;
+            splitContainer3.TabIndex = 2;
             // 
             // LevelEditor
             // 
@@ -409,6 +444,10 @@
             propertyGridTabPage.ResumeLayout(false);
             displaySettingsTabPage.ResumeLayout(false);
             eventsTabPage.ResumeLayout(false);
+            splitContainer3.Panel1.ResumeLayout(false);
+            splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
+            splitContainer3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -439,5 +478,7 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button openLinkAssetButton;
         private Custom_Controls.GeometryBaseRenderer renderer;
+        private System.Windows.Forms.PropertyGrid renderSettingsPropertyGrid;
+        private System.Windows.Forms.SplitContainer splitContainer3;
     }
 }

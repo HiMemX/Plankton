@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using CSHO;
 using PluginApi;
 using Plankton.Special_Editors.Level_Editor;
+using Plankton;
 
 namespace _3DLevelEditorPlugin;
 
@@ -36,6 +37,8 @@ internal sealed class LevelEditorInstance : IEditor
         host.Archive.Closed += Archive_Closed;
         host.Archive.AssetsModified += Archive_AssetsModified;
         host.Archive.AssetsModifiedPreview += Archive_AssetsModifiedPreview;
+
+        control.AssetsModifiedPreview += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModifiedPreview(sender, e); }; 
 
         // An archive might already be open when this editor is created.
         if (host.Archive.Current.Archive != null)
@@ -72,6 +75,7 @@ internal sealed class LevelEditorInstance : IEditor
         object? sender,
         AssetEventArgs e)
     {
+        control.UpdateAssetsEvent(e);
         //control.AssetsModifiedPreview(e.Assets);
     }
 
