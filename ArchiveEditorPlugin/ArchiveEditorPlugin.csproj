@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+	<TargetFramework>net8.0-windows</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+
+	<UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PluginApi\PluginApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CSHO">
+      <HintPath>..\..\..\..\Desktop\Projects\CSHO\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

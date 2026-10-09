@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsolePlugin", "ConsolePlu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keybinds", "Keybinds\Keybinds.csproj", "{B5DC4A8B-300A-4FD6-B31D-798319D9631B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveEditorPlugin", "ArchiveEditorPlugin\ArchiveEditorPlugin.csproj", "{4720EB08-536C-4EE5-B589-8447A75BD74A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{B5DC4A8B-300A-4FD6-B31D-798319D9631B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5DC4A8B-300A-4FD6-B31D-798319D9631B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5DC4A8B-300A-4FD6-B31D-798319D9631B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4720EB08-536C-4EE5-B589-8447A75BD74A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4720EB08-536C-4EE5-B589-8447A75BD74A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4720EB08-536C-4EE5-B589-8447A75BD74A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4720EB08-536C-4EE5-B589-8447A75BD74A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{25A37064-E900-4E03-B5CA-3CE8CF64AF03} = {732B24A6-3945-4C6C-BAAD-5818AD820BE3}
 		{BB6AD577-41D8-475C-90A5-11EC73634780} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{B5DC4A8B-300A-4FD6-B31D-798319D9631B} = {732B24A6-3945-4C6C-BAAD-5818AD820BE3}
+		{4720EB08-536C-4EE5-B589-8447A75BD74A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1F05FB7F-0650-420C-B0D6-1299F61F5AEE}
