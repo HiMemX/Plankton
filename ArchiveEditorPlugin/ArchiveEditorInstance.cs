@@ -18,7 +18,7 @@ namespace ArchiveEditorPlugin
 
         public ArchiveEditorPreferences preferences = new();
 
-        public string Title => "Archive Editor";
+        public string Title { get; set; } = "Archive Editor";
         public Icon? Icon => new Icon("Resources/ArchiveEditor.ico");
         public Control Control => control;
 
@@ -36,6 +36,9 @@ namespace ArchiveEditorPlugin
 
             if (host.Archive.Current.Archive != null)
                 Archive_Opened(null, null);
+
+            if (initialTarget != null)
+                Reveal(initialTarget);
         }
 
         public void Archive_Opened(object? sender, ArchiveEventArgs e)
@@ -45,13 +48,13 @@ namespace ArchiveEditorPlugin
 
         public bool CanReveal(EditorTarget target)
         {
-            if (target.Value is TOCEntry) return true;
-            return false;
+            return target.Value is AssetInfo;
+            
         }
 
         public void Reveal(EditorTarget target)
         {
-            // Do nothing for now
+            control.Reveal(target);
         }
 
         public void Dispose()

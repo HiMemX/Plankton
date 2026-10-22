@@ -4,6 +4,7 @@ namespace Plankton.PluginApiImplementation
 {
     internal sealed class EditorService : IEditorService
     {
+
         private readonly List<IEditorProvider> providers = new();
         private readonly List<IEditor> openEditors = new();
 
@@ -11,6 +12,8 @@ namespace Plankton.PluginApiImplementation
         private readonly Action<IEditor> activateEditor;
 
         private IEditor? activeEditor;
+
+        private readonly Dictionary<IEditor, IEditorProvider> editorProviders = new();
 
         public EditorService(
             Action<IEditor> showEditor,
@@ -108,6 +111,26 @@ namespace Plankton.PluginApiImplementation
                 target);
         }
 
+        private string GetUniqueTitle(string baseTitle)
+        {
+            bool Exists(string title) =>
+                openEditors.Any(editor =>
+                    string.Equals(
+                        editor.Title,
+                        title,
+                        StringComparison.OrdinalIgnoreCase));
+
+            if (!Exists(baseTitle))
+                return baseTitle;
+
+            int number = 2;
+
+            while (Exists($"{baseTitle} ({number})"))
+                number++;
+
+            return $"{baseTitle} ({number})";
+        }
+
         private IEditor CreateAndShowEditor(
             IEditorProvider provider,
             EditorTarget? initialTarget)
@@ -115,7 +138,16 @@ namespace Plankton.PluginApiImplementation
             IEditor editor =
                 provider.CreateEditor(initialTarget);
 
+
+            string name = editor.Title;
+            if (initialTarget != null)
+            {
+                name = ((AssetInfo)initialTarget.Value).Archive.GetName(((AssetInfo)initialTarget.Value).Entry.uidSelf);
+            }
+            editor.Title = GetUniqueTitle(name);
+
             openEditors.Add(editor);
+            editorProviders.Add(editor, provider);
 
             editor.Control.Disposed += EditorControlDisposed;
 
@@ -213,7 +245,9 @@ namespace Plankton.PluginApiImplementation
             // ArchiveService events, so Dispose() must run when the
             // editor is actually closed.
             editor.Dispose();
+
         }
+
 
         private sealed class Registration : IDisposable
         {

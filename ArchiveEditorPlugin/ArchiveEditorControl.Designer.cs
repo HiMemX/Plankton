@@ -12,22 +12,36 @@ namespace ArchiveEditorPlugin
 
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             splitContainer1 = new SplitContainer();
             archiveTreeView = new TreeView();
+            treeViewContextMenu = new ContextMenuStrip(components);
+            newToolStripMenuItem = new ToolStripMenuItem();
+            sECTToolStripMenuItem = new ToolStripMenuItem();
+            pToolStripMenuItem = new ToolStripMenuItem();
+            pTEXToolStripMenuItem = new ToolStripMenuItem();
+            pFSTToolStripMenuItem = new ToolStripMenuItem();
+            parcelTOCToolStripMenuItem = new ToolStripMenuItem();
+            deleteToolStripMenuItem = new ToolStripMenuItem();
             propertyGridTabControl = new TabControl();
             headerTabPage = new TabPage();
             headerPropertyGrid = new PropertyGrid();
+            headerLabel = new Label();
             dataTabPage = new TabPage();
             dataPropertyGrid = new PropertyGrid();
+            dataLabel = new Label();
             splitContainer2 = new SplitContainer();
             tocEntryListView = new ListView();
             assetNameHeader = new ColumnHeader();
             assetTypeHeader = new ColumnHeader();
             assetUIDHeader = new ColumnHeader();
+            assetListViewContextMenu = new ContextMenuStrip(components);
+            newToolStripMenuItem1 = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            treeViewContextMenu.SuspendLayout();
             propertyGridTabControl.SuspendLayout();
             headerTabPage.SuspendLayout();
             dataTabPage.SuspendLayout();
@@ -35,6 +49,7 @@ namespace ArchiveEditorPlugin
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
+            assetListViewContextMenu.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -57,17 +72,66 @@ namespace ArchiveEditorPlugin
             // 
             // archiveTreeView
             // 
+            archiveTreeView.ContextMenuStrip = treeViewContextMenu;
             archiveTreeView.Dock = DockStyle.Fill;
             archiveTreeView.HideSelection = false;
             archiveTreeView.Location = new Point(0, 0);
             archiveTreeView.Name = "archiveTreeView";
             archiveTreeView.Size = new Size(377, 205);
             archiveTreeView.TabIndex = 0;
-            archiveTreeView.AfterSelect += archiveTreeView_AfterSelect;
+            archiveTreeView.BeforeSelect += archiveTreeView_BeforeSelect;
+            // 
+            // treeViewContextMenu
+            // 
+            treeViewContextMenu.Items.AddRange(new ToolStripItem[] { newToolStripMenuItem, deleteToolStripMenuItem });
+            treeViewContextMenu.Name = "treeViewContextMenu";
+            treeViewContextMenu.Size = new Size(108, 48);
+            // 
+            // newToolStripMenuItem
+            // 
+            newToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sECTToolStripMenuItem, pToolStripMenuItem, pTEXToolStripMenuItem, pFSTToolStripMenuItem, parcelTOCToolStripMenuItem });
+            newToolStripMenuItem.Name = "newToolStripMenuItem";
+            newToolStripMenuItem.Size = new Size(107, 22);
+            newToolStripMenuItem.Text = "New...";
+            // 
+            // sECTToolStripMenuItem
+            // 
+            sECTToolStripMenuItem.Name = "sECTToolStripMenuItem";
+            sECTToolStripMenuItem.Size = new Size(128, 22);
+            sECTToolStripMenuItem.Text = "SECT";
+            // 
+            // pToolStripMenuItem
+            // 
+            pToolStripMenuItem.Name = "pToolStripMenuItem";
+            pToolStripMenuItem.Size = new Size(128, 22);
+            pToolStripMenuItem.Text = "P";
+            // 
+            // pTEXToolStripMenuItem
+            // 
+            pTEXToolStripMenuItem.Name = "pTEXToolStripMenuItem";
+            pTEXToolStripMenuItem.Size = new Size(128, 22);
+            pTEXToolStripMenuItem.Text = "PTEX";
+            // 
+            // pFSTToolStripMenuItem
+            // 
+            pFSTToolStripMenuItem.Name = "pFSTToolStripMenuItem";
+            pFSTToolStripMenuItem.Size = new Size(128, 22);
+            pFSTToolStripMenuItem.Text = "PFST";
+            // 
+            // parcelTOCToolStripMenuItem
+            // 
+            parcelTOCToolStripMenuItem.Name = "parcelTOCToolStripMenuItem";
+            parcelTOCToolStripMenuItem.Size = new Size(128, 22);
+            parcelTOCToolStripMenuItem.Text = "ParcelTOC";
+            // 
+            // deleteToolStripMenuItem
+            // 
+            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            deleteToolStripMenuItem.Size = new Size(107, 22);
+            deleteToolStripMenuItem.Text = "Delete";
             // 
             // propertyGridTabControl
             // 
-            propertyGridTabControl.Alignment = TabAlignment.Bottom;
             propertyGridTabControl.Controls.Add(headerTabPage);
             propertyGridTabControl.Controls.Add(dataTabPage);
             propertyGridTabControl.Dock = DockStyle.Fill;
@@ -81,7 +145,8 @@ namespace ArchiveEditorPlugin
             // headerTabPage
             // 
             headerTabPage.Controls.Add(headerPropertyGrid);
-            headerTabPage.Location = new Point(4, 4);
+            headerTabPage.Controls.Add(headerLabel);
+            headerTabPage.Location = new Point(4, 24);
             headerTabPage.Name = "headerTabPage";
             headerTabPage.Padding = new Padding(3);
             headerTabPage.Size = new Size(369, 376);
@@ -97,14 +162,25 @@ namespace ArchiveEditorPlugin
             headerPropertyGrid.Location = new Point(3, 3);
             headerPropertyGrid.Name = "headerPropertyGrid";
             headerPropertyGrid.PropertySort = PropertySort.NoSort;
-            headerPropertyGrid.Size = new Size(363, 370);
+            headerPropertyGrid.Size = new Size(363, 356);
             headerPropertyGrid.TabIndex = 0;
             headerPropertyGrid.ToolbarVisible = false;
+            // 
+            // headerLabel
+            // 
+            headerLabel.Dock = DockStyle.Bottom;
+            headerLabel.Location = new Point(3, 359);
+            headerLabel.Name = "headerLabel";
+            headerLabel.RightToLeft = RightToLeft.No;
+            headerLabel.Size = new Size(363, 14);
+            headerLabel.TabIndex = 1;
+            headerLabel.TextAlign = ContentAlignment.MiddleRight;
             // 
             // dataTabPage
             // 
             dataTabPage.Controls.Add(dataPropertyGrid);
-            dataTabPage.Location = new Point(4, 4);
+            dataTabPage.Controls.Add(dataLabel);
+            dataTabPage.Location = new Point(4, 24);
             dataTabPage.Name = "dataTabPage";
             dataTabPage.Padding = new Padding(3);
             dataTabPage.Size = new Size(369, 376);
@@ -119,9 +195,19 @@ namespace ArchiveEditorPlugin
             dataPropertyGrid.Location = new Point(3, 3);
             dataPropertyGrid.Name = "dataPropertyGrid";
             dataPropertyGrid.PropertySort = PropertySort.NoSort;
-            dataPropertyGrid.Size = new Size(363, 370);
+            dataPropertyGrid.Size = new Size(363, 356);
             dataPropertyGrid.TabIndex = 0;
             dataPropertyGrid.ToolbarVisible = false;
+            // 
+            // dataLabel
+            // 
+            dataLabel.Dock = DockStyle.Bottom;
+            dataLabel.Location = new Point(3, 359);
+            dataLabel.Name = "dataLabel";
+            dataLabel.RightToLeft = RightToLeft.No;
+            dataLabel.Size = new Size(363, 14);
+            dataLabel.TabIndex = 2;
+            dataLabel.TextAlign = ContentAlignment.MiddleRight;
             // 
             // splitContainer2
             // 
@@ -143,6 +229,7 @@ namespace ArchiveEditorPlugin
             // tocEntryListView
             // 
             tocEntryListView.Columns.AddRange(new ColumnHeader[] { assetNameHeader, assetTypeHeader, assetUIDHeader });
+            tocEntryListView.ContextMenuStrip = assetListViewContextMenu;
             tocEntryListView.Dock = DockStyle.Fill;
             tocEntryListView.FullRowSelect = true;
             tocEntryListView.Location = new Point(0, 0);
@@ -171,6 +258,18 @@ namespace ArchiveEditorPlugin
             assetUIDHeader.Text = "UID";
             assetUIDHeader.Width = 120;
             // 
+            // assetListViewContextMenu
+            // 
+            assetListViewContextMenu.Items.AddRange(new ToolStripItem[] { newToolStripMenuItem1 });
+            assetListViewContextMenu.Name = "assetListViewContextMenu";
+            assetListViewContextMenu.Size = new Size(108, 26);
+            // 
+            // newToolStripMenuItem1
+            // 
+            newToolStripMenuItem1.Name = "newToolStripMenuItem1";
+            newToolStripMenuItem1.Size = new Size(107, 22);
+            newToolStripMenuItem1.Text = "New...";
+            // 
             // ArchiveEditorControl
             // 
             Controls.Add(splitContainer2);
@@ -180,6 +279,7 @@ namespace ArchiveEditorPlugin
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            treeViewContextMenu.ResumeLayout(false);
             propertyGridTabControl.ResumeLayout(false);
             headerTabPage.ResumeLayout(false);
             dataTabPage.ResumeLayout(false);
@@ -187,6 +287,7 @@ namespace ArchiveEditorPlugin
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
+            assetListViewContextMenu.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -209,5 +310,17 @@ namespace ArchiveEditorPlugin
         private TabPage headerTabPage;
         private TabPage dataTabPage;
         private PropertyGrid dataPropertyGrid;
+        private ContextMenuStrip treeViewContextMenu;
+        private ToolStripMenuItem newToolStripMenuItem;
+        private ToolStripMenuItem sECTToolStripMenuItem;
+        private ToolStripMenuItem pToolStripMenuItem;
+        private ToolStripMenuItem pTEXToolStripMenuItem;
+        private ToolStripMenuItem pFSTToolStripMenuItem;
+        private ToolStripMenuItem parcelTOCToolStripMenuItem;
+        private ToolStripMenuItem deleteToolStripMenuItem;
+        private Label headerLabel;
+        private Label dataLabel;
+        private ContextMenuStrip assetListViewContextMenu;
+        private ToolStripMenuItem newToolStripMenuItem1;
     }
 }

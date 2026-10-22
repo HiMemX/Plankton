@@ -151,7 +151,7 @@ namespace Plankton.Custom_Controls
                 AlphaBits = 8,
                 DepthBits = 24,
                 StencilBits = 8,
-                NumberOfSamples = 1
+                NumberOfSamples = 8
             };
 
             glControl = new GLControl(glSettings)

@@ -4,6 +4,7 @@ using CSHO;
 using PluginApi;
 using Plankton.Special_Editors.Level_Editor;
 using Plankton;
+using Plankton.Special_Editors.Level_Editor.EditableContainers;
 
 namespace _3DLevelEditorPlugin;
 
@@ -12,7 +13,7 @@ internal sealed class LevelEditorInstance : IEditor
     private readonly IHost host;
     private readonly LevelEditor control;
 
-    public string Title => "Level Editor";
+    public string Title  { get; set; } = "Level Editor";
     public Icon? Icon => new Icon("Resources/LevelEditor.ico");
     public Control Control => control;
 
@@ -67,8 +68,9 @@ internal sealed class LevelEditorInstance : IEditor
         object? sender,
         AssetEventArgs e)
     {
+        control.UpdateAssetsEvent(e);
         //control.AssetsModified(e.Assets);
-        
+
     }
 
     private void Archive_AssetsModifiedPreview(
@@ -99,13 +101,14 @@ internal sealed class LevelEditorInstance : IEditor
             CanDisplayAsset(asset))
         {
             control.SetSelectedContainer(asset.Entry);
+            control.FocusOnSelectedObject();
         }
     }
 
     private bool CanDisplayAsset(AssetInfo asset)
     {
         // Your actual check.
-        return true;
+        return ContainerCreator.CreateContainer(asset.Entry) != null;
     }
 
     public void Dispose()

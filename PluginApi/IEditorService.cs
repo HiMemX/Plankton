@@ -8,6 +8,8 @@ namespace PluginApi
 {
     public interface IEditorService
     {
+
+
         /// <summary>
         /// Registers a type of editor that this plugin can create.
         /// </summary>

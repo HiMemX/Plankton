@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using CSHO;
 using HoArchive;
 using PluginApi;
@@ -24,6 +25,81 @@ namespace ArchiveEditorPlugin
             this.host = host;
             this.preferences = preferences;
 
+
+            var openInItem = new OpenInToolStripMenuItem(
+                host.Editors,
+                () =>
+                {
+                    AssetInfo? asset = GetSelectedAsset();
+
+                    return asset == null
+                        ? null
+                        : new EditorTarget(asset);
+                });
+
+            assetListViewContextMenu.Items.Add(openInItem);
+
+        }
+
+        public void Reveal(EditorTarget target)
+        {
+            if (archiveTreeView.Nodes.Count == 0) return;
+
+            TOCEntry entry = (TOCEntry)((AssetInfo)target.Value).Entry;
+            TreeNode? node = FindTreeNodeWithAsset(archiveTreeView.Nodes[0], entry);
+
+            if (node == null) return;
+
+            archiveTreeView.SelectedNode = node;
+
+            ArchiveTreeViewOnSelect(node);
+
+            ListViewItem? item = FindListViewItem(entry);
+
+            if (item == null)
+            {
+                host.Commands.Execute("plankton.console.add-error", ("ArchiveEditorControl.Reveal", "Couldn't find ListViewItem " + tocEntryListView.Items.Count.ToString()));
+                return;
+            }
+            host.Commands.Execute("plankton.console.add-entry", ("ArchiveEditorControl.Reveal", "Found ListViewItem"));
+
+            item.Focused = true;
+            item.Selected = true;
+
+        }
+
+        private ListViewItem? FindListViewItem(TOCEntry entry)
+        {
+            foreach (ListViewItem item in tocEntryListView.Items)
+            {
+                if (entry == ((NodeTag)item.Tag).obj) return item;
+            }
+            return null;
+        }
+
+        private TreeNode? FindTreeNodeWithAsset(TreeNode parent, TOCEntry entry)
+        {
+            object obj = ((NodeTag)parent.Tag).obj;
+            if (obj is ParcelTOC)
+            {
+                if (((ParcelTOC)obj).Entries.Contains(entry)) return parent;
+                return null;
+            }
+
+            foreach (TreeNode node in parent.Nodes)
+            {
+                TreeNode? result = FindTreeNodeWithAsset(node, entry);
+                if (result != null) return result;
+            }
+
+            return null;
+        }
+
+
+        private AssetInfo GetSelectedAsset()
+        {
+            if (tocEntryListView.SelectedItems.Count == 0) return null;
+            return new AssetInfo(handler, (TOCEntry)((NodeTag)tocEntryListView.SelectedItems[0].Tag).header);
         }
 
         public void ReloadData()
@@ -124,26 +200,12 @@ namespace ArchiveEditorPlugin
             return node;
         }
 
-        private void archiveTreeView_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-            object tag = ((NodeTag)e.Node.Tag).obj;
-            object header = ((NodeTag)e.Node.Tag).header;
-            object data = ((NodeTag)e.Node.Tag).data;
-
-
-
-            if (tag is ParcelTOC) ReloadListView((ParcelTOC)tag);
-
-            if ((header is not null) || (data is not null)) SetPropertyGrid((NodeTag)e.Node.Tag);
-
-        }
 
         private void tocEntryListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NodeTag> items = new();
-            
-            foreach(object item in tocEntryListView.SelectedItems)
+
+            foreach (object item in tocEntryListView.SelectedItems)
             {
                 items.Add((NodeTag)((ListViewItem)item).Tag);
             }
@@ -154,7 +216,19 @@ namespace ArchiveEditorPlugin
         private void SetPropertyGrid(NodeTag tag)
         {
             headerPropertyGrid.SelectedObject = tag.header;
-            dataPropertyGrid.SelectedObject = tag.data; 
+            dataPropertyGrid.SelectedObject = tag.data;
+
+            ResetLabels();
+
+
+            if (tag.header != null) headerLabel.Text = tag.header.ToString();
+            if (tag.data != null) dataLabel.Text = tag.data.ToString();
+        }
+
+        private void ResetLabels()
+        {
+            headerLabel.Text = "";
+            dataLabel.Text = "";
         }
 
         private void SetPropertyGrid(List<NodeTag> tag)
@@ -164,6 +238,36 @@ namespace ArchiveEditorPlugin
 
             headerPropertyGrid.SelectedObjects = headers;
             dataPropertyGrid.SelectedObjects = datas;
+
+            ResetLabels();
+
+            if (headers.Length != 0) headerLabel.Text = headers[0].ToString();
+            if (datas.Length != 0) dataLabel.Text = datas[0].ToString();
+
+        }
+
+        private void archiveTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+        {
+            if (e.Action == TreeViewAction.Unknown)
+                return;
+
+            ArchiveTreeViewOnSelect(e.Node);
+
+        }
+
+        private void ArchiveTreeViewOnSelect(TreeNode node)
+        {
+            object tag = ((NodeTag)node.Tag).obj;
+            object header = ((NodeTag)node.Tag).header;
+            object data = ((NodeTag)node.Tag).data;
+
+
+            if (tag is ParcelTOC) ReloadListView((ParcelTOC)tag);
+
+            if ((header is not null) || (data is not null)) SetPropertyGrid((NodeTag)node.Tag);
+
+
+            host.Commands.Execute("plankton.console.add-entry", ("ArchiveEditorControl.BeforeSelect", "Set List View"));
         }
     }
 

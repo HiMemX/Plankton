@@ -10,7 +10,7 @@ namespace PluginApi
 {
     public interface IEditor : IDisposable
     {
-        string Title { get; }
+        string Title { get; set; }
         Control Control { get; }
         Icon? Icon { get; }
 

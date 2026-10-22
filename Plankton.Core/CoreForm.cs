@@ -24,6 +24,9 @@ namespace Plankton.Core
         private readonly Dictionary<IEditor, EditorDockContent> editorWindows =
             new();
 
+
+        private readonly DockTabRenameFilter tabRenameFilter;
+
         public CoreForm()
         {
             InitializeComponent();
@@ -48,6 +51,8 @@ namespace Plankton.Core
             preferencesService = new PreferencesService();
 
 
+            tabRenameFilter = new DockTabRenameFilter(mainDockPanel);
+            Application.AddMessageFilter(tabRenameFilter);
 
             host = new Host(
                 archiveService,
@@ -70,6 +75,7 @@ namespace Plankton.Core
 
             pluginLoader = new PluginLoader(host);
         }
+
 
         private void RegisterCoreUI()
         {

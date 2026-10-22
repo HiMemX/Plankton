@@ -1,4 +1,6 @@
 ﻿namespace _3DLevelEditorPlugin;
+
+using Plankton.Special_Editors.Level_Editor.EditableContainers;
 using PluginApi;
 
 internal sealed class LevelEditorProvider : IEditorProvider
@@ -35,6 +37,6 @@ internal sealed class LevelEditorProvider : IEditorProvider
     private bool CanHandleAsset(AssetInfo asset)
     {
         // Actual level-editor-supported assets.
-        return true;
+        return ContainerCreator.CreateContainer(asset.Entry) != null;
     }
 }

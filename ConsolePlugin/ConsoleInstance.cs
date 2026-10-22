@@ -12,7 +12,7 @@ namespace ConsolePlugin
         private readonly IHost host;
         private readonly ConsoleForm control;
 
-        public string Title => "Console";
+        public string Title { get; set; } = "Console";
         public Icon? Icon => new Icon("Resources/Console.ico");
         public Control Control => control;
 

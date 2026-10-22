@@ -114,6 +114,7 @@ namespace Plankton.Special_Editors.Level_Editor
             List<AssetInfo> infos = new();
             foreach(EditableContainer container in containers)
             {
+                if (container.entry.wmlTypeID == wmlTypeID.BSP) continue; // No need to update locrotscale of these, they stay constant
                 infos.Add(new AssetInfo(handler, container.entry));
             }
             AssetsModifiedPreview?.Invoke(this, infos);
@@ -333,16 +334,21 @@ namespace Plankton.Special_Editors.Level_Editor
             MainEditorNewAssetCallback(entry);
         }
 
+        public void FocusOnSelectedObject()
+        {
+            if (selectedContainer != null)
+            {
+                System.Numerics.Vector3 pos = selectedContainer.GetPosition();
+                renderer.camera.orbit = new Vector3(pos.X, pos.Y, pos.Z);
+            }
+        }
+
         private void handleUserInput()
         {
 
             if (renderer.IsPressed(preferences.focusOnObject))
             {
-                if (selectedContainer != null)
-                {
-                    System.Numerics.Vector3 pos = selectedContainer.GetPosition();
-                    renderer.camera.orbit = new Vector3(pos.X, pos.Y, pos.Z);
-                }
+                FocusOnSelectedObject();   
                 return;
             }
 
