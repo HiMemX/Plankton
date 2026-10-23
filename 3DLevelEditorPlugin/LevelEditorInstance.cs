@@ -40,6 +40,7 @@ internal sealed class LevelEditorInstance : IEditor
         host.Archive.AssetsModifiedPreview += Archive_AssetsModifiedPreview;
 
         control.AssetsModifiedPreview += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModifiedPreview(sender, e); }; 
+        //control.AssetsModified
 
         // An archive might already be open when this editor is created.
         if (host.Archive.Current.Archive != null)

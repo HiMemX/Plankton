@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <TargetFramework>net8.0-windows</TargetFramework>
+	  <UseWindowsForms>true</UseWindowsForms>
+	  <EnableDynamicLoading>true</EnableDynamicLoading>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PluginApi\PluginApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Be.Windows.Forms.HexBox">
+      <HintPath>..\..\..\..\Desktop\Random_stuff\HexBox\Be.Windows.Forms.HexBox.dll</HintPath>
+    </Reference>
+    <Reference Include="CSHO">
+      <HintPath>..\..\..\..\Desktop\Projects\CSHO\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

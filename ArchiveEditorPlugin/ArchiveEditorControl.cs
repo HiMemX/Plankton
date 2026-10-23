@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using CSHO;
 using HoArchive;
 using PluginApi;
+using Plankton.ArchiveEditorPlugin.Helpers;
 
 namespace ArchiveEditorPlugin
 {
@@ -45,7 +46,7 @@ namespace ArchiveEditorPlugin
         {
             if (archiveTreeView.Nodes.Count == 0) return;
 
-            TOCEntry entry = (TOCEntry)((AssetInfo)target.Value).Entry;
+            TOCEntry entry = ((AssetInfo)target.Value).Entry;
             TreeNode? node = FindTreeNodeWithAsset(archiveTreeView.Nodes[0], entry);
 
             if (node == null) return;
@@ -144,9 +145,11 @@ namespace ArchiveEditorPlugin
             item.Tag = new NodeTag(entry, entry, entry.entity);
             item.SubItems.Add(entry.wmlTypeID.ToString());
             item.SubItems.Add(entry.uidSelf.ToString("X16"));
+            item.SubItems.Add(DataProcessing.FormatBytes(entry.blobSize));
 
             return item;
         }
+
 
         private TreeNode CreateNode(ParcelBase parcel, TableEntry? entry = null)
         {
