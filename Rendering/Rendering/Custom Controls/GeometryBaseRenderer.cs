@@ -200,7 +200,7 @@ namespace Plankton.Custom_Controls
             // Buffer used for handling selection with mouse pointer
 
             selectionFrame = new Frame(this.Width, this.Height);
-            outlineFrame = new Frame(this.Width, this.Height);
+            outlineFrame = new Frame(this.Width, this.Height, 8);
 
             fullscreenVao = GL.GenVertexArray();
 
@@ -292,62 +292,119 @@ namespace Plankton.Custom_Controls
 
         private void DrawSelectedContainerOutlines()
         {
-
+            // outlineFrame.Bind() now binds the multisampled FBO
+            // when this Frame was created with samples > 1.
             outlineFrame.Bind();
-            GL.Disable(EnableCap.Multisample);
+
+            GL.Enable(EnableCap.Multisample);
+
             GL.ClearColor(0, 0, 0, 0);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Clear(
+                ClearBufferMask.ColorBufferBit |
+                ClearBufferMask.DepthBufferBit);
+
             GL.ClearColor(renderSettings.backgroundColor);
 
             solidColorShader.Use();
-            solidColorShader.SetMatrix4("project", camera.GetProjectionMatrix());
-            solidColorShader.SetMatrix4("view", camera.GetViewMatrix());// Matrix4.LookAt(new Vector3(0, 3, 0), Vector3.Zero, new Vector3(0,0,1)));//camera.GetViewMatrix());
-            solidColorShader.SetInt("useCustomColor", 0);
+
+            solidColorShader.SetMatrix4(
+                "project",
+                camera.GetProjectionMatrix());
+
+            solidColorShader.SetMatrix4(
+                "view",
+                camera.GetViewMatrix());
+
+            solidColorShader.SetInt(
+                "useCustomColor",
+                0);
 
             GeometryBase renderthis;
+
             foreach (BaseClass geom in resourcePool.aGeometryPool)
             {
                 renderthis = (GeometryBase)geom;
 
-                if (!renderthis.CanRender) { continue; }
-                if (renderthis.CulledInstanceInfos.Count == 0) continue; // Unprofiled optimization (maybe)
+                if (!renderthis.CanRender)
+                    continue;
 
-                GL.BindVertexArray(renderthis.VertexArray.handle);
-                GL.DrawElementsInstanced(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, renderthis.elementCount, DrawElementsType.UnsignedInt, (IntPtr)0, renderthis.CulledInstanceInfos.Count);
+                if (renderthis.CulledInstanceInfos.Count == 0)
+                    continue;
 
+                GL.BindVertexArray(
+                    renderthis.VertexArray.handle);
+
+                GL.DrawElementsInstanced(
+                    OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles,
+                    renderthis.elementCount,
+                    DrawElementsType.UnsignedInt,
+                    IntPtr.Zero,
+                    renderthis.CulledInstanceInfos.Count);
             }
-            renderhelper.SetupHighlightShader(renderSettings.highlightColor);
+
+            // Render selected/highlighted solid objects into the outline mask.
+            renderhelper.SetupHighlightShader(
+                renderSettings.highlightColor);
+
             renderhelper.RenderSolid();
 
-            outlineFrame.Unbind();
-            GL.Enable(EnableCap.Multisample);
+
+            // NEW:
+            // Resolve the multisampled outline framebuffer into its
+            // normal Texture2D so the postprocess shader can sample it.
+            outlineFrame.Resolve();
+
 
             GL.Disable(EnableCap.DepthTest);
 
             edgeDetectionPPShader.Use();
+
             GL.ActiveTexture(TextureUnit.Texture0);
             outlineFrame.BindTexture();
-            edgeDetectionPPShader.SetInt("inputTex", 0);
-            edgeDetectionPPShader.SetFloat2("texelSize", 1f / Width, 1f / Height);
-            edgeDetectionPPShader.SetColor4("edgeColor", renderSettings.highlightColor);
+
+            edgeDetectionPPShader.SetInt(
+                "inputTex",
+                0);
+
+            edgeDetectionPPShader.SetFloat2(
+                "texelSize",
+                1f / Width,
+                1f / Height);
+
+            edgeDetectionPPShader.SetColor4(
+                "edgeColor",
+                renderSettings.highlightColor);
 
             GL.Enable(EnableCap.Blend);
+
             GL.BlendFunc(
                 BlendingFactor.SrcAlpha,
                 BlendingFactor.OneMinusSrcAlpha);
 
             GL.BindVertexArray(fullscreenVao);
-            GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, 0, 3);
+
+            GL.DrawArrays(
+                OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles,
+                0,
+                3);
+
             GL.BindVertexArray(0);
 
+
+            // KEEP THIS.
+            // This was present in your original implementation.
             GL.LineWidth(1);
-            renderhelper.SetupHighlightShader(renderSettings.highlightColor, true);
+
+            renderhelper.SetupHighlightShader(
+                renderSettings.highlightColor,
+                true);
+
             renderhelper.RenderNonSolid();
+
 
             GL.Disable(EnableCap.Blend);
             GL.Enable(EnableCap.DepthTest);
         }
-
 
 
         private void DrawSelectionBuffer()

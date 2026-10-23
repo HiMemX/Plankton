@@ -31,11 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CoreForm));
             mainMenuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
+            editToolStripMenuItem = new ToolStripMenuItem();
             viewToolStripMenuItem = new ToolStripMenuItem();
             mainDockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             vS2015LightTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             parentPanel = new Panel();
-            editToolStripMenuItem = new ToolStripMenuItem();
             mainMenuStrip.SuspendLayout();
             parentPanel.SuspendLayout();
             SuspendLayout();
@@ -56,6 +56,12 @@
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
+            // 
+            // editToolStripMenuItem
+            // 
+            editToolStripMenuItem.Name = "editToolStripMenuItem";
+            editToolStripMenuItem.Size = new Size(39, 20);
+            editToolStripMenuItem.Text = "Edit";
             // 
             // viewToolStripMenuItem
             // 
@@ -82,12 +88,6 @@
             parentPanel.Size = new Size(1214, 608);
             parentPanel.TabIndex = 2;
             // 
-            // editToolStripMenuItem
-            // 
-            editToolStripMenuItem.Name = "editToolStripMenuItem";
-            editToolStripMenuItem.Size = new Size(39, 20);
-            editToolStripMenuItem.Text = "Edit";
-            // 
             // CoreForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -99,6 +99,7 @@
             MainMenuStrip = mainMenuStrip;
             Name = "CoreForm";
             Text = "Plankton";
+            WindowState = FormWindowState.Maximized;
             mainMenuStrip.ResumeLayout(false);
             mainMenuStrip.PerformLayout();
             parentPanel.ResumeLayout(false);

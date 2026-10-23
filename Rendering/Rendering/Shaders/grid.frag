@@ -20,7 +20,7 @@ const float MINOR_OPACITY = 0.23;
 const float MAJOR_OPACITY = 0.35;
 
 // Grid color
-const vec3 GRID_COLOR = vec3(0.65);
+const vec3 GRID_COLOR = vec3(1);
 
 // --------------------------------------------
 // Pixel-filtered grid
