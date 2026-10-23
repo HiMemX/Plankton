@@ -15,7 +15,11 @@ namespace Rendering.Rendering
     {
         [DisplayName("Background Color")]
         [Editor(typeof(Color4Editor), typeof(UITypeEditor))]
-        public Color4 backgroundColor { get; set; } = new Color4(0, 0, 0, 1);
+        public Color4 backgroundColor { get; set; } = new Color4(0, 0, 0, 255);
+
+        [DisplayName("Highlight Color")]
+        [Editor(typeof(Color4Editor), typeof(UITypeEditor))]
+        public Color4 highlightColor { get; set; } = new Color4(255, 215, 0, 255);
 
         [DisplayName("Alpha Transparency")]
         public bool alphaTransparency { get; set; } = true;

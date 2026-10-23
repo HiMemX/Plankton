@@ -69,6 +69,8 @@ namespace Plankton.Custom_Controls
         ResourcePool resourcePool;
         public RenderHelper renderhelper;
 
+        private GridModel grid;
+
 
         
 
@@ -116,7 +118,14 @@ namespace Plankton.Custom_Controls
         public void SetPreferences(Preferences preferences)
         {
             this.preferences = preferences;
-            this.renderSettings = Clone(preferences.defaultRenderSettings);
+            JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IncludeFields = true
+            };
+            this.renderSettings = Clone(preferences.defaultRenderSettings, jsonOptions);
 
         }
 
@@ -206,6 +215,7 @@ namespace Plankton.Custom_Controls
             GL.Enable(EnableCap.StencilTest);
 
             renderhelper = new(glControl);
+            grid = new();
 
             drawTimer = new();
 
@@ -306,7 +316,7 @@ namespace Plankton.Custom_Controls
                 GL.DrawElementsInstanced(OpenTK.Graphics.OpenGL4.PrimitiveType.Triangles, renderthis.elementCount, DrawElementsType.UnsignedInt, (IntPtr)0, renderthis.CulledInstanceInfos.Count);
 
             }
-            renderhelper.SetupHighlightShader();
+            renderhelper.SetupHighlightShader(renderSettings.highlightColor);
             renderhelper.RenderSolid();
 
             outlineFrame.Unbind();
@@ -319,7 +329,7 @@ namespace Plankton.Custom_Controls
             outlineFrame.BindTexture();
             edgeDetectionPPShader.SetInt("inputTex", 0);
             edgeDetectionPPShader.SetFloat2("texelSize", 1f / Width, 1f / Height);
-            edgeDetectionPPShader.SetColor4("edgeColor", GlobalRenderSettings.highlightColor);
+            edgeDetectionPPShader.SetColor4("edgeColor", renderSettings.highlightColor);
 
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(
@@ -331,7 +341,7 @@ namespace Plankton.Custom_Controls
             GL.BindVertexArray(0);
 
             GL.LineWidth(1);
-            renderhelper.SetupHighlightShader(true);
+            renderhelper.SetupHighlightShader(renderSettings.highlightColor, true);
             renderhelper.RenderNonSolid();
 
             GL.Disable(EnableCap.Blend);
@@ -772,6 +782,8 @@ namespace Plankton.Custom_Controls
             renderhelper.view = camera.GetViewMatrix();
             renderhelper.projection = camera.GetProjectionMatrix();
 
+
+
             stopwatch.Restart();
             // Cull anything that isn't going to be on screen and buffer (in-archive geometry only atm)
             CullAndBufferContainers();
@@ -826,7 +838,9 @@ namespace Plankton.Custom_Controls
             //RenderHelper.RenderLine(Vector3.UnitZ * -1000f, Vector3.UnitZ * 1000f, Color4.Blue, 1);
             if (!renderSettings.showGrid) return;
 
-            int N = 10;
+            grid.SetViewProj(renderhelper.view, renderhelper.projection);
+            grid.Render();
+            /*int N = 10;
 
             renderhelper.RenderLine(Vector3.UnitX * -N, Vector3.UnitX * N, Color4.Red, 1);
             renderhelper.RenderLine(Vector3.UnitZ * -N, Vector3.UnitZ * N, Color4.Blue, 1);
@@ -839,7 +853,7 @@ namespace Plankton.Custom_Controls
             for (int x = -N; x <= N; x++)
             {
                 renderhelper.RenderLine(Vector3.UnitZ * -N + x * Vector3.UnitX, Vector3.UnitZ * N + x * Vector3.UnitX, Color4.Gray, 1);
-            }
+            }*/
         }
 
 

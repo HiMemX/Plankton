@@ -181,16 +181,16 @@ namespace Plankton.Rendering
             shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
         }
 
-        public void SetupHighlightShader(bool useHighlightColor = false)
+        public void SetupHighlightShader(Color4 highlightColor, bool useHighlightColor = false)
         {
 
             Shader shader = models.shaders.highlight;
             shader.Use();
             shader.SetMatrix4("view", view);
             shader.SetMatrix4("project", projection);
-            shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
+            shader.SetColor4("selectedColor", highlightColor);
             models.shaders.highlight.SetInt("useCustomColor", useHighlightColor ? 1 : 0);
-            models.shaders.highlight.SetColor4("customColor", GlobalRenderSettings.highlightColor);
+            models.shaders.highlight.SetColor4("customColor", highlightColor);
         }
 
         public void SetupLineShader(Vector3 startpos, Vector3 endpos, Color4 color)

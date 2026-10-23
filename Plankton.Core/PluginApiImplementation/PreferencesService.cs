@@ -32,7 +32,8 @@ internal sealed class PreferencesService : IPreferencesService
         {
             WriteIndented = true,
             PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            IncludeFields = true
         };
 
         jsonOptions.Converters.Add(

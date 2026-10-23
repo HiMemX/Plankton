@@ -6,7 +6,13 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>Plankton.ico</ApplicationIcon>
+    <AssemblyName>Plankton</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Plankton.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DockPanelSuite" Version="3.1.1" />

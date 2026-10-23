@@ -61,10 +61,19 @@
     <None Update="Rendering\Models\Empty.dae">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Rendering\Models\Grid.dae">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Rendering\Models\Line.dae">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Rendering\Models\Sphere.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Rendering\Shaders\grid.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Rendering\Shaders\grid.vert">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Rendering\Shaders\Line\LineShader.frag">
