@@ -8,7 +8,7 @@ namespace PluginApi
 {
     public interface IEditorService
     {
-
+        IReadOnlyList<IEditorProvider> Providers { get; }
 
         /// <summary>
         /// Registers a type of editor that this plugin can create.

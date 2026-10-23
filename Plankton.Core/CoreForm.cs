@@ -1,5 +1,6 @@
 using CSHO;
 using Plankton.Core;
+using Plankton.Core.CustomUIEditors;
 using Plankton.Core.Plugins;
 using Plankton.PluginApiImplementation;
 using Plankton.UI;
@@ -26,6 +27,8 @@ namespace Plankton.Core
 
 
         private readonly DockTabRenameFilter tabRenameFilter;
+
+        private CorePreferences preferences = null!;
 
         public CoreForm()
         {
@@ -68,12 +71,25 @@ namespace Plankton.Core
             RegisterCoreUILocations();
             RegisterCoreCommands();
             RegisterCoreUI();
+            RegisterPreferences();
 
             // ---------------------------------------------------------
             // Plugin loader
             // ---------------------------------------------------------
 
             pluginLoader = new PluginLoader(host);
+
+
+        }
+
+        private void RegisterPreferences()
+        {
+            preferences = host.Preferences.Register<CorePreferences>(
+                "plankton.core",
+                "Core");
+
+            StartupEditorsEditor.GetProviders =
+                () => editorService.Providers;
         }
 
 
@@ -136,6 +152,23 @@ namespace Plankton.Core
 
             pluginLoader.LoadAll(pluginDirectory);
 
+
+            OpenStartupEditors();
+        }
+
+        private void OpenStartupEditors()
+        {
+            foreach (string providerId in preferences.StartupEditors)
+            {
+                IEditorProvider? provider =
+                    editorService.Providers.FirstOrDefault(
+                        x => x.Id == providerId);
+
+                if (provider == null)
+                    continue;
+
+                editorService.Open(provider);
+            }
         }
 
         private void ConfigureDocking()

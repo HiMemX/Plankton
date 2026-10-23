@@ -4,6 +4,7 @@ namespace Plankton.PluginApiImplementation
 {
     internal sealed class EditorService : IEditorService
     {
+        public IReadOnlyList<IEditorProvider> Providers => providers;
 
         private readonly List<IEditorProvider> providers = new();
         private readonly List<IEditor> openEditors = new();

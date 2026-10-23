@@ -196,35 +196,67 @@ internal sealed class PreferencesService : IPreferencesService
         Type type = source.GetType();
 
         if (destination.GetType() != type)
+        {
             throw new InvalidOperationException(
                 "Preference objects must have the same type.");
+        }
 
         foreach (PropertyInfo property in type.GetProperties(
                      BindingFlags.Instance | BindingFlags.Public))
         {
+            // Skip indexers such as List<T>.Item[int].
+            if (property.GetIndexParameters().Length != 0)
+                continue;
+
             if (!property.CanRead || !property.CanWrite)
                 continue;
 
             object? sourceValue = property.GetValue(source);
 
-            if (sourceValue == null ||
-                property.PropertyType.IsValueType ||
-                property.PropertyType == typeof(string))
+            if (sourceValue == null)
+            {
+                property.SetValue(destination, null);
+                continue;
+            }
+
+            Type propertyType = property.PropertyType;
+
+            // Values that can just be assigned directly.
+            if (propertyType.IsValueType ||
+                propertyType == typeof(string))
             {
                 property.SetValue(destination, sourceValue);
                 continue;
             }
 
+            // Collections should be replaced with a deep-cloned collection,
+            // not recursively inspected through reflection.
+            if (typeof(System.Collections.IEnumerable)
+                .IsAssignableFrom(propertyType))
+            {
+                property.SetValue(
+                    destination,
+                    Clone(sourceValue));
+
+                continue;
+            }
+
+            // Regular nested preference object.
             object? destinationValue =
                 property.GetValue(destination);
 
             if (destinationValue == null)
             {
-                property.SetValue(destination, Clone(sourceValue));
+                property.SetValue(
+                    destination,
+                    Clone(sourceValue));
+
                 continue;
             }
 
-            CopyInto(sourceValue, destinationValue);
+            CopyInto(
+                sourceValue,
+                destinationValue);
         }
     }
 }
