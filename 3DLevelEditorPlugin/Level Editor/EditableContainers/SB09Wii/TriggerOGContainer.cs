@@ -14,7 +14,7 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class TriggerOGContainer : EditableContainer
     {
-        public TriggerOG asset;
+        public TriggerOG asset => (TriggerOG)entry.entity;
 
         private Vector3 scale;
         private Vector3 rotation; // Used for editing purposes, not actually part of TriggerOG
@@ -26,7 +26,6 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
             this.entry = entry;
             isInstanced = false;
 
-            asset = (TriggerOG)entry.entity;
         }
 
         public override Vector3 GetPosition() // Used for focusing on object

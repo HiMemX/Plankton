@@ -14,14 +14,13 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class CurveContainer : EditableContainer
     {
-        public Curve asset;
+        public Curve asset => (Curve)entry.entity;
 
         public CurveContainer(TOCEntry entry)
         {
             this.entry = entry;
             isInstanced = false;
 
-            asset = (Curve)entry.entity;
         }
         
 

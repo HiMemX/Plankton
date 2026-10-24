@@ -14,8 +14,8 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class NPCGenericContainer : EditableContainer
     {
-        public NPCGeneric _asset;
-        public xEntAsset asset;
+        public NPCGeneric _asset => (NPCGeneric)entry.entity;
+        public xEntAsset asset => _asset.EntAsset;
 
         public NPCGenericContainer(TOCEntry entry)
         {
@@ -24,8 +24,6 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
             defaultLightKit = enumDefaultLightKitType.NPC;
             
-            _asset = (NPCGeneric)entry.entity;
-            asset = _asset.EntAsset; // Cheap way of not having to rewrite xEntAssetContainer
         }
 
         public override Vector3 GetPosition() // Used for focusing on object

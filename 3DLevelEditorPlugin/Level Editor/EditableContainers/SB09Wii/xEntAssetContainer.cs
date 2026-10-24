@@ -14,7 +14,7 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class xEntAssetContainer : EditableContainer
     {
-        public xEntAsset asset;
+        public xEntAsset asset => (xEntAsset)entry.entity;
 
         public xEntAssetContainer(TOCEntry entry)
         {
@@ -31,7 +31,6 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
             }
             
-            asset = (xEntAsset)entry.entity;
         }
 
         public override Vector3 GetPosition() // Used for focusing on object

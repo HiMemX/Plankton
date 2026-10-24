@@ -13,7 +13,7 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class FloatingCollectibleContainer : EditableContainer
     {
-        public FloatingCollectible asset;
+        public FloatingCollectible asset => (FloatingCollectible)entry.entity;
 
         public FloatingCollectibleContainer(TOCEntry entry)
         {
@@ -22,7 +22,6 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
             defaultLightKit = enumDefaultLightKitType.Object;
 
-            asset = (FloatingCollectible)entry.entity;
 
         }
 

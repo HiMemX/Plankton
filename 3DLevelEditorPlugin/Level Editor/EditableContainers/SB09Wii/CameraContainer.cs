@@ -16,14 +16,13 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class CameraContainer : EditableContainer
     {
-        public SB09WiiAsset.Camera asset;
+        public SB09WiiAsset.Camera asset => (SB09WiiAsset.Camera)entry.entity;
 
         public CameraContainer(TOCEntry entry)
         {
             this.entry = entry;
             isInstanced = false;
 
-            asset = (SB09WiiAsset.Camera)entry.entity;
         }
 
         public override Vector3 GetPosition() // Used for focusing on object

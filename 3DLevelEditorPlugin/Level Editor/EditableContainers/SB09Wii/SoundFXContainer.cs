@@ -14,14 +14,13 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class SoundFXContainer : EditableContainer
     {
-        public SoundFX asset;
+        public SoundFX asset => (SoundFX)entry.entity;
 
         public SoundFXContainer(TOCEntry entry)
         {
             this.entry = entry;
             isInstanced = false;
 
-            asset = (SoundFX)entry.entity;
         }
 
         public override Vector3 GetPosition() // Used for focusing on object

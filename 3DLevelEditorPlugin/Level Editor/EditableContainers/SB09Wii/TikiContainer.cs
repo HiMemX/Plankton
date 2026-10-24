@@ -13,7 +13,7 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class TikiContainer : EditableContainer
     {
-        public Tiki asset;
+        public Tiki asset => (Tiki)entry.entity;
 
         public TikiContainer(TOCEntry entry)
         {
@@ -22,7 +22,6 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
             defaultLightKit = enumDefaultLightKitType.NPC;
 
-            asset = (Tiki)entry.entity;
         }
 
         public override Vector3 GetPosition() // Used for focusing on object

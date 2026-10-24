@@ -52,12 +52,12 @@
             propertyGridTabPage = new System.Windows.Forms.TabPage();
             selectedPropertyGrid = new System.Windows.Forms.PropertyGrid();
             displaySettingsTabPage = new System.Windows.Forms.TabPage();
+            splitContainer3 = new System.Windows.Forms.SplitContainer();
             containerTypesCheckedListBox = new System.Windows.Forms.CheckedListBox();
             renderSettingsPropertyGrid = new System.Windows.Forms.PropertyGrid();
             eventsTabPage = new System.Windows.Forms.TabPage();
             listBox1 = new System.Windows.Forms.ListBox();
             openLinkAssetButton = new System.Windows.Forms.Button();
-            splitContainer3 = new System.Windows.Forms.SplitContainer();
             levelViewRightClickMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -75,11 +75,11 @@
             editOptionsTabControl.SuspendLayout();
             propertyGridTabPage.SuspendLayout();
             displaySettingsTabPage.SuspendLayout();
-            eventsTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
             splitContainer3.Panel1.SuspendLayout();
             splitContainer3.Panel2.SuspendLayout();
             splitContainer3.SuspendLayout();
+            eventsTabPage.SuspendLayout();
             SuspendLayout();
             // 
             // levelViewRightClickMenu
@@ -87,13 +87,13 @@
             levelViewRightClickMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             levelViewRightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { testToolStripMenuItem });
             levelViewRightClickMenu.Name = "levelViewRightClickMenu";
-            levelViewRightClickMenu.Size = new System.Drawing.Size(95, 26);
+            levelViewRightClickMenu.Size = new System.Drawing.Size(181, 48);
             levelViewRightClickMenu.Opening += levelViewRightClickMenu_Opening;
             // 
             // testToolStripMenuItem
             // 
             testToolStripMenuItem.Name = "testToolStripMenuItem";
-            testToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
+            testToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             testToolStripMenuItem.Text = "Test";
             // 
             // splitContainer1
@@ -121,6 +121,7 @@
             // renderer
             // 
             renderer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            renderer.ContextMenuStrip = levelViewRightClickMenu;
             renderer.Dock = System.Windows.Forms.DockStyle.Fill;
             renderer.Location = new System.Drawing.Point(0, 0);
             renderer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -341,6 +342,24 @@
             displaySettingsTabPage.Text = "Display";
             displaySettingsTabPage.UseVisualStyleBackColor = true;
             // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer3.Location = new System.Drawing.Point(3, 3);
+            splitContainer3.Name = "splitContainer3";
+            splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            splitContainer3.Panel1.Controls.Add(containerTypesCheckedListBox);
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(renderSettingsPropertyGrid);
+            splitContainer3.Size = new System.Drawing.Size(266, 385);
+            splitContainer3.SplitterDistance = 187;
+            splitContainer3.TabIndex = 2;
+            // 
             // containerTypesCheckedListBox
             // 
             containerTypesCheckedListBox.CheckOnClick = true;
@@ -349,7 +368,7 @@
             containerTypesCheckedListBox.IntegralHeight = false;
             containerTypesCheckedListBox.Location = new System.Drawing.Point(0, 0);
             containerTypesCheckedListBox.Name = "containerTypesCheckedListBox";
-            containerTypesCheckedListBox.Size = new System.Drawing.Size(266, 189);
+            containerTypesCheckedListBox.Size = new System.Drawing.Size(266, 187);
             containerTypesCheckedListBox.TabIndex = 0;
             containerTypesCheckedListBox.ItemCheck += containerTypesCheckedListBox_ItemCheck;
             // 
@@ -360,7 +379,7 @@
             renderSettingsPropertyGrid.Location = new System.Drawing.Point(0, 0);
             renderSettingsPropertyGrid.Name = "renderSettingsPropertyGrid";
             renderSettingsPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-            renderSettingsPropertyGrid.Size = new System.Drawing.Size(266, 192);
+            renderSettingsPropertyGrid.Size = new System.Drawing.Size(266, 194);
             renderSettingsPropertyGrid.TabIndex = 1;
             renderSettingsPropertyGrid.ToolbarVisible = false;
             // 
@@ -398,24 +417,6 @@
             openLinkAssetButton.UseVisualStyleBackColor = true;
             openLinkAssetButton.Click += openLinkAssetButton_Click;
             // 
-            // splitContainer3
-            // 
-            splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-            splitContainer3.Location = new System.Drawing.Point(3, 3);
-            splitContainer3.Name = "splitContainer3";
-            splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer3.Panel1
-            // 
-            splitContainer3.Panel1.Controls.Add(containerTypesCheckedListBox);
-            // 
-            // splitContainer3.Panel2
-            // 
-            splitContainer3.Panel2.Controls.Add(renderSettingsPropertyGrid);
-            splitContainer3.Size = new System.Drawing.Size(266, 385);
-            splitContainer3.SplitterDistance = 189;
-            splitContainer3.TabIndex = 2;
-            // 
             // LevelEditor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -443,11 +444,11 @@
             editOptionsTabControl.ResumeLayout(false);
             propertyGridTabPage.ResumeLayout(false);
             displaySettingsTabPage.ResumeLayout(false);
-            eventsTabPage.ResumeLayout(false);
             splitContainer3.Panel1.ResumeLayout(false);
             splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
             splitContainer3.ResumeLayout(false);
+            eventsTabPage.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -472,7 +473,6 @@
         private CustomControls.Vector3InputBox rotationVectorInputBox;
         private System.Windows.Forms.GroupBox scaleGroupBox;
         private CustomControls.Vector3InputBox scaleVectorInputBox;
-        private System.Windows.Forms.ContextMenuStrip levelViewRightClickMenu;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
         private System.Windows.Forms.TabPage eventsTabPage;
         private System.Windows.Forms.ListBox listBox1;
@@ -480,5 +480,6 @@
         private Custom_Controls.GeometryBaseRenderer renderer;
         private System.Windows.Forms.PropertyGrid renderSettingsPropertyGrid;
         private System.Windows.Forms.SplitContainer splitContainer3;
+        public System.Windows.Forms.ContextMenuStrip levelViewRightClickMenu;
     }
 }

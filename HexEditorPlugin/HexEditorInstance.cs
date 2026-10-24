@@ -20,7 +20,7 @@ namespace HexEditorPlugin
         public Icon? Icon => new Icon("Resources/HexEditor.ico");
         public Control Control => control;
 
-        private TOCEntry current;
+        private TOCEntry? current;
 
 
 
@@ -31,16 +31,35 @@ namespace HexEditorPlugin
 
             control = new HexEditorControl() { Dock = DockStyle.Fill };
 
-            host.Archive.AssetsModifiedPreview += AssetsModifiedPreview;
+            host.Archive.Closed += Archive_Opened;
+            host.Archive.Opened += Archive_Opened;
+            host.Archive.AssetsModified += AssetsModified;
 
             Reveal(initialTarget);
+
+            control.SaveRequested += (_, _) =>
+            {
+                if (current == null) return;
+
+                byte[] modifiedData = control.GetBytes();
+
+                current.data = modifiedData.ToList();
+                try { current.CreateEntity(); }
+                catch(Exception e){
+                    host.Commands.Execute("plankton.console.add-error", ("HexEditorInstance.SaveRequested", e.ToString()));
+                    return;
+                }
+
+                host.Archive.NotifyAssetsModified(this, new List<AssetInfo>() { new AssetInfo(host.Archive.Current, current) });
+                control.SetModified(false);
+            };
+            
         }
 
-        private void AssetsModifiedPreview(object? sender, AssetEventArgs e)
+        private void AssetsModified(object? sender, AssetEventArgs e)
         {
             if (e.Assets[0].Entry == current)
             {
-                current.Update();
                 byte[] assetData;
                 assetData = e.Assets[0].Entry.data.ToArray();
 
@@ -50,7 +69,7 @@ namespace HexEditorPlugin
 
         public void Archive_Opened(object? sender, ArchiveEventArgs e)
         {
-            //control.ReloadData();
+            Dispose();
         }
 
         public bool CanReveal(EditorTarget target)
@@ -68,19 +87,13 @@ namespace HexEditorPlugin
 
             control.LoadBytes(assetData);
 
-            control.DataChanged += (_, _) =>
-            {
-                byte[] modifiedData = control.GetBytes();
-
-                current.data = modifiedData.ToList();
-                current.CreateEntity();
-
-                host.Archive.NotifyAssetsModifiedPreview(this, new List<AssetInfo>() { new AssetInfo(host.Archive.Current, current) });
-            };
+            
         }
 
         public void Dispose()
         {
+            host.Archive.Opened -= Archive_Opened;
+            host.Archive.AssetsModified -= AssetsModified;
             control.Dispose();
         }
     }

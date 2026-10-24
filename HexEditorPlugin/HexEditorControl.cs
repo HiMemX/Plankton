@@ -21,11 +21,15 @@ namespace HexEditorPlugin
         private readonly ToolStripStatusLabel lengthLabel;
         private readonly ToolStripStatusLabel modifiedLabel;
 
+        private readonly ToolStrip toolStrip;
+        private readonly ToolStripButton saveButton;
+
         private DynamicByteProvider? byteProvider;
         private bool loading;
 
         public event EventHandler? DataChanged;
         public event EventHandler? ModifiedChanged;
+        public event EventHandler? SaveRequested;
 
         public bool IsModified { get; private set; }
 
@@ -57,6 +61,25 @@ namespace HexEditorPlugin
 
                 BorderStyle = BorderStyle.None
             };
+
+            saveButton = new ToolStripButton
+            {
+                Text = "Save",
+                Enabled = false
+            };
+
+            saveButton.Click += (_, _) =>
+            {
+                SaveRequested?.Invoke(this, EventArgs.Empty);
+            };
+
+            toolStrip = new ToolStrip
+            {
+                Dock = DockStyle.Top,
+                GripStyle = ToolStripGripStyle.Hidden
+            };
+
+            toolStrip.Items.Add(saveButton);
 
             offsetLabel = new ToolStripStatusLabel
             {
@@ -97,6 +120,7 @@ namespace HexEditorPlugin
 
             Controls.Add(hexBox);
             Controls.Add(statusStrip);
+            Controls.Add(toolStrip);
 
             hexBox.SelectionStartChanged += HexBox_SelectionChanged;
             hexBox.SelectionLengthChanged += HexBox_SelectionChanged;
@@ -164,6 +188,8 @@ namespace HexEditorPlugin
 
             modifiedLabel.Text =
                 modified ? "Modified" : "";
+
+            saveButton.Enabled = modified;
 
             ModifiedChanged?.Invoke(
                 this,

@@ -31,6 +31,7 @@ namespace ArchiveEditorPlugin
             control = new ArchiveEditorControl(host, preferences) { Dock = DockStyle.Fill };
 
             host.Archive.Opened += Archive_Opened;
+            host.Archive.Closed += Archive_Opened;
 
 
 

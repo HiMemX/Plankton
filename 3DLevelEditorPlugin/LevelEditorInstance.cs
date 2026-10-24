@@ -5,6 +5,7 @@ using PluginApi;
 using Plankton.Special_Editors.Level_Editor;
 using Plankton;
 using Plankton.Special_Editors.Level_Editor.EditableContainers;
+using HoArchive;
 
 namespace _3DLevelEditorPlugin;
 
@@ -30,6 +31,21 @@ internal sealed class LevelEditorInstance : IEditor
             Dock = DockStyle.Fill
         };
 
+        var openInItem = new OpenInToolStripMenuItem(
+                host.Editors,
+                () =>
+                {
+                    TOCEntry? entry = control.GetSelectedAsset();
+                    if (entry == null) return null;
+                    AssetInfo? asset = new AssetInfo(host.Archive.Current, entry);
+
+                    return asset == null
+                        ? null
+                        : new EditorTarget(asset);
+                });
+
+        control.levelViewRightClickMenu.Items.Add(openInItem);
+
 
         control.handler = host.Archive.Current;
         control.InitRenderer();
@@ -39,8 +55,8 @@ internal sealed class LevelEditorInstance : IEditor
         host.Archive.AssetsModified += Archive_AssetsModified;
         host.Archive.AssetsModifiedPreview += Archive_AssetsModifiedPreview;
 
-        control.AssetsModifiedPreview += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModifiedPreview(sender, e); }; 
-        //control.AssetsModified
+        control.AssetsModifiedPreview += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModifiedPreview(sender, e); };
+        control.AssetsModified += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModified(sender, e); };
 
         // An archive might already be open when this editor is created.
         if (host.Archive.Current.Archive != null)

@@ -14,7 +14,7 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class PuckReflectorContainer : EditableContainer
     {
-        public PuckReflector asset;
+        public PuckReflector asset => (PuckReflector)entry.entity;
 
         public PuckReflectorContainer(TOCEntry entry)
         {
@@ -23,9 +23,6 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
             defaultLightKit = enumDefaultLightKitType.Object;
 
-            
-            
-            asset = (PuckReflector)entry.entity;
         }
 
         public override Vector3 GetPosition() // Used for focusing on object

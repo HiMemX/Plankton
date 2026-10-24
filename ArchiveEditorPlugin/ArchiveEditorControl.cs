@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CSHO;
 using HoArchive;
-using PluginApi;
 using Plankton.ArchiveEditorPlugin.Helpers;
+using PluginApi;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ArchiveEditorPlugin
 {
@@ -66,6 +67,8 @@ namespace ArchiveEditorPlugin
 
             item.Focused = true;
             item.Selected = true;
+
+            item.EnsureVisible();
 
         }
 

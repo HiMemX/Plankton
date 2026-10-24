@@ -72,6 +72,7 @@ namespace Plankton.Special_Editors.Level_Editor
         LevelEditorPreferences preferences;
 
         public event EventHandler<IEnumerable<AssetInfo>>? AssetsModifiedPreview;
+        public event EventHandler<IEnumerable<AssetInfo>>? AssetsModified;
 
         public LevelEditor(LevelEditorPreferences preferences)
         {
@@ -94,7 +95,14 @@ namespace Plankton.Special_Editors.Level_Editor
 
             this.preferences = preferences;
 
+            
+        }
 
+        public TOCEntry? GetSelectedAsset()
+        {
+            if (selectedContainer == null) return null;
+
+            return selectedContainer.entry;
         }
 
         public void UpdateAssetsEvent(AssetEventArgs e)
@@ -109,15 +117,21 @@ namespace Plankton.Special_Editors.Level_Editor
             UpdateNonInstancedContainers();
         }
 
-        public void UpdateLocRotScale(List<EditableContainer> containers)
+        private List<AssetInfo> GetContainerInfos(List<EditableContainer> containers)
         {
             List<AssetInfo> infos = new();
-            foreach(EditableContainer container in containers)
+            foreach (EditableContainer container in containers)
             {
                 if (container.entry.wmlTypeID == wmlTypeID.BSP) continue; // No need to update locrotscale of these, they stay constant
                 infos.Add(new AssetInfo(handler, container.entry));
             }
-            AssetsModifiedPreview?.Invoke(this, infos);
+            return infos;
+        }
+
+        public void UpdateLocRotScale(List<EditableContainer> containers)
+        {
+            
+            AssetsModifiedPreview?.Invoke(this, GetContainerInfos(containers));
             //UpdateEasyEditPanelValues();
         }
 
@@ -204,12 +218,22 @@ namespace Plankton.Special_Editors.Level_Editor
             renderer.InitRenderer();
         }
 
-
+        private void UpdateUnderlyingEntries(List<EditableContainer> containers)
+        {
+            foreach (EditableContainer container in containers)
+            {
+                container.entry.Update();
+            }
+        }
         
 
         public void UpdateEasyEditPanelValues()
         {
             if (selectedContainers.Count == 0) return;
+
+            UpdateUnderlyingEntries(selectedContainers);
+            AssetsModified?.Invoke(this, GetContainerInfos(selectedContainers));
+
             EditableContainer selectedContainer = selectedContainers.Last();
 
             if (lrsEditor.GetMode() == EditMode.NONE)

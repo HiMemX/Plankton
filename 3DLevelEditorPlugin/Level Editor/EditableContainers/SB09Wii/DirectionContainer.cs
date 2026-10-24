@@ -15,14 +15,13 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 {
     public class DirectionContainer : EditableContainer
     {
-        public Direction asset;
+        public Direction asset => (Direction)entry.entity;
 
         public DirectionContainer(TOCEntry entry)
         {
             this.entry = entry;
             isInstanced = false;
 
-            asset = (Direction)entry.entity;
         }
 
         public override Vector3 GetPosition() // Used for focusing on object
