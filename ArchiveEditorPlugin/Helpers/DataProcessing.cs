@@ -9,6 +9,11 @@ namespace Plankton.ArchiveEditorPlugin.Helpers
 {
     public static class DataProcessing
     {
+        public static string ByteArrayToString(byte[] ba)
+        {
+            return BitConverter.ToString(ba).Replace("-", "");
+        }
+
         public static string FormatBytes(long bytes)
         {
             if (bytes < 0)

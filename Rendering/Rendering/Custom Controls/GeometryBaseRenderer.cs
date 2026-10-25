@@ -352,28 +352,28 @@ namespace Plankton.Custom_Controls
             // NEW:
             // Resolve the multisampled outline framebuffer into its
             // normal Texture2D so the postprocess shader can sample it.
-            outlineFrame.Resolve();
-
+            outlineFrame.Unbind();
 
             GL.Disable(EnableCap.DepthTest);
 
             edgeDetectionPPShader.Use();
 
             GL.ActiveTexture(TextureUnit.Texture0);
-            outlineFrame.BindTexture();
+            outlineFrame.BindMultisampleTexture();
 
             edgeDetectionPPShader.SetInt(
                 "inputTex",
                 0);
 
-            edgeDetectionPPShader.SetFloat2(
-                "texelSize",
-                1f / Width,
-                1f / Height);
+            edgeDetectionPPShader.SetInt(
+                "sampleCount",
+                outlineFrame.Samples);
 
             edgeDetectionPPShader.SetColor4(
                 "edgeColor",
                 renderSettings.highlightColor);
+
+
 
             GL.Enable(EnableCap.Blend);
 
@@ -391,8 +391,6 @@ namespace Plankton.Custom_Controls
             GL.BindVertexArray(0);
 
 
-            // KEEP THIS.
-            // This was present in your original implementation.
             GL.LineWidth(1);
 
             renderhelper.SetupHighlightShader(
@@ -441,7 +439,9 @@ namespace Plankton.Custom_Controls
             }*/
             GL.LineWidth(20);
             renderhelper.SetupSelectionShader();
-            renderhelper.Render();
+            renderhelper.RenderSolid();
+            renderhelper.SetupSelectionShader(true);
+            renderhelper.RenderNonSolid();
 
             selectionFrame.Unbind();
             GL.Enable(EnableCap.Multisample);
@@ -803,7 +803,9 @@ namespace Plankton.Custom_Controls
 
             GL.LineWidth(1);
             renderhelper.SetupRegularShader();
-            renderhelper.Render();
+            renderhelper.RenderSolid();
+            renderhelper.SetupRegularShader(true);
+            renderhelper.RenderNonSolid();
             //Debug.debugWindow.AddEntry("DrawContainers", RenderHelper.models.Sphere.instances.Count);
 
             renderhelper.DisableBlending();

@@ -97,6 +97,9 @@
     <None Update="Rendering\Shaders\PrimitiveModel\common.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Rendering\Shaders\PrimitiveModel\functions.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Rendering\Shaders\PrimitiveModel\highlight.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

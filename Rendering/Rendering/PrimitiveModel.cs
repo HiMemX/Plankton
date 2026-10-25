@@ -235,6 +235,14 @@ namespace Plankton.Rendering
                 GL.EnableVertexAttribArray(8);
                 GL.VertexAttribDivisor(8, 1);
 
+                GL.VertexAttribIPointer(9, 1, VertexAttribIntegerType.Int, stride, (IntPtr)88);
+                GL.EnableVertexAttribArray(9);
+                GL.VertexAttribDivisor(9, 1);
+
+                GL.VertexAttribIPointer(10, 1, VertexAttribIntegerType.Int, stride, (IntPtr)92);
+                GL.EnableVertexAttribArray(10);
+                GL.VertexAttribDivisor(10, 1);
+
 
                 GL.BindVertexArray(line_vao);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _ibo);

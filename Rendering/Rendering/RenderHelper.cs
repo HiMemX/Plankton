@@ -163,22 +163,24 @@ namespace Plankton.Rendering
             shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
         }*/
 
-        public void SetupRegularShader()
+        public void SetupRegularShader(bool isline=false)
         {
             Shader shader = models.shaders.regular;
             shader.Use();
             shader.SetMatrix4("view", view);
             shader.SetMatrix4("project", projection);
             shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
+            shader.SetInt("isline", isline ? 1 : 0);
         }
 
-        public void SetupSelectionShader()
+        public void SetupSelectionShader(bool isline = false)
         {
             Shader shader = models.shaders.selection;
             shader.Use();
             shader.SetMatrix4("view", view);
             shader.SetMatrix4("project", projection);
             shader.SetColor4("selectedColor", GlobalRenderSettings.highlightColor);
+            shader.SetInt("isline", isline ? 1 : 0);
         }
 
         public void SetupHighlightShader(Color4 highlightColor, bool useHighlightColor = false)

@@ -154,7 +154,74 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
             return Matrix4x4.Identity;
 
+        }
 
+        private void RenderSphere(PrimitiveInstance baseinstance, RenderHelper helper)
+        {
+            baseinstance.matrix = GetInstanceMatrix();
+            baseinstance.color = GlobalRenderSettings.triggerSphereColor;
+
+            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_ALL;
+            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
+
+            helper.AddSphere(baseinstance);
+        }
+
+        private void RenderBox(PrimitiveInstance baseinstance, RenderHelper helper)
+        {
+            baseinstance.matrix = ((TriggerBox)asset.triggerSubtype).Transform.GetSystemMatrix();
+            baseinstance.color = GlobalRenderSettings.triggerBoxColor;
+            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_REGULAR;
+            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_NONE;
+
+
+            helper.AddCube(baseinstance);
+            //Debug.debugWindow.AddEntry("RenderBox", baseinstance.drawMaskSelected.ToString());
+
+            baseinstance = baseinstance.Clone();
+            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION | enumDrawStageMask.DRAW_HIGHLIGHT;
+            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
+
+            Matrix4x4 mat = GetInstanceMatrix();
+
+            // Bottom face
+            PrimitiveInstance line1 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(0.5f, -0.5f, -0.5f)) * mat);
+            helper.AddLine(line1);
+
+            PrimitiveInstance line2 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(0.5f, -0.5f, -0.5f), new Vector3(0.5f, -0.5f, 0.5f)) * mat);
+            helper.AddLine(line2);
+
+            PrimitiveInstance line3 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(0.5f, -0.5f, 0.5f), new Vector3(-0.5f, -0.5f, 0.5f)) * mat);
+            helper.AddLine(line3);
+
+            PrimitiveInstance line4 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(-0.5f, -0.5f, 0.5f), new Vector3(-0.5f, -0.5f, -0.5f)) * mat);
+            helper.AddLine(line4);
+
+            // Top face
+            PrimitiveInstance line5 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(-0.5f, 0.5f, -0.5f), new Vector3(0.5f, 0.5f, -0.5f)) * mat);
+            helper.AddLine(line5);
+
+            PrimitiveInstance line6 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(0.5f, 0.5f, -0.5f), new Vector3(0.5f, 0.5f, 0.5f)) * mat);
+            helper.AddLine(line6);
+
+            PrimitiveInstance line7 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(-0.5f, 0.5f, 0.5f)) * mat);
+            helper.AddLine(line7);
+
+            PrimitiveInstance line8 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(-0.5f, 0.5f, 0.5f), new Vector3(-0.5f, 0.5f, -0.5f)) * mat);
+            helper.AddLine(line8);
+
+            // Vertical edges
+            PrimitiveInstance line9 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(-0.5f, 0.5f, -0.5f)) * mat);
+            helper.AddLine(line9);
+
+            PrimitiveInstance line10 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(0.5f, -0.5f, -0.5f), new Vector3(0.5f, 0.5f, -0.5f)) * mat);
+            helper.AddLine(line10);
+
+            PrimitiveInstance line11 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(0.5f, -0.5f, 0.5f), new Vector3(0.5f, 0.5f, 0.5f)) * mat);
+            helper.AddLine(line11);
+
+            PrimitiveInstance line12 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(-0.5f, -0.5f, 0.5f), new Vector3(-0.5f, 0.5f, 0.5f)) * mat);
+            helper.AddLine(line12);
         }
 
         public override void AddRenderInstances(PrimitiveInstance baseinstance, RenderHelper helper) {
@@ -164,15 +231,11 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
             switch (asset.subtype)
             {
                 case enTriggerSubtype.BOX:
-                    baseinstance.matrix = ((TriggerBox)asset.triggerSubtype).Transform.GetSystemMatrix();
-                    baseinstance.color = GlobalRenderSettings.triggerBoxColor;
-                    helper.AddCube(baseinstance);
+                    RenderBox(baseinstance, helper);
                     break;
 
                 case enTriggerSubtype.SPHERE:
-                    baseinstance.matrix = GetInstanceMatrix();
-                    baseinstance.color = GlobalRenderSettings.triggerSphereColor;
-                    helper.AddSphere(baseinstance);
+                    RenderSphere(baseinstance, helper);
                     break;
             }
 

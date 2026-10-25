@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,13 @@ namespace ArchiveEditorPlugin
         private readonly ArchiveEditorPreferences preferences;
         private Handler handler => host.Archive.Current;
 
+        private List<ListViewItem> tocEntryListViewItems = new();
+
         public ArchiveEditorControl(IHost host, ArchiveEditorPreferences preferences)
         {
             InitializeComponent();
+
+            SetupSearchComboboxes();
 
             this.host = host;
             this.preferences = preferences;
@@ -41,6 +46,29 @@ namespace ArchiveEditorPlugin
 
             assetListViewContextMenu.Items.Add(openInItem);
 
+        }
+
+        public void SetupSearchComboboxes()
+        {
+            searchComboBox.SelectedIndex = 0;
+
+            wmlTypeIDComboBox.Items.Clear();
+            wmlTypeIDComboBox.Sorted = false; // Preserve the order we specify
+
+            // Add "All" as the first item
+            wmlTypeIDComboBox.Items.Add("All");
+
+            // Add all enum values
+
+            foreach (wmlTypeID status in Enum.GetValues(typeof(wmlTypeID))
+                             .Cast<wmlTypeID>()
+                             .OrderBy(x => x.ToString()))
+            {
+                wmlTypeIDComboBox.Items.Add(status);
+            }
+
+            // Select "All" by default
+            wmlTypeIDComboBox.SelectedIndex = 0;
         }
 
         public void Reveal(EditorTarget target)
@@ -134,11 +162,13 @@ namespace ArchiveEditorPlugin
         {
             tocEntryListView.BeginUpdate();
             tocEntryListView.Items.Clear();
+            tocEntryListViewItems.Clear();
 
             foreach (TOCEntry entry in toc.Entries)
             {
-                tocEntryListView.Items.Add(CreateListViewItem(entry));
+                tocEntryListViewItems.Add(CreateListViewItem(entry));
             }
+            UpdateVisibleTOCEntries();
             tocEntryListView.EndUpdate();
         }
 
@@ -274,6 +304,133 @@ namespace ArchiveEditorPlugin
 
 
             host.Commands.Execute("plankton.console.add-entry", ("ArchiveEditorControl.BeforeSelect", "Set List View"));
+        }
+
+
+
+        private bool ShouldBeVisible(
+            ListViewItem item,
+            wmlTypeID? typeFilter,
+            string searchMode,
+            string match)
+        {
+            TOCEntry entry = (item.Tag as NodeTag).obj as TOCEntry;
+
+            // Check type first
+            if (typeFilter.HasValue && entry.wmlTypeID != typeFilter.Value)
+                return false;
+
+            // No search text? We're done!
+            if (match.Length == 0)
+                return true;
+
+            string candidate = "";
+
+            switch (searchMode)
+            {
+                case "UID":
+                    candidate = entry.uidSelf.ToString("X16");
+                    break;
+
+                case "Data":
+                    candidate = DataProcessing.ByteArrayToString(entry.data.ToArray());
+                    break;
+
+                case "Name":
+                    candidate = host.Archive.Current.GetName(entry.uidSelf);
+                    break;
+            }
+
+            return candidate.Replace(" ", "").Contains(match);
+        }
+
+        /*private void UpdateVisibleTOCEntries()
+        {
+            tocEntryListView.Items.Clear();
+            foreach (ListViewItem item in tocEntryListViewItems)
+            {
+                if (ShouldBeVisible(item)) tocEntryListView.Items.Add(item);
+            }
+        }*/
+
+        private async void wmlTypeIDComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await UpdateVisibleTOCEntries();
+        }
+
+        private async void searchComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            await UpdateVisibleTOCEntries();
+        }
+
+        private async void searchTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+            await UpdateVisibleTOCEntries();
+        }
+
+        private CancellationTokenSource _filterCts;
+        private async Task UpdateVisibleTOCEntries()
+        {
+            // Cancel the previous filtering operation
+            _filterCts?.Cancel();
+
+            var cts = new CancellationTokenSource();
+            _filterCts = cts;
+
+            string searchText = searchTextBox.Text.Trim();
+
+            try
+            {
+                // Wait until the user stops typing for 250 ms
+                await Task.Delay(250, cts.Token);
+
+                wmlTypeID? typeFilter =
+                    wmlTypeIDComboBox.SelectedItem is wmlTypeID type
+                        ? type
+                        : (wmlTypeID?)null;
+
+                string searchMode = searchComboBox.Text;
+                string match = searchTextBox.Text.Replace(" ", "");
+
+                // Filter on a background thread
+                var filtered = await Task.Run(() =>
+                {
+                    return tocEntryListViewItems
+                        .Where(item => ShouldBeVisible(item, typeFilter, searchMode, match))
+                        .ToArray();
+                }, cts.Token);
+
+                // Don't display results from an outdated search
+                cts.Token.ThrowIfCancellationRequested();
+
+                // Back on the UI thread
+                var listViewItems = filtered.ToArray();
+
+                tocEntryListView.BeginUpdate();
+
+                try
+                {
+                    tocEntryListView.Items.Clear();
+                    tocEntryListView.Items.AddRange(listViewItems);
+                }
+                finally
+                {
+                    tocEntryListView.EndUpdate();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Another search replaced this one
+            }
+            finally
+            {
+                if (ReferenceEquals(_filterCts, cts))
+                    _filterCts = null;
+
+                cts.Dispose();
+            }
         }
     }
 

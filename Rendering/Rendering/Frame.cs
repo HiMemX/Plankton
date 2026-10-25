@@ -34,6 +34,19 @@ namespace Plankton.Rendering
         }
 
 
+        public int Samples => samples;
+
+        public void BindMultisampleTexture()
+        {
+            if (samples <= 1)
+                throw new InvalidOperationException(
+                    "This framebuffer is not multisampled.");
+
+            GL.BindTexture(
+                TextureTarget.Texture2DMultisample,
+                msaaTexture);
+        }
+
         private void ResizeResolveFramebuffer()
         {
             GL.BindFramebuffer(

@@ -5,7 +5,12 @@ layout(location = 2) in mat4 aInstanceMat;
 layout(location = 6) in vec4 aColor;
 layout(location = 7) in int containerIndex;
 layout(location = 8) in int instanceflags;
+layout(location = 9) in int drawMaskUnselected;
+layout(location = 10) in int drawMaskSelected;
 
 uniform mat4 view;
 uniform mat4 project;
 uniform vec4 selectedColor;
+uniform int isline;
+
+

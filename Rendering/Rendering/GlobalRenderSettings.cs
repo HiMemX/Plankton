@@ -14,8 +14,8 @@ namespace Plankton.Rendering
 
         public static Color4 highlightColor = Color4.Gold;
 
-        public static Color4 triggerBoxColor = new Color4(0, 100, 255, 100);
-        public static Color4 triggerSphereColor = new Color4(0, 255, 255, 100);
+        public static Color4 triggerBoxColor = new Color4(0, 100, 255, 180);
+        public static Color4 triggerSphereColor = new Color4(0, 255, 255, 180);
         public static Color4 cameraColor = Color4.Black;
         public static Color4 soundFxColor = Color4.Cyan;
         public static Color4 curveColor = Color4.Black;
