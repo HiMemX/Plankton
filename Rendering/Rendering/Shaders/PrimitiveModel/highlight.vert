@@ -22,11 +22,12 @@ void main()
     
     //solidcolor = selectedColor;
     if(useCustomColor == 1){
-        solidcolor = customColor;
+        if((instanceFlags & 2) != 0) solidcolor = activeColor;
+        else solidcolor = customColor;
     }
     else{
         int attr = containerIndex;
-        solidcolor = vec4(attr & 0xFF, (attr >> 8) & 0xFF, (attr >> 16) & 0xFF, 0xFF) / 255.0f;//color;
+        solidcolor = vec4(attr & 0xFF, (attr >> 8) & 0xFF, (attr >> 16) & 0xFF,  0xFF * ((instanceflags & 2) >> 1)) / 255.0f;//color;
     }
 
     //if((instanceflags & 1) == 1){

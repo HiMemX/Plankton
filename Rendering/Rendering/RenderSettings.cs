@@ -19,7 +19,11 @@ namespace Rendering.Rendering
 
         [DisplayName("Highlight Color")]
         [Editor(typeof(Color4Editor), typeof(UITypeEditor))]
-        public Color4 highlightColor { get; set; } = new Color4(255, 215, 0, 255);
+        public Color4 highlightColor { get; set; } = new Color4(0.92941177f, 0.34117648f, 0, 1);
+
+        [DisplayName("Active Color")]
+        [Editor(typeof(Color4Editor), typeof(UITypeEditor))]
+        public Color4 activeColor { get; set; } = new Color4(1f, 0.627451f, 0.15686275f, 1);
 
         [DisplayName("Alpha Transparency")]
         public bool alphaTransparency { get; set; } = true;

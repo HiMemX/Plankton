@@ -4,24 +4,35 @@ out vec4 FragColor;
 
 uniform sampler2DMS inputTex;
 uniform int sampleCount;
+
 uniform vec4 edgeColor;
+uniform vec4 activeEdgeColor;
 
-uvec3 getId(ivec2 pos, int sampleIndex)
+struct SampleData
 {
-    vec3 value = texelFetch(
-        inputTex,
-        pos,
-        sampleIndex
-    ).rgb;
+    uvec3 id;
+    bool isActive;
+};
 
-    // Your IDs are stored in an RGBA8 texture,
-    // so convert the normalized 0..1 values back to bytes.
-    return uvec3(round(value * 255.0));
+SampleData getSample(ivec2 pos, int sampleIndex)
+{
+    vec4 value = texelFetch(inputTex, pos, sampleIndex);
+
+    SampleData result;
+    result.id = uvec3(round(value.rgb * 255.0));
+    result.isActive = value.a >= 0.5;
+
+    return result;
 }
 
-bool different(uvec3 a, uvec3 b)
+bool differentId(uvec3 a, uvec3 b)
 {
     return any(notEqual(a, b));
+}
+
+bool isBackground(uvec3 id)
+{
+    return all(equal(id, uvec3(0)));
 }
 
 void main()
@@ -29,31 +40,75 @@ void main()
     ivec2 size = textureSize(inputTex);
     ivec2 pos = ivec2(gl_FragCoord.xy);
 
-    ivec2 left  = ivec2(max(pos.x - 1, 0), pos.y);
-    ivec2 right = ivec2(min(pos.x + 1, size.x - 1), pos.y);
-    ivec2 down  = ivec2(pos.x, max(pos.y - 1, 0));
-    ivec2 up    = ivec2(pos.x, min(pos.y + 1, size.y - 1));
+    ivec2 neighbors[4] = ivec2[]
+    (
+        ivec2(max(pos.x - 1, 0), pos.y),
+        ivec2(min(pos.x + 1, size.x - 1), pos.y),
+        ivec2(pos.x, max(pos.y - 1, 0)),
+        ivec2(pos.x, min(pos.y + 1, size.y - 1))
+    );
 
-    float edgeSamples = 0.0;
+    float normalCoverage = 0.0;
+    float activeCoverage = 0.0;
 
-    for (int i = 0; i < sampleCount; i++)
+    for (int sample = 0; sample < sampleCount; sample++)
     {
-        uvec3 centerId = getId(pos, i);
+        SampleData center = getSample(pos, sample);
 
-        bool edge =
-            different(centerId, getId(left, i)) ||
-            different(centerId, getId(right, i)) ||
-            different(centerId, getId(up, i)) ||
-            different(centerId, getId(down, i));
+        for (int n = 0; n < 4; n++)
+        {
+            SampleData neighbor = getSample(neighbors[n], sample);
 
-        if (edge)
-            edgeSamples += 1.0;
+            if (differentId(center.id, neighbor.id))
+            {
+                bool centerIsBackground = isBackground(center.id);
+
+                // If this sample is inside an object, color the edge
+                // according to that object's active state.
+                if (!centerIsBackground)
+                {
+                    if (center.isActive)
+                        activeCoverage += 1.0;
+                    else
+                        normalCoverage += 1.0;
+                }
+                // If this sample is background, color the edge according
+                // to the object on the other side.
+                else
+                {
+                    if (neighbor.isActive)
+                        activeCoverage += 1.0;
+                    else
+                        normalCoverage += 1.0;
+                }
+
+                break;
+            }
+        }
     }
 
-    float coverage =
-        edgeSamples / float(sampleCount);
+    normalCoverage /= float(sampleCount);
+    activeCoverage /= float(sampleCount);
 
-    FragColor = vec4(
-        edgeColor.rgb,
-        edgeColor.a * coverage);
+
+    float totalCoverage = normalCoverage + activeCoverage;
+
+    if (totalCoverage <= 0.0)
+    {
+        FragColor = vec4(0.0);
+        return;
+    }
+
+    vec3 mixedColor =
+        (
+            edgeColor.rgb * normalCoverage +
+            activeEdgeColor.rgb * activeCoverage
+        ) / totalCoverage;
+
+    float mixedAlpha = max(
+        edgeColor.a * normalCoverage,
+        activeEdgeColor.a * activeCoverage
+    );
+
+    FragColor = vec4(mixedColor, mixedAlpha);
 }

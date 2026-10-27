@@ -11,6 +11,7 @@ layout(location = 10) in int drawMaskSelected;
 uniform mat4 view;
 uniform mat4 project;
 uniform vec4 selectedColor;
+uniform vec4 activeColor;
 uniform int isline;
 
 

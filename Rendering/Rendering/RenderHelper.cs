@@ -97,6 +97,17 @@ namespace Plankton.Rendering
             models.Sphere.Add(instance);
         }
 
+        public void AddWireframeSphere(PrimitiveInstance instance)
+        {
+            models.WireframeSphere.Add(instance);
+        }
+
+        public void AddWireframeCube(PrimitiveInstance instance)
+        {
+            models.WireframeCube.Add(instance);
+        }
+
+
         public Matrix4x4 GetLineMatrix(Vector3 pos1, Vector3 pos2)
         {
             Vector3 dir = pos2 - pos1;
@@ -183,7 +194,7 @@ namespace Plankton.Rendering
             shader.SetInt("isline", isline ? 1 : 0);
         }
 
-        public void SetupHighlightShader(Color4 highlightColor, bool useHighlightColor = false)
+        public void SetupHighlightShader(Color4 highlightColor, Color4 activeColor, bool useHighlightColor = false)
         {
 
             Shader shader = models.shaders.highlight;
@@ -191,6 +202,7 @@ namespace Plankton.Rendering
             shader.SetMatrix4("view", view);
             shader.SetMatrix4("project", projection);
             shader.SetColor4("selectedColor", highlightColor);
+            shader.SetColor4("activeColor", activeColor);
             models.shaders.highlight.SetInt("useCustomColor", useHighlightColor ? 1 : 0);
             models.shaders.highlight.SetColor4("customColor", highlightColor);
         }

@@ -17,6 +17,8 @@ namespace Plankton.Rendering
         public PrimitiveModel Line;
         public PrimitiveModel Sphere;
         public PrimitiveModel Grid;
+        public PrimitiveModel WireframeCube;
+        public PrimitiveModel WireframeSphere;
 
         public List<PrimitiveModel> models;
         public ShaderCollection shaders;
@@ -32,10 +34,12 @@ namespace Plankton.Rendering
             Camera_16_9 = new PrimitiveModel(basepath + "16_9_Camera.dae");
             Empty = new PrimitiveModel(basepath + "Empty.dae");
             Line = new PrimitiveModel(basepath + "Line.dae");
-            Sphere = new PrimitiveModel(basepath + "Sphere.obj");
+            Sphere = new PrimitiveModel(basepath + "Sphere.dae");
             Grid = new PrimitiveModel(basepath + "Grid.dae");
+            WireframeCube = new PrimitiveModel(basepath + "WireframeCube.dae");
+            WireframeSphere = new PrimitiveModel(basepath + "WireframeSphere.dae");
 
-            models = new List<PrimitiveModel> { Cube, Camera_16_9, Empty, Line, Sphere, Grid};
+            models = new List<PrimitiveModel> { Cube, Camera_16_9, Empty, Line, Sphere, Grid, WireframeCube, WireframeSphere};
             
             
             /*

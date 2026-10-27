@@ -36,6 +36,7 @@ namespace Plankton.Special_Editors.Level_Editor
             }
             else
             {
+                Debug.debugWindow.AddEntry("renderer_MouseUp", e.X.ToString() + ", " + e.Y.ToString(), DebugEntryType.NORMAL);
                 SingleSelect(e.X, e.Y);
             }
             

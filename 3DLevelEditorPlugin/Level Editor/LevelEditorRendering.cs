@@ -81,7 +81,11 @@ namespace Plankton.Special_Editors.Level_Editor
 
 
                 enumInstanceFlags flags = 0;
-                if (selectedContainer != null) flags = (selectedContainers.Contains(container)) ? enumInstanceFlags.OUTLINE : 0;
+                if (selectedContainer != null)
+                {
+                    flags |= (selectedContainers.Contains(container)) ? enumInstanceFlags.OUTLINE : 0;
+                    flags |= selectedContainer == container ? enumInstanceFlags.ACTIVE : 0;
+                }
 
                 container.AddRenderInstances(new PrimitiveInstance(Matrix4x4.Identity, Color4.White, i, flags, enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION, enumDrawStageMask.DRAW_ALL), renderer.renderhelper);
             }

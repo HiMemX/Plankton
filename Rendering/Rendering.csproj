@@ -67,7 +67,16 @@
     <None Update="Rendering\Models\Line.dae">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Rendering\Models\Sphere.dae">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Rendering\Models\Sphere.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Rendering\Models\WireframeCube.dae">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Rendering\Models\WireframeSphere.dae">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Rendering\Shaders\grid.frag">

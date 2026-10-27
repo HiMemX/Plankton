@@ -344,7 +344,7 @@ namespace Plankton.Custom_Controls
 
             // Render selected/highlighted solid objects into the outline mask.
             renderhelper.SetupHighlightShader(
-                renderSettings.highlightColor);
+                renderSettings.highlightColor, renderSettings.activeColor);
 
             renderhelper.RenderSolid();
 
@@ -373,6 +373,10 @@ namespace Plankton.Custom_Controls
                 "edgeColor",
                 renderSettings.highlightColor);
 
+            edgeDetectionPPShader.SetColor4(
+                "activeEdgeColor",
+                renderSettings.activeColor);
+
 
 
             GL.Enable(EnableCap.Blend);
@@ -394,7 +398,7 @@ namespace Plankton.Custom_Controls
             GL.LineWidth(1);
 
             renderhelper.SetupHighlightShader(
-                renderSettings.highlightColor,
+                renderSettings.highlightColor, renderSettings.activeColor,
                 true);
 
             renderhelper.RenderNonSolid();
@@ -437,7 +441,7 @@ namespace Plankton.Custom_Controls
 
                 container.RenderToSelectionBuffer(attr);
             }*/
-            GL.LineWidth(20);
+            GL.LineWidth(10);
             renderhelper.SetupSelectionShader();
             renderhelper.RenderSolid();
             renderhelper.SetupSelectionShader(true);
@@ -647,7 +651,7 @@ namespace Plankton.Custom_Controls
             GL.ReadBuffer(ReadBufferMode.ColorAttachment0);
 
             byte[] pixels = new byte[4];
-            GL.ReadPixels(x, Height - y, 1, 1, OpenTK.Graphics.OpenGL4.PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+            GL.ReadPixels(x, glControl.Height - y, 1, 1, OpenTK.Graphics.OpenGL4.PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
             selectionFrame.Unbind();
 
             int index = 0;

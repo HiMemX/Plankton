@@ -8,7 +8,8 @@ namespace Plankton.Rendering
 {
     public enum enumInstanceFlags
     {
-        NORMAL = 0,
-        OUTLINE = 1
+        NORMAL = 0,  // 00
+        OUTLINE = 1, // 01
+        ACTIVE = 3,  // 11
     }
 }

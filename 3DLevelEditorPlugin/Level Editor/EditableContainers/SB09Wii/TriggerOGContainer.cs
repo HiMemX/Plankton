@@ -162,9 +162,16 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
             baseinstance.color = GlobalRenderSettings.triggerSphereColor;
 
             baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_ALL;
-            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
+            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_NONE;
 
             helper.AddSphere(baseinstance);
+
+            baseinstance = baseinstance.Clone();
+            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_ALL;
+            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
+            baseinstance.color = OpenTK.Mathematics.Color4.Black;
+            
+            helper.AddWireframeSphere(baseinstance);
         }
 
         private void RenderBox(PrimitiveInstance baseinstance, RenderHelper helper)
@@ -182,7 +189,14 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
             baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION | enumDrawStageMask.DRAW_HIGHLIGHT;
             baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
 
+            baseinstance.color = OpenTK.Mathematics.Color4.Black;
             Matrix4x4 mat = GetInstanceMatrix();
+            
+
+
+            helper.AddWireframeCube(baseinstance);
+
+            return;
 
             // Bottom face
             PrimitiveInstance line1 = baseinstance.Clone(helper.GetLineMatrix(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(0.5f, -0.5f, -0.5f)) * mat);

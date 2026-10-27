@@ -117,6 +117,7 @@ namespace Plankton.Special_Editors.Level_Editor
             if (selectedContainer != null)
             {
                 if (selectedContainers.Contains(container)) { flags |= (int)enumInstanceFlags.OUTLINE; } // Marks the super instance for highlight
+                if (selectedContainer == container) { flags |= (int)enumInstanceFlags.ACTIVE; }
             }
 
             TOCEntry lightkitscene = renderer.GetLightKitScene();

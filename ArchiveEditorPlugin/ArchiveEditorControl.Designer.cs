@@ -299,7 +299,7 @@ namespace ArchiveEditorPlugin
             searchTextBox.Dock = DockStyle.Fill;
             searchTextBox.Location = new Point(101, 0);
             searchTextBox.Name = "searchTextBox";
-            searchTextBox.Size = new Size(698, 23);
+            searchTextBox.Size = new Size(684, 23);
             searchTextBox.TabIndex = 1;
             searchTextBox.TextChanged += searchTextBox_TextChanged;
             // 
@@ -310,9 +310,9 @@ namespace ArchiveEditorPlugin
             wmlTypeIDComboBox.Dock = DockStyle.Right;
             wmlTypeIDComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             wmlTypeIDComboBox.FormattingEnabled = true;
-            wmlTypeIDComboBox.Location = new Point(799, 0);
+            wmlTypeIDComboBox.Location = new Point(785, 0);
             wmlTypeIDComboBox.Name = "wmlTypeIDComboBox";
-            wmlTypeIDComboBox.Size = new Size(126, 23);
+            wmlTypeIDComboBox.Size = new Size(140, 23);
             wmlTypeIDComboBox.TabIndex = 2;
             wmlTypeIDComboBox.SelectedIndexChanged += wmlTypeIDComboBox_SelectedIndexChanged;
             // 
@@ -322,7 +322,7 @@ namespace ArchiveEditorPlugin
             searchComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
             searchComboBox.Dock = DockStyle.Left;
             searchComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            searchComboBox.Items.AddRange(new object[] { "UID", "Name", "Data" });
+            searchComboBox.Items.AddRange(new object[] { "Name", "Data" });
             searchComboBox.Location = new Point(0, 0);
             searchComboBox.Name = "searchComboBox";
             searchComboBox.Size = new Size(101, 23);
