@@ -58,10 +58,11 @@ namespace HexEditorPlugin
 
         private void AssetsModified(object? sender, AssetEventArgs e)
         {
-            if (e.Assets[0].Entry == current)
+            List<TOCEntry> entries = e.Assets.Select(k => k.Entry).ToList();
+            if (entries.Contains(current))
             {
                 byte[] assetData;
-                assetData = e.Assets[0].Entry.data.ToArray();
+                assetData = current.data.ToArray();
 
                 control.LoadBytes(assetData);
             }

@@ -39,9 +39,9 @@ namespace ArchiveEditorPlugin
             assetListViewContextMenu = new ContextMenuStrip(components);
             newToolStripMenuItem1 = new ToolStripMenuItem();
             searchPanel = new Panel();
+            filterGroupBox = new GroupBox();
             searchTextBox = new TextBox();
             wmlTypeIDComboBox = new ComboBox();
-            searchComboBox = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -56,6 +56,7 @@ namespace ArchiveEditorPlugin
             splitContainer2.SuspendLayout();
             assetListViewContextMenu.SuspendLayout();
             searchPanel.SuspendLayout();
+            filterGroupBox.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -73,7 +74,7 @@ namespace ArchiveEditorPlugin
             // 
             splitContainer1.Panel2.Controls.Add(propertyGridTabControl);
             splitContainer1.Size = new Size(480, 667);
-            splitContainer1.SplitterDistance = 223;
+            splitContainer1.SplitterDistance = 221;
             splitContainer1.TabIndex = 0;
             // 
             // archiveTreeView
@@ -83,7 +84,7 @@ namespace ArchiveEditorPlugin
             archiveTreeView.HideSelection = false;
             archiveTreeView.Location = new Point(0, 0);
             archiveTreeView.Name = "archiveTreeView";
-            archiveTreeView.Size = new Size(480, 223);
+            archiveTreeView.Size = new Size(480, 221);
             archiveTreeView.TabIndex = 0;
             archiveTreeView.BeforeSelect += archiveTreeView_BeforeSelect;
             // 
@@ -145,7 +146,7 @@ namespace ArchiveEditorPlugin
             propertyGridTabControl.Multiline = true;
             propertyGridTabControl.Name = "propertyGridTabControl";
             propertyGridTabControl.SelectedIndex = 0;
-            propertyGridTabControl.Size = new Size(480, 440);
+            propertyGridTabControl.Size = new Size(480, 442);
             propertyGridTabControl.TabIndex = 1;
             // 
             // headerTabPage
@@ -155,7 +156,7 @@ namespace ArchiveEditorPlugin
             headerTabPage.Location = new Point(4, 24);
             headerTabPage.Name = "headerTabPage";
             headerTabPage.Padding = new Padding(3);
-            headerTabPage.Size = new Size(472, 412);
+            headerTabPage.Size = new Size(472, 414);
             headerTabPage.TabIndex = 0;
             headerTabPage.Text = "Header";
             headerTabPage.UseVisualStyleBackColor = true;
@@ -168,14 +169,14 @@ namespace ArchiveEditorPlugin
             headerPropertyGrid.Location = new Point(3, 3);
             headerPropertyGrid.Name = "headerPropertyGrid";
             headerPropertyGrid.PropertySort = PropertySort.NoSort;
-            headerPropertyGrid.Size = new Size(466, 392);
+            headerPropertyGrid.Size = new Size(466, 394);
             headerPropertyGrid.TabIndex = 0;
             headerPropertyGrid.ToolbarVisible = false;
             // 
             // headerLabel
             // 
             headerLabel.Dock = DockStyle.Bottom;
-            headerLabel.Location = new Point(3, 395);
+            headerLabel.Location = new Point(3, 397);
             headerLabel.Name = "headerLabel";
             headerLabel.RightToLeft = RightToLeft.No;
             headerLabel.Size = new Size(466, 14);
@@ -189,7 +190,7 @@ namespace ArchiveEditorPlugin
             dataTabPage.Location = new Point(4, 24);
             dataTabPage.Name = "dataTabPage";
             dataTabPage.Padding = new Padding(3);
-            dataTabPage.Size = new Size(472, 412);
+            dataTabPage.Size = new Size(472, 414);
             dataTabPage.TabIndex = 1;
             dataTabPage.Text = "Data";
             dataTabPage.UseVisualStyleBackColor = true;
@@ -201,14 +202,15 @@ namespace ArchiveEditorPlugin
             dataPropertyGrid.Location = new Point(3, 3);
             dataPropertyGrid.Name = "dataPropertyGrid";
             dataPropertyGrid.PropertySort = PropertySort.NoSort;
-            dataPropertyGrid.Size = new Size(466, 392);
+            dataPropertyGrid.Size = new Size(466, 394);
             dataPropertyGrid.TabIndex = 0;
             dataPropertyGrid.ToolbarVisible = false;
+            dataPropertyGrid.PropertyValueChanged += dataPropertyGrid_PropertyValueChanged;
             // 
             // dataLabel
             // 
             dataLabel.Dock = DockStyle.Bottom;
-            dataLabel.Location = new Point(3, 395);
+            dataLabel.Location = new Point(3, 397);
             dataLabel.Name = "dataLabel";
             dataLabel.RightToLeft = RightToLeft.No;
             dataLabel.Size = new Size(466, 14);
@@ -239,9 +241,9 @@ namespace ArchiveEditorPlugin
             tocEntryListView.ContextMenuStrip = assetListViewContextMenu;
             tocEntryListView.Dock = DockStyle.Fill;
             tocEntryListView.FullRowSelect = true;
-            tocEntryListView.Location = new Point(0, 22);
+            tocEntryListView.Location = new Point(0, 59);
             tocEntryListView.Name = "tocEntryListView";
-            tocEntryListView.Size = new Size(925, 645);
+            tocEntryListView.Size = new Size(925, 608);
             tocEntryListView.TabIndex = 0;
             tocEntryListView.UseCompatibleStateImageBehavior = false;
             tocEntryListView.View = View.Details;
@@ -285,49 +287,46 @@ namespace ArchiveEditorPlugin
             // 
             // searchPanel
             // 
-            searchPanel.Controls.Add(searchTextBox);
-            searchPanel.Controls.Add(wmlTypeIDComboBox);
-            searchPanel.Controls.Add(searchComboBox);
+            searchPanel.Controls.Add(filterGroupBox);
             searchPanel.Dock = DockStyle.Top;
             searchPanel.Location = new Point(0, 0);
             searchPanel.Name = "searchPanel";
-            searchPanel.Size = new Size(925, 22);
+            searchPanel.Size = new Size(925, 59);
             searchPanel.TabIndex = 1;
+            // 
+            // filterGroupBox
+            // 
+            filterGroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            filterGroupBox.Controls.Add(searchTextBox);
+            filterGroupBox.Controls.Add(wmlTypeIDComboBox);
+            filterGroupBox.Location = new Point(3, 5);
+            filterGroupBox.Name = "filterGroupBox";
+            filterGroupBox.Size = new Size(919, 48);
+            filterGroupBox.TabIndex = 3;
+            filterGroupBox.TabStop = false;
+            filterGroupBox.Text = "Filters";
             // 
             // searchTextBox
             // 
-            searchTextBox.Dock = DockStyle.Fill;
-            searchTextBox.Location = new Point(101, 0);
+            searchTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            searchTextBox.Location = new Point(6, 19);
             searchTextBox.Name = "searchTextBox";
-            searchTextBox.Size = new Size(684, 23);
+            searchTextBox.Size = new Size(733, 23);
             searchTextBox.TabIndex = 1;
             searchTextBox.TextChanged += searchTextBox_TextChanged;
             // 
             // wmlTypeIDComboBox
             // 
+            wmlTypeIDComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             wmlTypeIDComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             wmlTypeIDComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
-            wmlTypeIDComboBox.Dock = DockStyle.Right;
             wmlTypeIDComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             wmlTypeIDComboBox.FormattingEnabled = true;
-            wmlTypeIDComboBox.Location = new Point(785, 0);
+            wmlTypeIDComboBox.Location = new Point(745, 19);
             wmlTypeIDComboBox.Name = "wmlTypeIDComboBox";
-            wmlTypeIDComboBox.Size = new Size(140, 23);
+            wmlTypeIDComboBox.Size = new Size(168, 23);
             wmlTypeIDComboBox.TabIndex = 2;
             wmlTypeIDComboBox.SelectedIndexChanged += wmlTypeIDComboBox_SelectedIndexChanged;
-            // 
-            // searchComboBox
-            // 
-            searchComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            searchComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
-            searchComboBox.Dock = DockStyle.Left;
-            searchComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            searchComboBox.Items.AddRange(new object[] { "Name", "Data" });
-            searchComboBox.Location = new Point(0, 0);
-            searchComboBox.Name = "searchComboBox";
-            searchComboBox.Size = new Size(101, 23);
-            searchComboBox.TabIndex = 0;
-            searchComboBox.SelectedIndexChanged += searchComboBox_SelectedIndexChanged;
             // 
             // ArchiveEditorControl
             // 
@@ -348,7 +347,8 @@ namespace ArchiveEditorPlugin
             splitContainer2.ResumeLayout(false);
             assetListViewContextMenu.ResumeLayout(false);
             searchPanel.ResumeLayout(false);
-            searchPanel.PerformLayout();
+            filterGroupBox.ResumeLayout(false);
+            filterGroupBox.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -385,8 +385,8 @@ namespace ArchiveEditorPlugin
         private ToolStripMenuItem newToolStripMenuItem1;
         private ColumnHeader assetSizeHeader;
         private Panel searchPanel;
-        private ComboBox searchComboBox;
         private ComboBox wmlTypeIDComboBox;
         private TextBox searchTextBox;
+        private GroupBox filterGroupBox;
     }
 }

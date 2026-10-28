@@ -50,7 +50,6 @@ namespace ArchiveEditorPlugin
 
         public void SetupSearchComboboxes()
         {
-            searchComboBox.SelectedIndex = 0;
 
             wmlTypeIDComboBox.Items.Clear();
             wmlTypeIDComboBox.Sorted = false; // Preserve the order we specify
@@ -76,13 +75,19 @@ namespace ArchiveEditorPlugin
             if (archiveTreeView.Nodes.Count == 0) return;
 
             TOCEntry entry = ((AssetInfo)target.Value).Entry;
+
+            Reveal(entry);
+        }
+
+        public async void Reveal(TOCEntry entry)
+        {
             TreeNode? node = FindTreeNodeWithAsset(archiveTreeView.Nodes[0], entry);
 
             if (node == null) return;
 
             archiveTreeView.SelectedNode = node;
 
-            ArchiveTreeViewOnSelect(node);
+            await ArchiveTreeViewOnSelect(node);
 
             ListViewItem? item = FindListViewItem(entry);
 
@@ -97,7 +102,6 @@ namespace ArchiveEditorPlugin
             item.Selected = true;
 
             item.EnsureVisible();
-
         }
 
         private ListViewItem? FindListViewItem(TOCEntry entry)
@@ -158,7 +162,7 @@ namespace ArchiveEditorPlugin
 
         }
 
-        private void ReloadListView(ParcelTOC toc)
+        private async Task ReloadListView(ParcelTOC toc)
         {
             tocEntryListView.BeginUpdate();
             tocEntryListView.Items.Clear();
@@ -168,7 +172,7 @@ namespace ArchiveEditorPlugin
             {
                 tocEntryListViewItems.Add(CreateListViewItem(entry));
             }
-            UpdateVisibleTOCEntries();
+            await UpdateVisibleTOCEntries();
             tocEntryListView.EndUpdate();
         }
 
@@ -291,14 +295,14 @@ namespace ArchiveEditorPlugin
 
         }
 
-        private void ArchiveTreeViewOnSelect(TreeNode node)
+        private async Task ArchiveTreeViewOnSelect(TreeNode node)
         {
             object tag = ((NodeTag)node.Tag).obj;
             object header = ((NodeTag)node.Tag).header;
             object data = ((NodeTag)node.Tag).data;
 
 
-            if (tag is ParcelTOC) ReloadListView((ParcelTOC)tag);
+            if (tag is ParcelTOC) await ReloadListView((ParcelTOC)tag);
 
             if ((header is not null) || (data is not null)) SetPropertyGrid((NodeTag)node.Tag);
 
@@ -311,7 +315,6 @@ namespace ArchiveEditorPlugin
         private bool ShouldBeVisible(
             ListViewItem item,
             wmlTypeID? typeFilter,
-            string searchMode,
             string match)
         {
             TOCEntry entry = (item.Tag as NodeTag).obj as TOCEntry;
@@ -326,22 +329,15 @@ namespace ArchiveEditorPlugin
 
             string candidate = "";
 
-            switch (searchMode)
-            {
-                case "UID":
-                    candidate = entry.uidSelf.ToString("X16");
-                    break;
 
-                case "Data":
-                    candidate = DataProcessing.ByteArrayToString(entry.data.ToArray());
-                    break;
+            candidate = DataProcessing.ByteArrayToString(entry.data.ToArray());
 
-                case "Name":
-                    candidate = host.Archive.Current.GetName(entry.uidSelf);
-                    break;
-            }
 
-            return candidate.Replace(" ", "").Contains(match);
+            string candidate2 = host.Archive.Current.GetName(entry.uidSelf);
+
+
+
+            return candidate.Replace(" ", "").Contains(match) || candidate2.Replace(" ", "").Contains(match);
         }
 
         /*private void UpdateVisibleTOCEntries()
@@ -391,16 +387,15 @@ namespace ArchiveEditorPlugin
                         ? type
                         : (wmlTypeID?)null;
 
-                string searchMode = searchComboBox.Text;
                 string match = searchTextBox.Text.Replace(" ", "");
 
                 // Filter on a background thread
-                var filtered = await Task.Run(() =>
+                List<ListViewItem> filtered = await Task.Run(() =>
                 {
                     return tocEntryListViewItems
-                        .Where(item => ShouldBeVisible(item, typeFilter, searchMode, match))
-                        .ToArray();
+                        .Where(item => ShouldBeVisible(item, typeFilter, match)).ToList();
                 }, cts.Token);
+
 
                 // Don't display results from an outdated search
                 cts.Token.ThrowIfCancellationRequested();
@@ -431,6 +426,20 @@ namespace ArchiveEditorPlugin
 
                 cts.Dispose();
             }
+        }
+
+        private void uIDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            //host.Commands.Execute("plankton.console.add-entry", ("PropertyValueChanged", "Test!"));
+            List<AssetInfo> infos = headerPropertyGrid.SelectedObjects.Where(k => k is TOCEntry)
+                .Select(k => new AssetInfo(host.Archive.Current, (TOCEntry)k)).ToList();
+            
+            host.Archive.NotifyAssetsModified(this, infos);
         }
     }
 
