@@ -71,8 +71,10 @@ namespace Plankton.Special_Editors.Level_Editor
 
         LevelEditorPreferences preferences;
 
+        // Outgoing events
         public event EventHandler<IEnumerable<AssetInfo>>? AssetsModifiedPreview;
         public event EventHandler<IEnumerable<AssetInfo>>? AssetsModified;
+        public event EventHandler<IEnumerable<AssetInfo>>? AssetsRenamed;
 
         public LevelEditor(LevelEditorPreferences preferences)
         {
@@ -96,6 +98,29 @@ namespace Plankton.Special_Editors.Level_Editor
             this.preferences = preferences;
 
             
+        }
+
+        private bool AssetEventContainsAsset(AssetEventArgs e, TOCEntry subject)
+        {
+            return e.Assets.Select(k => k.Entry).Contains(subject);
+        }
+
+        public void IngoingAssetsRenamed(object? sender, AssetEventArgs e) {
+            if (AssetEventContainsAsset(e, selectedContainer.entry))
+            {
+                UpdateNameLabel(selectedContainer);
+            }
+        }
+
+        // Outgoing
+        public void NotifyAssetsRenamed(List<TOCEntry> entries)
+        {
+            AssetsRenamed?.Invoke(this, GetAssetInfos(entries));
+        }
+
+        private List<AssetInfo> GetAssetInfos(List<TOCEntry> entries)
+        {
+            return entries.Select(k => new AssetInfo(handler, k)).ToList();
         }
 
         public TOCEntry? GetSelectedAsset()
@@ -157,13 +182,17 @@ namespace Plankton.Special_Editors.Level_Editor
             return null;
         }
 
+        private void UpdateNameLabel(EditableContainer container)
+        {
+            assetNameLabel.Text = handler.GetName(container.entry.uidSelf);
+        }
 
         public void OnNewSelection(EditableContainer container)
         {
 
             UpdateRenderInstances();
             selectedPropertyGrid.SelectedObject = container.entry.entity;
-            assetNameLabel.Text = handler.GetName(container.entry.uidSelf);
+            UpdateNameLabel(container);
 
             lrsEditor.ApplyEdit();
             UpdateEasyEditPanelValues();

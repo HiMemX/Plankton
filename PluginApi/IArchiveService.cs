@@ -20,11 +20,13 @@ namespace PluginApi
         event EventHandler<AssetEventArgs>? AssetsModifiedPreview;
         event EventHandler<AssetEventArgs>? AssetsDeleted;
         event EventHandler<AssetEventArgs>? AssetsCreated;
+        event EventHandler<AssetEventArgs>? AssetsRenamed;
 
         void NotifyAssetsModified(object? sender, IEnumerable<AssetInfo> assets);
         void NotifyAssetsModifiedPreview(object? sender, IEnumerable<AssetInfo> assets);
         void NotifyAssetsDeleted(object? sender, IEnumerable<AssetInfo> assets);
         void NotifyAssetsCreated(object? sender, IEnumerable<AssetInfo> assets);
+        void NotifyAssetsRenamed(object? sender, IEnumerable<AssetInfo> assets);
     }
 
 

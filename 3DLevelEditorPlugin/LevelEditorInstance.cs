@@ -54,9 +54,11 @@ internal sealed class LevelEditorInstance : IEditor
         host.Archive.Closed += Archive_Closed;
         host.Archive.AssetsModified += Archive_AssetsModified;
         host.Archive.AssetsModifiedPreview += Archive_AssetsModifiedPreview;
+        host.Archive.AssetsRenamed += control.IngoingAssetsRenamed;
 
         control.AssetsModifiedPreview += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModifiedPreview(sender, e); };
         control.AssetsModified += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModified(sender, e); };
+        control.AssetsRenamed += host.Archive.NotifyAssetsRenamed;
 
         // An archive might already be open when this editor is created.
         if (host.Archive.Current.Archive != null)
@@ -135,6 +137,7 @@ internal sealed class LevelEditorInstance : IEditor
         host.Archive.Closed -= Archive_Closed;
         host.Archive.AssetsModified -= Archive_AssetsModified;
         host.Archive.AssetsModifiedPreview -= Archive_AssetsModifiedPreview;
+        host.Archive.AssetsRenamed -= control.IngoingAssetsRenamed;
 
         control.Dispose();
     }
