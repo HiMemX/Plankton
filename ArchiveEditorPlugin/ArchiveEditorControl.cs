@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
@@ -26,6 +27,8 @@ namespace ArchiveEditorPlugin
         public ArchiveEditorControl(IHost host, ArchiveEditorPreferences preferences)
         {
             InitializeComponent();
+            uidSearchTextBox.PlaceholderText = "UID...";
+
 
             SetupSearchComboboxes();
 
@@ -438,8 +441,23 @@ namespace ArchiveEditorPlugin
             //host.Commands.Execute("plankton.console.add-entry", ("PropertyValueChanged", "Test!"));
             List<AssetInfo> infos = headerPropertyGrid.SelectedObjects.Where(k => k is TOCEntry)
                 .Select(k => new AssetInfo(host.Archive.Current, (TOCEntry)k)).ToList();
-            
+
             host.Archive.NotifyAssetsModified(this, infos);
+        }
+
+        private void uidSearchButton_Click(object sender, EventArgs e)
+        {
+            string text = uidSearchTextBox.Text;
+
+            text = text.Split("x").Last();
+            text = text.Replace(" ", "");
+
+            if (!ulong.TryParse(text, System.Globalization.NumberStyles.HexNumber, CultureInfo.GetCultureInfo("en-US"), out ulong id)) return;
+
+            TOCEntry asset = handler.GetAsset(id);
+            if (asset == null) return;
+
+            Reveal(asset);
         }
     }
 
