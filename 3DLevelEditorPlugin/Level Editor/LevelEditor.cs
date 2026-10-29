@@ -106,6 +106,8 @@ namespace Plankton.Special_Editors.Level_Editor
         }
 
         public void IngoingAssetsRenamed(object? sender, AssetEventArgs e) {
+            if (selectedContainer == null) return;
+
             if (AssetEventContainsAsset(e, selectedContainer.entry))
             {
                 UpdateNameLabel(selectedContainer);

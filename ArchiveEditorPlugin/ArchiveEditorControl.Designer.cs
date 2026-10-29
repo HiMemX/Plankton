@@ -276,13 +276,17 @@ namespace ArchiveEditorPlugin
             tocEntryListView.ContextMenuStrip = assetListViewContextMenu;
             tocEntryListView.Dock = DockStyle.Fill;
             tocEntryListView.FullRowSelect = true;
+            tocEntryListView.GridLines = true;
+            tocEntryListView.LabelEdit = true;
             tocEntryListView.Location = new Point(0, 48);
             tocEntryListView.Name = "tocEntryListView";
             tocEntryListView.Size = new Size(995, 619);
             tocEntryListView.TabIndex = 0;
             tocEntryListView.UseCompatibleStateImageBehavior = false;
             tocEntryListView.View = View.Details;
+            tocEntryListView.AfterLabelEdit += tocEntryListView_AfterLabelEdit;
             tocEntryListView.SelectedIndexChanged += tocEntryListView_SelectedIndexChanged;
+            tocEntryListView.MouseDoubleClick += tocEntryListView_MouseDoubleClick;
             // 
             // assetNameHeader
             // 

@@ -49,6 +49,22 @@ namespace ArchiveEditorPlugin
 
             assetListViewContextMenu.Items.Add(openInItem);
 
+            host.Archive.AssetsRenamed += IngoingAssetsRenamed;
+        }
+
+        private void IngoingAssetsRenamed(object? sender, AssetEventArgs e)
+        {
+            host.Commands.Execute("plankton.console.add-entry", ("ArchiveEditorControl.IngoingAssetsRenamed", sender.ToString() + ", " + handler.GetName(e.Assets[0].Entry.uidSelf)));
+        }
+
+        private void NotifyAssetsRenamed(IEnumerable<TOCEntry> entries)
+        {
+            host.Archive.NotifyAssetsRenamed(this, GetInfos(entries));
+        }
+
+        private IEnumerable<AssetInfo> GetInfos(IEnumerable<TOCEntry> entries)
+        {
+            return entries.Select(k => new AssetInfo(handler, k));
         }
 
         public void SetupSearchComboboxes()
@@ -431,10 +447,6 @@ namespace ArchiveEditorPlugin
             }
         }
 
-        private void uIDToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void dataPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
@@ -458,6 +470,39 @@ namespace ArchiveEditorPlugin
             if (asset == null) return;
 
             Reveal(asset);
+        }
+
+        private TOCEntry GetTOCEntryFromItem(ListViewItem item)
+        {
+            return (item.Tag as NodeTag).obj as TOCEntry;
+        }
+
+        private void tocEntryListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
+        {
+            if (e.Label == null) return;
+
+            TOCEntry entry = GetTOCEntryFromItem(tocEntryListView.Items[e.Item]);
+
+            NameTableEntry nameentry = handler.GetNameEntry(entry.uidSelf);
+            nameentry.name = e.Label;
+            nameentry.Update();
+
+            host.Commands.Execute("plankton.console.add-entry", ("AfterLabelEdit", nameentry.name));
+            host.Commands.Execute("plankton.console.add-entry", ("AfterLabelEdit", handler.GetName(entry.uidSelf)));
+
+            NotifyAssetsRenamed(new List<TOCEntry>() { entry });
+        }
+
+        private void tocEntryListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            // Get the item that was double-clicked
+            ListViewItem clickedItem = tocEntryListView.GetItemAt(e.X, e.Y);
+
+            if (clickedItem != null)
+            {
+                // Force the first column into edit mode instantly
+                clickedItem.BeginEdit();
+            }
         }
     }
 

@@ -19,6 +19,9 @@ namespace Plankton.PluginApiImplementation
         public event EventHandler<AssetEventArgs>? AssetsModifiedPreview;
         public event EventHandler<AssetEventArgs>? AssetsDeleted;
         public event EventHandler<AssetEventArgs>? AssetsCreated;
+        public event EventHandler<AssetEventArgs>? AssetsRenamed;
+
+        
 
         public void NotifyArchiveOpened(object? sender, ArchiveEventArgs e)
         {
@@ -75,6 +78,16 @@ namespace Plankton.PluginApiImplementation
             RaiseAssetEvent(
                 sender,
                 AssetsCreated,
+                assets);
+        }
+
+        public void NotifyAssetsRenamed(
+            object? sender,
+            IEnumerable<AssetInfo> assets)
+        {
+            RaiseAssetEvent(
+                sender,
+                AssetsRenamed,
                 assets);
         }
 
