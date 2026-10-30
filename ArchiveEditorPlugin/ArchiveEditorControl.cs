@@ -54,7 +54,16 @@ namespace ArchiveEditorPlugin
 
         private void IngoingAssetsRenamed(object? sender, AssetEventArgs e)
         {
-            host.Commands.Execute("plankton.console.add-entry", ("ArchiveEditorControl.IngoingAssetsRenamed", sender.ToString() + ", " + handler.GetName(e.Assets[0].Entry.uidSelf)));
+            foreach(AssetInfo info in e.Assets)
+            {
+                ListViewItem? entry = FindListViewItem(info.Entry);
+
+                if (entry == null) continue;
+
+                entry.Text = handler.GetName(info.Entry.uidSelf);
+            }
+
+            //host.Commands.Execute("plankton.console.add-entry", ("ArchiveEditorControl.IngoingAssetsRenamed", sender.ToString() + ", " + handler.GetName(e.Assets[0].Entry.uidSelf)));
         }
 
         private void NotifyAssetsRenamed(IEnumerable<TOCEntry> entries)
