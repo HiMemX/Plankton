@@ -42,7 +42,7 @@ internal sealed class CommandService : ICommandService
 
     public bool CanExecute(
         string commandId,
-        object? parameter = null)
+        params object?[] parameter)
     {
         if (!commands.TryGetValue(
             commandId,
@@ -55,22 +55,22 @@ internal sealed class CommandService : ICommandService
     }
 
 
-    public void Execute(
+    public object? Execute(
         string commandId,
-        object? parameter = null)
+        params object?[] arguments)
     {
         if (!commands.TryGetValue(
-            commandId,
-            out var command))
+                commandId,
+                out var command))
         {
             throw new InvalidOperationException(
                 $"Command '{commandId}' is not registered.");
         }
 
-        if (!(command.CanExecute?.Invoke(parameter) ?? true))
-            return;
+        if (!(command.CanExecute?.Invoke(arguments) ?? true))
+            return null;
 
-        command.Execute(parameter);
+        return command.Execute(arguments);
     }
 
 

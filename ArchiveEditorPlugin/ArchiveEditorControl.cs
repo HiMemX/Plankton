@@ -50,6 +50,7 @@ namespace ArchiveEditorPlugin
             assetListViewContextMenu.Items.Add(openInItem);
 
             host.Archive.AssetsRenamed += IngoingAssetsRenamed;
+
         }
 
         private void IngoingAssetsRenamed(object? sender, AssetEventArgs e)

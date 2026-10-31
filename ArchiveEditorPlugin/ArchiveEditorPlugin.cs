@@ -1,4 +1,5 @@
-﻿using PluginApi;
+﻿using HoArchive;
+using PluginApi;
 
 namespace ArchiveEditorPlugin
 {
@@ -29,6 +30,21 @@ namespace ArchiveEditorPlugin
             host.UI.AddCommand(
                 "plankton.main.view",
                 "plankton.archive-editor.open");
+
+            host.Commands.Register(
+                new CommandDefinition(
+                    "plankton.assets.create",
+                    "Create Asset",
+                    CreateAsset
+                    ));
+        }
+
+        private TOCEntry? CreateAsset(object? parameters) {
+            if (parameters is not (
+                wmlTypeID type,
+                ParcelTOC toc,
+            )) return null;
+        
         }
 
     }

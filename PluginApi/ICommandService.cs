@@ -11,10 +11,11 @@ namespace PluginApi
         IReadOnlyList<CommandDefinition> Commands { get; }
 
         void Register(CommandDefinition command);
+        bool CanExecute(
+        string commandId,
+        params object?[] arguments);
 
-        bool CanExecute(string commandId, object? parameter = null);
-
-        void Execute(string commandId, object? parameter = null);
+        object? Execute(string commandId, params object?[] arguments);
     }
 
     public sealed class CommandDefinition
@@ -22,14 +23,33 @@ namespace PluginApi
         public string Id { get; }
         public string Name { get; }
 
-        public Action<object?> Execute { get; }
-        public Func<object?, bool>? CanExecute { get; }
+        public Func<object?[], object?> Execute { get; }
+        public Func<object?[], bool>? CanExecute { get; }
 
+        // Existing commands use this.
         public CommandDefinition(
             string id,
             string name,
-            Action<object?> execute,
-            Func<object?, bool>? canExecute = null)
+            Action<object?[]> execute,
+            Func<object?[], bool>? canExecute = null)
+        {
+            Id = id;
+            Name = name;
+            CanExecute = canExecute;
+
+            Execute = args =>
+            {
+                execute(args);
+                return null;
+            };
+        }
+
+        // Commands which return something use this.
+        public CommandDefinition(
+            string id,
+            string name,
+            Func<object?[], object?> execute,
+            Func<object?[], bool>? canExecute = null)
         {
             Id = id;
             Name = name;
