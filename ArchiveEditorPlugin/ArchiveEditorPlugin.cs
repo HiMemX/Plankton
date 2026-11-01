@@ -1,4 +1,5 @@
-﻿using HoArchive;
+﻿using ArchiveEditorPlugin.Helpers;
+using HoArchive;
 using PluginApi;
 
 namespace ArchiveEditorPlugin
@@ -11,6 +12,8 @@ namespace ArchiveEditorPlugin
 
         private ArchiveEditorProvider provider = null!;
         private ArchiveEditorPreferences preferences = null!;
+
+        private IHost host;
 
         public void Initialize(IHost host)
         {
@@ -33,18 +36,40 @@ namespace ArchiveEditorPlugin
 
             host.Commands.Register(
                 new CommandDefinition(
-                    "plankton.assets.create",
+                    "plankton.assets.create-asset",
                     "Create Asset",
                     CreateAsset
                     ));
+
+            host.Commands.Register(new CommandDefinition(
+                    "plankton.assets.open-toc-dialog",
+                    "Open ParcelTOC Dialog",
+                    OpenParcelTOCDialog
+                ));
+
+            this.host = host;
         }
 
-        private TOCEntry? CreateAsset(object? parameters) {
+        private ParcelTOC? OpenParcelTOCDialog(object? parameters)
+        {
+            if (host.Archive.Current.Archive == null) return null;
+
+            var dialog = new SelectParcelTOCDialog(host.Archive.Current);
+            if (dialog.ShowDialog() == DialogResult.OK) return null;
+
+            return null;
+        }
+
+        private TOCEntry? CreateAsset(object? parameters) { // Parameters either CSHO.Handler or ParcelTOC
             if (parameters is not (
-                wmlTypeID type,
-                ParcelTOC toc,
-            )) return null;
-        
+                ParcelTOC toc
+            ))
+            {
+                return null;
+            }
+            return null;
+
+
         }
 
     }

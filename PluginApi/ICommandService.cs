@@ -13,9 +13,9 @@ namespace PluginApi
         void Register(CommandDefinition command);
         bool CanExecute(
         string commandId,
-        params object?[] arguments);
+        object? arguments = null);
 
-        object? Execute(string commandId, params object?[] arguments);
+        object? Execute(string commandId, object? arguments = null);
     }
 
     public sealed class CommandDefinition
@@ -23,15 +23,15 @@ namespace PluginApi
         public string Id { get; }
         public string Name { get; }
 
-        public Func<object?[], object?> Execute { get; }
-        public Func<object?[], bool>? CanExecute { get; }
+        public Func<object?, object?> Execute { get; }
+        public Func<object?, bool>? CanExecute { get; }
 
         // Existing commands use this.
         public CommandDefinition(
             string id,
             string name,
-            Action<object?[]> execute,
-            Func<object?[], bool>? canExecute = null)
+            Action<object?> execute,
+            Func<object?, bool>? canExecute = null)
         {
             Id = id;
             Name = name;
@@ -48,8 +48,8 @@ namespace PluginApi
         public CommandDefinition(
             string id,
             string name,
-            Func<object?[], object?> execute,
-            Func<object?[], bool>? canExecute = null)
+            Func<object?, object?> execute,
+            Func<object?, bool>? canExecute = null)
         {
             Id = id;
             Name = name;

@@ -12,7 +12,7 @@ using CSHO;
 using HoArchive;
 using Plankton.ArchiveEditorPlugin.Helpers;
 using PluginApi;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using ArchiveEditorPlugin.Helpers;
 
 namespace ArchiveEditorPlugin
 {
@@ -186,7 +186,7 @@ namespace ArchiveEditorPlugin
             archiveTreeView.Nodes.Clear();
 
             archiveTreeView.Nodes.Add(
-                CreateNode(handler.Archive.MasterTable)
+                ArchiveTreeViewTools.CreateNode(handler.Archive.MasterTable)
             );
 
         }
@@ -216,58 +216,6 @@ namespace ArchiveEditorPlugin
             return item;
         }
 
-
-        private TreeNode CreateNode(ParcelBase parcel, TableEntry? entry = null)
-        {
-            if (parcel is Table)
-            {
-                return CreateTableNode((Table)parcel, entry);
-            }
-
-            if (parcel is Parcel)
-            {
-                return CreateParcelNode((Parcel)parcel, entry);
-            }
-
-            return null;
-        }
-
-        private TreeNode CreateParcelNode(Parcel parcel, TableEntry? entry = null)
-        {
-            TreeNode node = new TreeNode(entry.sectionType);
-            node.Tag = new NodeTag(parcel, null, entry);
-
-            foreach (ParcelTOC toc in parcel.ParcelTOCs)
-            {
-                node.Nodes.Add(CreateTOCNode(toc));
-            }
-
-            return node;
-        }
-
-        private TreeNode CreateTOCNode(ParcelTOC toc, string tag = "(ParcelTOC)")
-        {
-            TreeNode node = new TreeNode(tag);
-            node.Tag = new NodeTag(toc);
-            return node;
-        }
-
-
-        private TreeNode CreateTableNode(Table table, TableEntry ownentry = null)
-        {
-            TreeNode node = new TreeNode(table.TableHeader.tableTypeTag);
-            node.Tag = new NodeTag(table, table.TableHeader, ownentry);
-            for (int i = 0; i < table.Parcels.Count; i++)
-            {
-                ParcelBase parcel = table.Parcels[i];
-                TableEntry entry = table.TableEntries[i];
-
-                TreeNode child = CreateNode(parcel, entry);
-                if (child == null) continue;
-                node.Nodes.Add(child);
-            }
-            return node;
-        }
 
 
         private void tocEntryListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -516,19 +464,7 @@ namespace ArchiveEditorPlugin
         }
     }
 
-    internal class NodeTag
-    {
-        public object obj;
-        public object? header;
-        public object? data;
-
-        public NodeTag(object obj, object? header = null, object? data = null)
-        {
-            this.obj = obj;
-            this.header = header;
-            this.data = data;
-        }
-    }
+    
 
     internal class TableInfo
     {

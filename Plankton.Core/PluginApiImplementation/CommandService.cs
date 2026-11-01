@@ -42,7 +42,7 @@ internal sealed class CommandService : ICommandService
 
     public bool CanExecute(
         string commandId,
-        params object?[] parameter)
+        object? parameter = null)
     {
         if (!commands.TryGetValue(
             commandId,
@@ -57,7 +57,7 @@ internal sealed class CommandService : ICommandService
 
     public object? Execute(
         string commandId,
-        params object?[] arguments)
+        object? arguments = null)
     {
         if (!commands.TryGetValue(
                 commandId,
