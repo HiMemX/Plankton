@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveEditorPlugin", "Arch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexEditorPlugin", "HexEditorPlugin\HexEditorPlugin.csproj", "{5893756B-96E7-4A52-9004-D99EB9E23541}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UndoRedoPlugin", "UndoRedoPlugin\UndoRedoPlugin.csproj", "{78EF5FC1-A72D-4191-B2FF-D8A7F7B582EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{5893756B-96E7-4A52-9004-D99EB9E23541}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5893756B-96E7-4A52-9004-D99EB9E23541}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5893756B-96E7-4A52-9004-D99EB9E23541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78EF5FC1-A72D-4191-B2FF-D8A7F7B582EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78EF5FC1-A72D-4191-B2FF-D8A7F7B582EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78EF5FC1-A72D-4191-B2FF-D8A7F7B582EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78EF5FC1-A72D-4191-B2FF-D8A7F7B582EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{B5DC4A8B-300A-4FD6-B31D-798319D9631B} = {732B24A6-3945-4C6C-BAAD-5818AD820BE3}
 		{4720EB08-536C-4EE5-B589-8447A75BD74A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5893756B-96E7-4A52-9004-D99EB9E23541} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{78EF5FC1-A72D-4191-B2FF-D8A7F7B582EF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1F05FB7F-0650-420C-B0D6-1299F61F5AEE}

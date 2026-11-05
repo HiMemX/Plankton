@@ -75,6 +75,8 @@ namespace Plankton.Special_Editors.Level_Editor
         public event EventHandler<IEnumerable<AssetInfo>>? AssetsModifiedPreview;
         public event EventHandler<IEnumerable<AssetInfo>>? AssetsModified;
         public event EventHandler<IEnumerable<AssetInfo>>? AssetsRenamed;
+        public event EventHandler Undo;
+        public event EventHandler Redo;
 
         public LevelEditor(LevelEditorPreferences preferences)
         {
@@ -84,7 +86,7 @@ namespace Plankton.Special_Editors.Level_Editor
 
             lrsEditor.OnStartCallback = () => { SetLocRotScaleFunctions(); };
             lrsEditor.OnUpdateCallback = () => { UpdateLocRotScale(selectedContainers); };
-            lrsEditor.OnEditEndCallback += UpdateEasyEditPanelValues;
+            lrsEditor.OnEditEndCallback += OnLRSEditEndCallback;
             InitEasyEditPanel();
 
             renderer.MouseMove += renderer_MouseMove;
@@ -98,6 +100,12 @@ namespace Plankton.Special_Editors.Level_Editor
             this.preferences = preferences;
 
             
+        }
+
+        private void OnLRSEditEndCallback()
+        {
+            UpdateEasyEditPanelValues();
+            NotifyAssetsModified();
         }
 
         private bool AssetEventContainsAsset(AssetEventArgs e, TOCEntry subject)
@@ -144,16 +152,7 @@ namespace Plankton.Special_Editors.Level_Editor
             UpdateNonInstancedContainers();
         }
 
-        private List<AssetInfo> GetContainerInfos(List<EditableContainer> containers)
-        {
-            List<AssetInfo> infos = new();
-            foreach (EditableContainer container in containers)
-            {
-                if (container.entry.wmlTypeID == wmlTypeID.BSP) continue; // No need to update locrotscale of these, they stay constant
-                infos.Add(new AssetInfo(handler, container.entry));
-            }
-            return infos;
-        }
+        
 
         public void UpdateLocRotScale(List<EditableContainer> containers)
         {
@@ -249,21 +248,46 @@ namespace Plankton.Special_Editors.Level_Editor
             renderer.InitRenderer();
         }
 
+        private void UpdateUnderlyingEntry(EditableContainer container)
+        {
+            container.entry.Update();
+        }
+
         private void UpdateUnderlyingEntries(List<EditableContainer> containers)
         {
             foreach (EditableContainer container in containers)
             {
-                container.entry.Update();
+                UpdateUnderlyingEntry(container);
             }
         }
-        
+
+        private List<AssetInfo> GetContainerInfos(List<EditableContainer> containers)
+        {
+            List<AssetInfo> infos = new();
+            foreach (EditableContainer container in containers)
+            {
+                if (container.entry.wmlTypeID == wmlTypeID.BSP) continue; // No need to update locrotscale of these, they stay constant
+                infos.Add(new AssetInfo(handler, container.entry));
+            }
+            return infos;
+        }
+
+        private void NotifyAssetsModified()
+        {
+            List<AssetInfo> infos = new();
+            foreach (EditableContainer container in selectedContainers)
+            {
+                List<byte> databefore = new(container.entry.data);
+                UpdateUnderlyingEntry(container);
+                infos.Add(new AssetInfo(handler, container.entry, databefore));
+            }
+            AssetsModified?.Invoke(this, infos);
+        }
 
         public void UpdateEasyEditPanelValues()
         {
             if (selectedContainers.Count == 0) return;
 
-            UpdateUnderlyingEntries(selectedContainers);
-            AssetsModified?.Invoke(this, GetContainerInfos(selectedContainers));
 
             EditableContainer selectedContainer = selectedContainers.Last();
 
@@ -429,6 +453,21 @@ namespace Plankton.Special_Editors.Level_Editor
 
                 renderer.RemovePressedKey(duplicatorbind.key);
 
+                return;
+            }
+
+            Keybind undokeybind = new Keybind(Keys.Z, Keys.LControlKey);
+            Keybind redokeybind = new Keybind(Keys.Y, Keys.LControlKey);
+            if (renderer.IsPressed(undokeybind))
+            {
+                Undo?.Invoke(this, null);
+                renderer.RemovePressedKey(undokeybind);
+                return;
+            }
+            if (renderer.IsPressed(redokeybind))
+            {
+                Redo?.Invoke(this, null);
+                renderer.RemovePressedKey(redokeybind);
                 return;
             }
 

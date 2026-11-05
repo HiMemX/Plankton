@@ -637,6 +637,8 @@ namespace Plankton.EditingTools
 
         public void CancelEdit()
         {
+            if (currentEditMode == EditMode.NONE) return;
+
             SetPositionCallback(
                 OriginalPositions);
 
@@ -655,6 +657,8 @@ namespace Plankton.EditingTools
 
         public void ApplyEdit()
         {
+            if (currentEditMode == EditMode.NONE) return;
+
             currentEditMode =
                 EditMode.NONE;
 

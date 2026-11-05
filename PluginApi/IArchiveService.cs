@@ -60,11 +60,22 @@ namespace PluginApi
         public Handler Archive { get; }
         public TOCEntry Entry { get; }
 
+        public List<byte>? DataBefore { get; }
+        public List<byte> DataAfter { get; }
 
         public AssetInfo(Handler archive, TOCEntry entry)
         {
             Archive = archive;
             Entry = entry;
+            DataAfter = new List<byte>(entry.data);
+        }
+
+        public AssetInfo(Handler archive, TOCEntry entry, List<byte> dataBefore)
+        {
+            Archive = archive;
+            Entry = entry;
+            DataBefore = new List<byte>(dataBefore);
+            DataAfter = new List<byte>(entry.data);
         }
     }
 }

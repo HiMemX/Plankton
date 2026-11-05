@@ -59,6 +59,8 @@ internal sealed class LevelEditorInstance : IEditor
         control.AssetsModifiedPreview += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModifiedPreview(sender, e); };
         control.AssetsModified += (object? sender, IEnumerable<AssetInfo> e) => { host.Archive.NotifyAssetsModified(sender, e); };
         control.AssetsRenamed += host.Archive.NotifyAssetsRenamed;
+        control.Undo += (_, _) => { host.Commands.Execute("plankton.undo-action"); };
+        control.Redo += (_, _) => { host.Commands.Execute("plankton.redo-action"); };
 
         // An archive might already be open when this editor is created.
         if (host.Archive.Current.Archive != null)
