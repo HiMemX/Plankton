@@ -43,6 +43,7 @@ namespace Plankton.EditingTools
         public Action OnUpdateCallback;
         public Action OnCancelCallback;
         public Action OnStartCallback = () => { };
+        public event Action? OnEditConfirmedCallback = () => { };
         public event Action? OnEditEndCallback;
 
         // Used for relative scaling (Scaling doesn't change at cursor's starting position)
@@ -664,6 +665,7 @@ namespace Plankton.EditingTools
 
             OnUpdateCallback();
             OnEditEndCallback?.Invoke();
+            OnEditConfirmedCallback?.Invoke();
         }
 
         public bool IsEditing()

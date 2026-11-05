@@ -87,6 +87,7 @@ namespace Plankton.Special_Editors.Level_Editor
             lrsEditor.OnStartCallback = () => { SetLocRotScaleFunctions(); };
             lrsEditor.OnUpdateCallback = () => { UpdateLocRotScale(selectedContainers); };
             lrsEditor.OnEditEndCallback += OnLRSEditEndCallback;
+            lrsEditor.OnEditConfirmedCallback += OnLRSEditConfirmedCallback;
             InitEasyEditPanel();
 
             renderer.MouseMove += renderer_MouseMove;
@@ -103,6 +104,11 @@ namespace Plankton.Special_Editors.Level_Editor
         }
 
         private void OnLRSEditEndCallback()
+        {
+            UpdateEasyEditPanelValues();
+        }
+
+        private void OnLRSEditConfirmedCallback()
         {
             UpdateEasyEditPanelValues();
             NotifyAssetsModified();
