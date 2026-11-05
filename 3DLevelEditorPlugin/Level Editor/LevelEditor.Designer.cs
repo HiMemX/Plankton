@@ -87,13 +87,13 @@
             levelViewRightClickMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             levelViewRightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { testToolStripMenuItem });
             levelViewRightClickMenu.Name = "levelViewRightClickMenu";
-            levelViewRightClickMenu.Size = new System.Drawing.Size(181, 48);
+            levelViewRightClickMenu.Size = new System.Drawing.Size(95, 26);
             levelViewRightClickMenu.Opening += levelViewRightClickMenu_Opening;
             // 
             // testToolStripMenuItem
             // 
             testToolStripMenuItem.Name = "testToolStripMenuItem";
-            testToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            testToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             testToolStripMenuItem.Text = "Test";
             // 
             // splitContainer1

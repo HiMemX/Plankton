@@ -456,15 +456,15 @@ namespace Plankton.Special_Editors.Level_Editor
                 return;
             }
 
-            Keybind undokeybind = new Keybind(Keys.Z, Keys.LControlKey);
-            Keybind redokeybind = new Keybind(Keys.Y, Keys.LControlKey);
-            if (renderer.IsPressed(undokeybind))
+            Keybind undokeybind = new Keybind(Keys.Z, Keys.Control);
+            Keybind redokeybind = new Keybind(Keys.Y, Keys.Control);
+            if (renderer.IsPressed(undokeybind) && !lrsEditor.IsEditing())
             {
                 Undo?.Invoke(this, null);
                 renderer.RemovePressedKey(undokeybind);
                 return;
             }
-            if (renderer.IsPressed(redokeybind))
+            if (renderer.IsPressed(redokeybind) && !lrsEditor.IsEditing())
             {
                 Redo?.Invoke(this, null);
                 renderer.RemovePressedKey(redokeybind);
