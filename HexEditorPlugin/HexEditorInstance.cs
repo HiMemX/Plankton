@@ -43,6 +43,7 @@ namespace HexEditorPlugin
 
                 byte[] modifiedData = control.GetBytes();
 
+                List<byte> olddata = new(current.data);
                 current.data = modifiedData.ToList();
                 try { current.CreateEntity(); }
                 catch(Exception e){
@@ -50,7 +51,7 @@ namespace HexEditorPlugin
                     return;
                 }
 
-                host.Archive.NotifyAssetsModified(this, new List<AssetInfo>() { new AssetInfo(host.Archive.Current, current) });
+                host.Archive.NotifyAssetsModified(this, new List<AssetInfo>() { new AssetInfo(host.Archive.Current, current, olddata) });
                 control.SetModified(false);
             };
             

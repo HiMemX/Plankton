@@ -58,6 +58,7 @@ namespace HexEditorPlugin
 
                 UseFixedBytesPerLine = true,
                 BytesPerLine = 16,
+                SelectionBackColor = Color.FromArgb(255, 0, 120, 215),
 
                 BorderStyle = BorderStyle.None
             };
