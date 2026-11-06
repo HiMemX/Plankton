@@ -20,18 +20,21 @@ namespace UndoRedoPlugin
 
             host.Commands.Register(new CommandDefinition(
                 "plankton.undo-action",
-                "Undo Action",
+                "Undo [Ctrl+Z]",
                 UndoLastAction
                 ));
 
             host.Commands.Register(new CommandDefinition(
                 "plankton.redo-action",
-                "Redo Action",
+                "Redo [Ctrl+Y]",
                 RedoLastAction
                 ));
 
             host.UI.AddCommand("plankton.main.edit", "plankton.undo-action");
             host.UI.AddCommand("plankton.main.edit", "plankton.redo-action");
+
+            host.Archive.Opened += (_,_) => { actions.Clear(); };
+            host.Archive.Closed += (_, _) => { actions.Clear(); };
 
             host.Archive.AssetsModified += AssetsModified;
 

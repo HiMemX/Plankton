@@ -156,6 +156,8 @@ namespace Plankton.Special_Editors.Level_Editor
 
             UpdateSuperInstances(GetContainer(ids));
             UpdateNonInstancedContainers();
+
+            UpdateEasyEditPanelValues();
         }
 
         
@@ -368,9 +370,9 @@ namespace Plankton.Special_Editors.Level_Editor
             scaleVectorInputBox.SetMultiplier(0.4f);
             rotationVectorInputBox.SetMultiplier(6);
 
-            positionVectorInputBox.SetMouseUpEvent(() => { UpdateEasyEditPanelValues(); });
-            rotationVectorInputBox.SetMouseUpEvent(() => { UpdateEasyEditPanelValues(); });
-            scaleVectorInputBox.SetMouseUpEvent(() => { UpdateEasyEditPanelValues(); });
+            positionVectorInputBox.SetMouseUpEvent(() => { OnLRSEditConfirmedCallback(); });
+            rotationVectorInputBox.SetMouseUpEvent(() => { OnLRSEditConfirmedCallback(); });
+            scaleVectorInputBox.SetMouseUpEvent(() => { OnLRSEditConfirmedCallback(); });
         }
 
 
