@@ -17,6 +17,8 @@ namespace ConsolePlugin
 
         internal ConsoleInstance? instance = null;
 
+        private List<object> backlog = new();
+
         public ConsoleProvider(IHost host) {
             this.host = host;
         }
@@ -31,14 +33,38 @@ namespace ConsolePlugin
             instance = new ConsoleInstance(
                 host);
 
+            instance.disposing += InstanceDisposing;
+
+            foreach(object p in backlog)
+            {
+                if (p is not (string origin, string message, DebugEntryType target)) continue;
+                instance.AddEntry(origin, message, target);
+            }
+
             return instance;
         }
 
+        private void InstanceDisposing(object? sender, EventArgs e)
+        {
+            instance = null;
+        }
+
+
         public void AddEntry(string origin, string message, DebugEntryType target)
         {
-            if (instance == null) return;
+            AddToBacklog(origin, message, target);
+
+            if (instance == null)
+            {
+                return;
+            }
 
             instance.AddEntry(origin, message, target);
+        }
+
+        private void AddToBacklog(string origin, string message, DebugEntryType target)
+        {
+            backlog.Add((origin, message, target));
         }
     }
 }

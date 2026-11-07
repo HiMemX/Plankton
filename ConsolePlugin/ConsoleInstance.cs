@@ -16,6 +16,8 @@ namespace ConsolePlugin
         public Icon? Icon => new Icon("Resources/Console.ico");
         public Control Control => control;
 
+        public event EventHandler disposing;
+
         public ConsoleInstance(IHost host)
         {
             this.host = host;
@@ -29,6 +31,7 @@ namespace ConsolePlugin
 
         public void Dispose()
         {
+            disposing?.Invoke(this, EventArgs.Empty);
             control.Dispose();
         }
 
