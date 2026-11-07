@@ -56,7 +56,7 @@ namespace HexEditorPlugin
             };
 
             //control.KeyDown += control_KeyDown;
-            control.HexBox.KeyDown += control_KeyDown;
+            //control.HexBox.KeyDown += control_KeyDown;
             
         }
 

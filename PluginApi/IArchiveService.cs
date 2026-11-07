@@ -15,6 +15,8 @@ namespace PluginApi
 
         event EventHandler<ArchiveEventArgs>? Opened;
         event EventHandler<ArchiveEventArgs>? Closed;
+        event EventHandler<ArchiveEventArgs>? Saved;
+        event EventHandler<ArchiveEventArgs>? PathChanged;
 
         event EventHandler<AssetEventArgs>? AssetsModified;
         event EventHandler<AssetEventArgs>? AssetsModifiedPreview;

@@ -100,6 +100,7 @@
             Name = "CoreForm";
             Text = "Plankton";
             WindowState = FormWindowState.Maximized;
+            FormClosing += CoreForm_FormClosing;
             mainMenuStrip.ResumeLayout(false);
             mainMenuStrip.PerformLayout();
             parentPanel.ResumeLayout(false);

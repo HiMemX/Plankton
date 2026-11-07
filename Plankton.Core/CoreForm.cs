@@ -1,3 +1,4 @@
+using System.IO;
 using CSHO;
 using Plankton.Core;
 using Plankton.Core.CustomUIEditors;
@@ -29,6 +30,8 @@ namespace Plankton.Core
         private readonly DockTabRenameFilter tabRenameFilter;
 
         private CorePreferences preferences = null!;
+
+        private bool unsavedChanges = false;
 
         public CoreForm()
         {
@@ -79,7 +82,64 @@ namespace Plankton.Core
 
             pluginLoader = new PluginLoader(host);
 
+            SubscribeUnsavedChangesEvents();
+        }
 
+
+        private void SubscribeUnsavedChangesEvents()
+        {
+
+            host.Archive.Saved += (_, _) => { SetUnsavedChanges(false); };
+            host.Archive.Opened += (_, _) => { SetUnsavedChanges(false); };
+            host.Archive.Closed += (_, _) => { SetUnsavedChanges(false); };
+            host.Archive.AssetsModified += (_, _) => { SetUnsavedChanges(true); };
+            host.Archive.AssetsCreated += (_, _) => { SetUnsavedChanges(true); };
+            host.Archive.AssetsDeleted += (_, _) => { SetUnsavedChanges(true); };
+            host.Archive.AssetsRenamed += (_, _) => { SetUnsavedChanges(true); };
+        }
+
+        private void SetUnsavedChanges(bool unsavedChanges)
+        {
+            this.unsavedChanges = unsavedChanges;
+            UpdateFormText();
+        }
+
+        private void UpdateFormText()
+        {
+            if (host.Archive.Current == null)
+            {
+                Text = "Plankton";
+                return;
+            }
+
+            Text = "Plankton - " + host.Archive.Current.path + (unsavedChanges ? "*" : "");
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData) // Maybe replace this with a global shortcut system
+            {
+                case Keys.Control | Keys.Z:
+                    host.Commands.Execute("plankton.undo-action"); // Require undo and redo plugin installed
+                    return true;
+
+                case Keys.Control | Keys.Y:
+                    host.Commands.Execute("plankton.redo-action");
+                    return true;
+
+                case Keys.Control | Keys.O:
+                    host.Commands.Execute("plankton.archive.open");
+                    return true;
+                case Keys.Control | Keys.S:
+                    host.Commands.Execute("plankton.archive.save");
+                    return true;
+
+                case Keys.Control | Keys.Shift | Keys.S:
+                    host.Commands.Execute("plankton.archive.save-as");
+                    return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void RegisterPreferences()
@@ -96,6 +156,8 @@ namespace Plankton.Core
         private void RegisterCoreUI()
         {
             uiService.AddCommand("plankton.main.file", "plankton.archive.open");
+            uiService.AddCommand("plankton.main.file", "plankton.archive.save");
+            uiService.AddCommand("plankton.main.file", "plankton.archive.save-as");
             uiService.AddCommand("plankton.main.edit", "plankton.preferences.open");
         }
 
@@ -104,7 +166,8 @@ namespace Plankton.Core
             commandService.Register(new CommandDefinition(
                 "plankton.preferences.open",
                 "Edit Preferences...",
-                parameter => {
+                parameter =>
+                {
                     using var dialog = new PreferenceEditor.PreferencesForm(preferencesService);
                     dialog.ShowDialog();
                 })
@@ -112,7 +175,7 @@ namespace Plankton.Core
 
             commandService.Register(new CommandDefinition(
                 "plankton.archive.open",
-                "Open Archive...",
+                "Open Archive... [Ctrl+O]",
                 parameter =>
                 {
                     string? path = parameter as string;
@@ -133,11 +196,52 @@ namespace Plankton.Core
                     OpenArchive(path);
                 })
             );
+
+            commandService.Register(new CommandDefinition(
+                "plankton.archive.save",
+                "Save Archive... [Ctrl+S]",
+                parameter =>
+                {
+                    if (host.Archive.Current.Archive != null)
+                        SaveArchive();
+                }        
+                ));
+
+            commandService.Register(new CommandDefinition(
+                "plankton.archive.save-as",
+                "Save As... [Ctrl+Shift+S]",
+                parameter =>
+                {
+                    if (host.Archive.Current.Archive != null)
+                        SaveArchiveAs();
+                }
+                ));
         }
 
         private void OpenArchive(string path)
         {
             archiveService.Open(path);
+        }
+
+        private void SaveArchive()
+        {
+            archiveService.Save();
+        }
+
+        private void SaveArchiveAs()
+        {
+            using var dialog = new SaveFileDialog
+            {
+                Filter = "HO Archives (*.ho)|*.ho|All files (*.*)|*.*"
+            };
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            string path = dialog.FileName;
+        
+            archiveService.SetPath(path);
+            archiveService.Save();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -243,9 +347,37 @@ namespace Plankton.Core
             window.Activate();
         }
 
+
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void CoreForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!unsavedChanges) return;
+
+            DialogResult result = MessageBox.Show(
+                "Save changes?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Warning
+            );
+
+            switch (result)
+            {
+                case DialogResult.Yes:
+                    SaveArchive();
+                    return;
+
+                case DialogResult.No:
+                    return;
+
+                case DialogResult.Cancel:
+                    e.Cancel = true;
+                    return;
+            }
         }
     }
 }

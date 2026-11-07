@@ -463,7 +463,7 @@ namespace Plankton.Special_Editors.Level_Editor
 
                 return;
             }
-
+            /*
             Keybind undokeybind = new Keybind(Keys.Z, Keys.Control);
             Keybind redokeybind = new Keybind(Keys.Y, Keys.Control);
             if (renderer.IsPressed(undokeybind) && !lrsEditor.IsEditing())
@@ -477,7 +477,7 @@ namespace Plankton.Special_Editors.Level_Editor
                 Redo?.Invoke(this, null);
                 renderer.RemovePressedKey(redokeybind);
                 return;
-            }
+            }*/
 
             // LocRotScaleEditor
             Keybind moveobjectbind = preferences.moveObject;

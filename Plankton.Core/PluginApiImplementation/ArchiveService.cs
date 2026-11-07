@@ -14,6 +14,8 @@ namespace Plankton.PluginApiImplementation
 
         public event EventHandler<ArchiveEventArgs>? Opened;
         public event EventHandler<ArchiveEventArgs>? Closed;
+        public event EventHandler<ArchiveEventArgs>? Saved;
+        public event EventHandler<ArchiveEventArgs>? PathChanged;
 
         public event EventHandler<AssetEventArgs>? AssetsModified;
         public event EventHandler<AssetEventArgs>? AssetsModifiedPreview;
@@ -32,6 +34,15 @@ namespace Plankton.PluginApiImplementation
         {
             Closed?.Invoke(sender, e);
         }
+        public void NotifyArchiveSaved(object? sender, ArchiveEventArgs e)
+        {
+            Saved?.Invoke(sender, e);
+        }
+
+        public void NotifyPathChanged(object? sender, ArchiveEventArgs e)
+        {
+            PathChanged?.Invoke(sender, e);
+        }
 
         public void Open(string path)
         {
@@ -39,6 +50,17 @@ namespace Plankton.PluginApiImplementation
             NotifyArchiveOpened(this, new ArchiveEventArgs(Current));
         }
 
+        public void Save()
+        {
+            Current.Save();
+            NotifyArchiveSaved(this, new ArchiveEventArgs(Current));
+        }
+
+        public void SetPath(string path)
+        {
+            Current.path = path;
+            NotifyPathChanged(this, new ArchiveEventArgs(Current));
+        }
 
 
         public void NotifyAssetsModified(
