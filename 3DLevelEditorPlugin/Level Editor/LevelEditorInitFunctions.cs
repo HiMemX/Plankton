@@ -44,8 +44,10 @@ namespace Plankton.Special_Editors.Level_Editor
         public void CollectResourcePools()
         {
             selectedContainer = null;
+            selectedContainers.Clear();
             renderer.ClearResourcePool();
             editableContainers.Clear();
+
 
             foreach (TOCEntry entry in handler.GetAssets())
             {

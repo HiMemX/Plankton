@@ -56,6 +56,12 @@ namespace Plankton.PluginApiImplementation
             NotifyArchiveSaved(this, new ArchiveEventArgs(Current));
         }
 
+        public void Close()
+        {
+            Current.Close();
+            NotifyArchiveClosed(this, new ArchiveEventArgs(Current));
+        }
+
         public void SetPath(string path)
         {
             Current.path = path;

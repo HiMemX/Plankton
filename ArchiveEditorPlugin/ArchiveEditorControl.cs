@@ -185,6 +185,7 @@ namespace ArchiveEditorPlugin
         {
             archiveTreeView.Nodes.Clear();
 
+            if (handler.Archive == null) return;
             archiveTreeView.Nodes.Add(
                 ArchiveTreeViewTools.CreateNode(handler.Archive.MasterTable)
             );

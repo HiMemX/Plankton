@@ -158,6 +158,7 @@ namespace Plankton.Core
             uiService.AddCommand("plankton.main.file", "plankton.archive.open");
             uiService.AddCommand("plankton.main.file", "plankton.archive.save");
             uiService.AddCommand("plankton.main.file", "plankton.archive.save-as");
+            uiService.AddCommand("plankton.main.file", "plankton.archive.close");
             uiService.AddCommand("plankton.main.edit", "plankton.preferences.open");
         }
 
@@ -178,29 +179,7 @@ namespace Plankton.Core
                 "Open Archive... [Ctrl+O]",
                 parameter =>
                 {
-                    if (unsavedChanges)
-                    {
-
-                        DialogResult result = MessageBox.Show(
-                            "Save changes?",
-                            "Unsaved Changes",
-                            MessageBoxButtons.YesNoCancel,
-                            MessageBoxIcon.Warning
-                        );
-
-                        switch (result)
-                        {
-                            case DialogResult.Yes:
-                                SaveArchive();
-                                break;
-
-                            case DialogResult.No:
-                                break;
-
-                            case DialogResult.Cancel:
-                                return;
-                        }
-                    }
+                    if (!UnsavedChangesPrompt()) return;
 
                     string? path = parameter as string;
 
@@ -240,6 +219,49 @@ namespace Plankton.Core
                         SaveArchiveAs();
                 }
                 ));
+
+            commandService.Register(new CommandDefinition(
+                "plankton.archive.close",
+                "Close...",
+                parameter =>
+                {
+                    if (host.Archive.Current.Archive != null)
+                        CloseArchive();
+                }
+                ));
+        }
+
+        private void CloseArchive()
+        {
+            if(UnsavedChangesPrompt()) archiveService.Close();
+        }
+
+        private bool UnsavedChangesPrompt()
+        {
+            if (!unsavedChanges) return true;
+            
+            DialogResult result = MessageBox.Show(
+                "Save changes?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Warning
+            );
+
+            switch (result)
+            {
+                case DialogResult.Yes:
+                    SaveArchive();
+                    break;
+
+                case DialogResult.No:
+                    break;
+
+                case DialogResult.Cancel:
+                    return false;
+            }
+
+            return true;
+            
         }
 
         private void OpenArchive(string path)
@@ -380,28 +402,7 @@ namespace Plankton.Core
 
         private void CoreForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!unsavedChanges) return;
-
-            DialogResult result = MessageBox.Show(
-                "Save changes?",
-                "Unsaved Changes",
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Warning
-            );
-
-            switch (result)
-            {
-                case DialogResult.Yes:
-                    SaveArchive();
-                    return;
-
-                case DialogResult.No:
-                    return;
-
-                case DialogResult.Cancel:
-                    e.Cancel = true;
-                    return;
-            }
+            if (!UnsavedChangesPrompt()) e.Cancel = true;
         }
 
     }
