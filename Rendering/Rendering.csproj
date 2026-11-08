@@ -22,10 +22,10 @@
 
   <ItemGroup>
     <Reference Include="CSHO">
-      <HintPath>..\..\..\..\Desktop\Projects\CSHO\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
+      <HintPath>..\Libraries\CSHO.dll</HintPath>
     </Reference>
     <Reference Include="libWiiSharp">
-      <HintPath>..\..\..\..\Desktop\Programme\libWiiSharp-master\bin\Release\libWiiSharp.dll</HintPath>
+      <HintPath>..\Libraries\libWiiSharp.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <HintPath>..\..\..\..\..\..\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\6.0.36\ref\net6.0\System.Windows.Forms.dll</HintPath>

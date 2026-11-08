@@ -14,10 +14,10 @@
 
   <ItemGroup>
     <Reference Include="Be.Windows.Forms.HexBox">
-      <HintPath>..\..\..\..\Desktop\Random_stuff\HexBox\Be.Windows.Forms.HexBox.dll</HintPath>
+      <HintPath>..\Libraries\Be.Windows.Forms.HexBox.dll</HintPath>
     </Reference>
     <Reference Include="CSHO">
-      <HintPath>..\..\..\..\Desktop\Projects\CSHO\CSHO\CSHO\bin\Debug\net6.0\CSHO.dll</HintPath>
+      <HintPath>..\Libraries\CSHO.dll</HintPath>
     </Reference>
   </ItemGroup>
 
