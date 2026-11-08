@@ -47,7 +47,23 @@ namespace ArchiveEditorPlugin
                     OpenParcelTOCDialog
                 ));
 
+            host.Commands.Register(new CommandDefinition(
+                    "plankton.assets.create-asset-dialog",
+                    "Create Asset Dialog",
+                    CreateAssetDialog
+                ));
+
             this.host = host;
+        }
+
+        private TOCEntry? CreateAssetDialog(object? parameters)
+        {
+            if (host.Archive.Current.Archive == null) return null;
+
+            var dialog = new CreateAssetDialog(host.Archive.Current);
+            if (dialog.ShowDialog() == DialogResult.OK) return dialog.entry;
+
+            return null;
         }
 
         private ParcelTOC? OpenParcelTOCDialog(object? parameters)
@@ -55,21 +71,33 @@ namespace ArchiveEditorPlugin
             if (host.Archive.Current.Archive == null) return null;
 
             var dialog = new SelectParcelTOCDialog(host.Archive.Current);
-            if (dialog.ShowDialog() == DialogResult.OK) return null;
+            if (dialog.ShowDialog() == DialogResult.OK) return dialog.GetSelectedTOC();
 
             return null;
         }
 
-        private TOCEntry? CreateAsset(object? parameters) { // Parameters either CSHO.Handler or ParcelTOC
-            if (parameters is not (
-                ParcelTOC toc
-            ))
+        private TOCEntry? CreateAsset(object? parameters) { // Everywhere nulls...
+            ParcelTOC? parcelTOC = null;
+            TOCEntry? entry = null;
+            if (parameters != null) (parcelTOC, entry) = ((ParcelTOC?, TOCEntry?))parameters;
+
+            if (parcelTOC == null)
             {
-                return null;
+                parcelTOC = OpenParcelTOCDialog(null);
+                if (parcelTOC == null) return null;
             }
-            return null;
 
+            if(entry == null)
+            {
+                entry = CreateAssetDialog(null);
+                if (entry == null) return null;
+            }
 
+            parcelTOC.Entries.Add(entry);
+
+            host.Archive.NotifyAssetsCreated(this, new List<AssetInfo>() {new AssetInfo(host.Archive.Current, entry)});
+
+            return entry;
         }
 
     }

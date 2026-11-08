@@ -11,7 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Plankton.ico" />
+    <Content Include="Plankton.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

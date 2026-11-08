@@ -26,6 +26,16 @@ namespace ArchiveEditorPlugin.Helpers
 
             Populate();
         }
+        
+        public ParcelTOC? GetSelectedTOC() {
+            if (tocTreeView.SelectedNode == null) return null;
+
+            NodeTag tag = tocTreeView.SelectedNode.Tag as NodeTag;
+
+            if (tag.obj is not ParcelTOC) return null;
+
+            return tag.obj as ParcelTOC;
+        }
 
 
         private void Populate()

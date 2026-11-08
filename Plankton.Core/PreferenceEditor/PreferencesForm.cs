@@ -29,6 +29,8 @@ internal sealed class PreferencesForm : Form
         MinimumSize = new Size(700, 500);
         Size = new Size(850, 600);
 
+        Icon = new Icon("Plankton.ico");
+
         sectionList = new ListBox
         {
             Dock = DockStyle.Fill,
@@ -140,6 +142,11 @@ internal sealed class PreferencesForm : Form
 
         TypeDescriptor.Refresh(editableObject.GetType());
         propertyGrid.SelectedObject = editableObject;
+    }
+
+    private void InitializeComponent()
+    {
+
     }
 
     private void ApplyChanges()
