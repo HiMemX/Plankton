@@ -106,7 +106,7 @@ namespace Plankton.Core
 
         private void UpdateFormText()
         {
-            if (host.Archive.Current == null)
+            if (host.Archive.Current.Archive == null)
             {
                 Text = "Plankton";
                 return;
@@ -178,6 +178,30 @@ namespace Plankton.Core
                 "Open Archive... [Ctrl+O]",
                 parameter =>
                 {
+                    if (unsavedChanges)
+                    {
+
+                        DialogResult result = MessageBox.Show(
+                            "Save changes?",
+                            "Unsaved Changes",
+                            MessageBoxButtons.YesNoCancel,
+                            MessageBoxIcon.Warning
+                        );
+
+                        switch (result)
+                        {
+                            case DialogResult.Yes:
+                                SaveArchive();
+                                break;
+
+                            case DialogResult.No:
+                                break;
+
+                            case DialogResult.Cancel:
+                                return;
+                        }
+                    }
+
                     string? path = parameter as string;
 
                     if (path == null)
@@ -379,5 +403,6 @@ namespace Plankton.Core
                     return;
             }
         }
+
     }
 }
