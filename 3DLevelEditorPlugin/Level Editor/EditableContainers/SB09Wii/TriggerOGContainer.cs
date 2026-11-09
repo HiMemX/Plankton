@@ -161,13 +161,14 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
             baseinstance.matrix = GetInstanceMatrix();
             baseinstance.color = GlobalRenderSettings.triggerSphereColor;
 
-            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_ALL;
+            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_HIGHLIGHT | enumDrawStageMask.DRAW_REGULAR;
             baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_NONE;
 
             helper.AddSphere(baseinstance);
+            
 
             baseinstance = baseinstance.Clone();
-            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_ALL;
+            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_NONE;
             baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
             baseinstance.color = OpenTK.Mathematics.Color4.Black;
             
@@ -186,7 +187,7 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
             //Debug.debugWindow.AddEntry("RenderBox", baseinstance.drawMaskSelected.ToString());
 
             baseinstance = baseinstance.Clone();
-            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION | enumDrawStageMask.DRAW_HIGHLIGHT;
+            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_ALL;
             baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
 
             baseinstance.color = OpenTK.Mathematics.Color4.Black;
