@@ -158,39 +158,39 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
         private void RenderSphere(PrimitiveInstance baseinstance, RenderHelper helper)
         {
-            baseinstance.matrix = GetInstanceMatrix();
-            baseinstance.color = GlobalRenderSettings.triggerSphereColor;
+            baseinstance.data.matrix = GetInstanceMatrix();
+            baseinstance.data.color = GlobalRenderSettings.triggerSphereColor;
 
-            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_HIGHLIGHT | enumDrawStageMask.DRAW_REGULAR;
-            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_NONE;
+            baseinstance.data.drawMaskSelected = enumDrawStageMask.DRAW_HIGHLIGHT | enumDrawStageMask.DRAW_REGULAR;
+            baseinstance.data.drawMaskUnselected = enumDrawStageMask.DRAW_NONE;
 
             helper.AddSphere(baseinstance);
             
 
             baseinstance = baseinstance.Clone();
-            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_NONE;
-            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
-            baseinstance.color = OpenTK.Mathematics.Color4.Black;
+            baseinstance.data.drawMaskSelected = enumDrawStageMask.DRAW_NONE;
+            baseinstance.data.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
+            baseinstance.data.color = OpenTK.Mathematics.Color4.Black;
             
             helper.AddWireframeSphere(baseinstance);
         }
 
         private void RenderBox(PrimitiveInstance baseinstance, RenderHelper helper)
         {
-            baseinstance.matrix = ((TriggerBox)asset.triggerSubtype).Transform.GetSystemMatrix();
-            baseinstance.color = GlobalRenderSettings.triggerBoxColor;
-            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_REGULAR;
-            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_NONE;
+            baseinstance.data.matrix = ((TriggerBox)asset.triggerSubtype).Transform.GetSystemMatrix();
+            baseinstance.data.color = GlobalRenderSettings.triggerBoxColor;
+            baseinstance.data.drawMaskSelected = enumDrawStageMask.DRAW_REGULAR;
+            baseinstance.data.drawMaskUnselected = enumDrawStageMask.DRAW_NONE;
 
 
             helper.AddCube(baseinstance);
             //Debug.debugWindow.AddEntry("RenderBox", baseinstance.drawMaskSelected.ToString());
 
             baseinstance = baseinstance.Clone();
-            baseinstance.drawMaskSelected = enumDrawStageMask.DRAW_ALL;
-            baseinstance.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
+            baseinstance.data.drawMaskSelected = enumDrawStageMask.DRAW_ALL;
+            baseinstance.data.drawMaskUnselected = enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION;
 
-            baseinstance.color = OpenTK.Mathematics.Color4.Black;
+            baseinstance.data.color = OpenTK.Mathematics.Color4.Black;
             Matrix4x4 mat = GetInstanceMatrix();
             
 

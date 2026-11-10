@@ -26,8 +26,8 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
         public override void AddRenderInstances(PrimitiveInstance baseinstance, RenderHelper helper) // Optimize this lol
         {
-            baseinstance.matrix = GetInstanceMatrix();
-            baseinstance.color = GlobalRenderSettings.curveColor;
+            baseinstance.data.matrix = GetInstanceMatrix();
+            baseinstance.data.color = GlobalRenderSettings.curveColor;
 
             Vector3 prev = asset._Coefficients[0].GetVector3();
             for (int i = 0; i < asset._Coefficients.Count; i += 4)

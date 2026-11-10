@@ -107,6 +107,14 @@ namespace Plankton.Rendering
             models.WireframeCube.Add(instance);
         }
 
+        public void Clear(object owner)
+        {
+            foreach(PrimitiveModel model in models.models)
+            {
+                model.instances.RemoveAll(p => p.owner == owner);
+            }
+        }
+
 
         public Matrix4x4 GetLineMatrix(Vector3 pos1, Vector3 pos2)
         {
@@ -287,7 +295,7 @@ namespace Plankton.Rendering
 
             //SetupShader(Matrix4x4.CreateScale(s, s, d) * mat, color);
 
-            instance.matrix = Matrix4x4.CreateScale(s, s, d) * instance.matrix;
+            instance.data.matrix = Matrix4x4.CreateScale(s, s, d) * instance.matrix;
 
             models.Camera_16_9.Add(instance);
             /*

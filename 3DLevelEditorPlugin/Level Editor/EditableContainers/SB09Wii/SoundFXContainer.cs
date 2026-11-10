@@ -39,8 +39,8 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
         public override void AddRenderInstances(PrimitiveInstance baseinstance, RenderHelper helper)
         {
-            baseinstance.matrix = GetInstanceMatrix();
-            baseinstance.color = GlobalRenderSettings.soundFxColor;
+            baseinstance.data.matrix = GetInstanceMatrix();
+            baseinstance.data.color = GlobalRenderSettings.soundFxColor;
 
             helper.AddEmpty(baseinstance);
         }

@@ -73,8 +73,8 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
         public override void AddRenderInstances(PrimitiveInstance baseinstance, RenderHelper helper) {
             //if (isHaloMask) { return; } // Custom drawing code for halo
 
-            baseinstance.matrix = GetInstanceMatrix();
-            baseinstance.color = GlobalRenderSettings.cameraColor;
+            baseinstance.data.matrix = GetInstanceMatrix();
+            baseinstance.data.color = GlobalRenderSettings.cameraColor;
 
             helper.AddCamera(baseinstance, GetFixedFOVY());
         }

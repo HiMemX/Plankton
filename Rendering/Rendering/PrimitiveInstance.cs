@@ -10,7 +10,8 @@ using OpenTK.Mathematics;
 
 namespace Plankton.Rendering
 {
-    public struct PrimitiveInstance
+
+    public struct PrimitiveData
     {
         public Matrix4x4 matrix;
         public Color4 color;
@@ -18,30 +19,49 @@ namespace Plankton.Rendering
         public enumInstanceFlags instanceFlags; // These are the same instance flags the inbuilt geometry uses
         public enumDrawStageMask drawMaskUnselected;
         public enumDrawStageMask drawMaskSelected;
-        
 
-        public PrimitiveInstance(Matrix4x4 matrix, Color4 color, int containerIndex, enumInstanceFlags instanceFlags, enumDrawStageMask drawMaskUnselected, enumDrawStageMask drawMaskSelected) {
+        public PrimitiveData(Matrix4x4 matrix, Color4 color, int containerIndex, enumInstanceFlags instanceFlags, enumDrawStageMask drawMaskUnselected, enumDrawStageMask drawMaskSelected)
+        {
             this.matrix = matrix;
             this.color = color;
             this.containerIndex = containerIndex;
             this.instanceFlags = instanceFlags;
-            this.drawMaskSelected = drawMaskSelected;
             this.drawMaskUnselected = drawMaskUnselected;
+            this.drawMaskSelected = drawMaskSelected;
+        }
+    }
+
+    public struct PrimitiveInstance
+    {
+        public PrimitiveData data;
+        public object owner;
+
+
+        public Matrix4x4 matrix => data.matrix;
+        public Color4 color => data.color;
+        public int containerIndex => data.containerIndex; // Used for the selection buffer pass
+        public enumInstanceFlags instanceFlags => data.instanceFlags; // These are the same instance flags the inbuilt geometry uses
+        public enumDrawStageMask drawMaskUnselected => data.drawMaskUnselected;
+        public enumDrawStageMask drawMaskSelected => data.drawMaskSelected;
+
+        public PrimitiveInstance(Matrix4x4 matrix, Color4 color, int containerIndex, enumInstanceFlags instanceFlags, enumDrawStageMask drawMaskUnselected, enumDrawStageMask drawMaskSelected, object owner) {
+            this.data = new PrimitiveData(matrix, color, containerIndex, instanceFlags, drawMaskUnselected, drawMaskSelected);
+            this.owner = owner;
         }
 
         public PrimitiveInstance Clone(Matrix4x4 matrix)
         {
-            return new PrimitiveInstance(matrix, color, containerIndex, instanceFlags, drawMaskUnselected, drawMaskSelected);
+            return new PrimitiveInstance(matrix, data.color, data.containerIndex, data.instanceFlags, data.drawMaskUnselected, data.drawMaskSelected, owner);
         }
 
         public PrimitiveInstance Clone()
         {
-            return new PrimitiveInstance(matrix, color, containerIndex, instanceFlags, drawMaskUnselected, drawMaskSelected);
+            return new PrimitiveInstance(data.matrix, data.color, data.containerIndex, data.instanceFlags, data.drawMaskUnselected, data.drawMaskSelected, owner);
         }
 
         public PrimitiveInstance Clone(Matrix4x4 matrix, enumDrawStageMask drawMaskUnselected, enumDrawStageMask drawMaskSelected)
         {
-            return new PrimitiveInstance(matrix, color, containerIndex, instanceFlags, drawMaskUnselected, drawMaskSelected);
+            return new PrimitiveInstance(matrix, data.color, data.containerIndex, data.instanceFlags, drawMaskUnselected, drawMaskSelected, owner);
         }
     }
 

@@ -154,8 +154,9 @@ namespace Plankton.Special_Editors.Level_Editor
                 ids.Add(info.Entry.uidSelf);
             }
 
-            UpdateSuperInstances(GetContainer(ids));
-            UpdateNonInstancedContainers();
+            List<EditableContainer> containers = GetContainer(ids);
+            UpdateSuperInstances(containers);
+            UpdateNonInstancedContainers(containers);
 
             UpdateEasyEditPanelValues();
         }

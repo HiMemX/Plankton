@@ -65,7 +65,30 @@ namespace Plankton.Special_Editors.Level_Editor
             DrawOriginPoint();
         }
 
-        
+        public void UpdateNonInstancedContainers(List<EditableContainer> containers)
+        {
+            renderer.MakeCurrent();
+
+            int i = 0;
+            foreach(EditableContainer container in containers)
+            {
+                i++;
+                if (container.isInstanced) continue;
+                if (!ContainerTypeIsChecked(container.GetType())) { continue; }
+
+                renderer.renderhelper.Clear(container);
+
+                enumInstanceFlags flags = 0;
+                if (selectedContainer != null)
+                {
+                    flags |= (selectedContainers.Contains(container)) ? enumInstanceFlags.OUTLINE : 0;
+                    flags |= selectedContainer == container ? enumInstanceFlags.ACTIVE : 0;
+                }
+
+                container.AddRenderInstances(new PrimitiveInstance(Matrix4x4.Identity, Color4.White, i, flags, enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION, enumDrawStageMask.DRAW_ALL, container), renderer.renderhelper);
+            }
+            renderer.renderhelper.Buffer();
+        }
 
         public void UpdateNonInstancedContainers()
         {
@@ -87,7 +110,7 @@ namespace Plankton.Special_Editors.Level_Editor
                     flags |= selectedContainer == container ? enumInstanceFlags.ACTIVE : 0;
                 }
 
-                container.AddRenderInstances(new PrimitiveInstance(Matrix4x4.Identity, Color4.White, i, flags, enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION, enumDrawStageMask.DRAW_ALL), renderer.renderhelper);
+                container.AddRenderInstances(new PrimitiveInstance(Matrix4x4.Identity, Color4.White, i, flags, enumDrawStageMask.DRAW_REGULAR | enumDrawStageMask.DRAW_SELECTION, enumDrawStageMask.DRAW_ALL, container), renderer.renderhelper);
             }
             renderer.renderhelper.Buffer();
 

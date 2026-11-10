@@ -72,8 +72,8 @@ namespace Plankton.Special_Editors.Level_Editor.EditableContainers.SB09Wii
 
             //Vector3 position = GetPosition();
 
-            baseinstance.matrix = Matrix4x4.CreateFromYawPitchRoll((float)(-Math.PI / 2.0), 0, 0) * GetInstanceMatrix();
-            baseinstance.color = GlobalRenderSettings.directionColor;
+            baseinstance.data.matrix = Matrix4x4.CreateFromYawPitchRoll((float)(-Math.PI / 2.0), 0, 0) * GetInstanceMatrix();
+            baseinstance.data.color = GlobalRenderSettings.directionColor;
 
             helper.AddLine(baseinstance);
         }

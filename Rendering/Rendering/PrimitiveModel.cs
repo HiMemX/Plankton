@@ -28,7 +28,7 @@ namespace Plankton.Rendering
         private int line_ebo;
 
         private int _ibo;
-        public ConcurrentBag<PrimitiveInstance> instances = new();
+        public List<PrimitiveInstance> instances = new();
 
         private int triIndexCount;
         private int lineIndexCount;
@@ -209,7 +209,7 @@ namespace Plankton.Rendering
             GL.BindVertexArray(tri_vao);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _ibo);
 
-            int stride = Marshal.SizeOf<PrimitiveInstance>();
+            int stride = Marshal.SizeOf<PrimitiveData>();
             
             // Instance matrix
             for (int k = 0; k < 2; k++) // Sets up ibo for tri_vao and line_vao (sneeky weeky)
@@ -268,7 +268,7 @@ namespace Plankton.Rendering
         public void Buffer()
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, _ibo);
-            GL.BufferData(BufferTarget.ArrayBuffer, instances.Count * Marshal.SizeOf<PrimitiveInstance>(), instances.ToArray(), BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, instances.Count * Marshal.SizeOf<PrimitiveData>(), instances.Select(k=>k.data).ToArray(), BufferUsageHint.DynamicDraw);
         }
 
         public void RenderSolid()
