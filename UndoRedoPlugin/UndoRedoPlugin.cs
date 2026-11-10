@@ -33,8 +33,8 @@ namespace UndoRedoPlugin
             host.UI.AddCommand("plankton.main.edit", "plankton.undo-action");
             host.UI.AddCommand("plankton.main.edit", "plankton.redo-action");
 
-            host.Archive.Opened += (_,_) => { actions.Clear(); };
-            host.Archive.Closed += (_, _) => { actions.Clear(); };
+            host.Archive.Opened += (_,_) => { actions.Clear(); index = 0; };
+            host.Archive.Closed += (_, _) => { actions.Clear(); index = 0; };
 
             host.Archive.AssetsModified += AssetsModified;
 
