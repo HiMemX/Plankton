@@ -13,6 +13,7 @@ using HoArchive;
 using Plankton.ArchiveEditorPlugin.Helpers;
 using PluginApi;
 using ArchiveEditorPlugin.Helpers;
+using ArchiveUI;
 
 namespace ArchiveEditorPlugin
 {
@@ -24,9 +25,12 @@ namespace ArchiveEditorPlugin
 
         private List<ListViewItem> tocEntryListViewItems = new();
 
+        private AssetListView tocEntryListView;
+
         public ArchiveEditorControl(IHost host, ArchiveEditorPreferences preferences)
         {
             InitializeComponent();
+
             uidSearchTextBox.PlaceholderText = "UID...";
 
 
@@ -35,6 +39,7 @@ namespace ArchiveEditorPlugin
             this.host = host;
             this.preferences = preferences;
 
+            SetupListView();
 
             var openInItem = new OpenInToolStripMenuItem(
                 host.Editors,
@@ -51,6 +56,11 @@ namespace ArchiveEditorPlugin
 
             host.Archive.AssetsRenamed += IngoingAssetsRenamed;
 
+        }
+        private void SetupListView() {
+            tocEntryListView = new(host, AssetListViewOptions.ARCHIVE_VIEWER) { Dock = DockStyle.Fill };
+            tocEntryListView.Parent = tocEntryListViewPanel;
+            tocEntryListViewPanel.Controls.Add(tocEntryListView);
         }
 
         private void IngoingAssetsRenamed(object? sender, AssetEventArgs e)
@@ -176,9 +186,7 @@ namespace ArchiveEditorPlugin
 
         private void ClearListView()
         {
-            tocEntryListView.BeginUpdate();
-            tocEntryListView.Items.Clear();
-            tocEntryListView.EndUpdate();
+            tocEntryListView.SetBinding(null);
         }
 
         private void ReloadTreeView()
@@ -192,7 +200,7 @@ namespace ArchiveEditorPlugin
 
         }
 
-        private async Task ReloadListView(ParcelTOC toc)
+        /*private async Task ReloadListView(ParcelTOC toc)
         {
             tocEntryListView.BeginUpdate();
             tocEntryListView.Items.Clear();
@@ -204,7 +212,7 @@ namespace ArchiveEditorPlugin
             }
             await UpdateVisibleTOCEntries();
             tocEntryListView.EndUpdate();
-        }
+        }*/
 
         private ListViewItem CreateListViewItem(TOCEntry entry)
         {
@@ -280,7 +288,7 @@ namespace ArchiveEditorPlugin
             object data = ((NodeTag)node.Tag).data;
 
 
-            if (tag is ParcelTOC) await ReloadListView((ParcelTOC)tag);
+            if (tag is ParcelTOC) tocEntryListView.SetBinding(tag);
 
             if ((header is not null) || (data is not null)) SetPropertyGrid((NodeTag)node.Tag);
 
@@ -326,7 +334,7 @@ namespace ArchiveEditorPlugin
                 if (ShouldBeVisible(item)) tocEntryListView.Items.Add(item);
             }
         }*/
-
+        /*
         private async void wmlTypeIDComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             await UpdateVisibleTOCEntries();
@@ -343,8 +351,8 @@ namespace ArchiveEditorPlugin
 
             await UpdateVisibleTOCEntries();
         }
-
-        private CancellationTokenSource _filterCts;
+        */
+        /*private CancellationTokenSource _filterCts;
         private async Task UpdateVisibleTOCEntries()
         {
             // Cancel the previous filtering operation
@@ -405,7 +413,7 @@ namespace ArchiveEditorPlugin
                 cts.Dispose();
             }
         }
-
+        */
 
         private void dataPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
@@ -455,7 +463,7 @@ namespace ArchiveEditorPlugin
         private void tocEntryListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             // Get the item that was double-clicked
-            ListViewItem clickedItem = tocEntryListView.GetItemAt(e.X, e.Y);
+            ListViewItem? clickedItem = tocEntryListView.GetItemAt(e.X, e.Y);
 
             if (clickedItem != null)
             {

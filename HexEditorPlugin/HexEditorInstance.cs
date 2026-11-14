@@ -60,15 +60,6 @@ namespace HexEditorPlugin
             
         }
 
-        private void control_KeyDown(object? sender, KeyEventArgs e)
-        {
-            host.Commands.Execute("plankton.console.add-entry", ("HexEditorInstance.control_KeyDown", "KeyDown event"));
-
-            if ((Control.ModifierKeys & Keys.Control) == 0) return;
-
-            if (e.KeyCode == Keys.Z) host.Commands.Execute("plankton.undo-action");
-            if (e.KeyCode == Keys.Y) host.Commands.Execute("plankton.redo-action");
-        }
 
         private void AssetsModified(object? sender, AssetEventArgs e)
         {

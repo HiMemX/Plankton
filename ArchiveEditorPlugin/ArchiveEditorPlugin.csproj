@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ArchiveUI\ArchiveUI.csproj" />
     <ProjectReference Include="..\PluginApi\PluginApi.csproj" />
   </ItemGroup>
 
