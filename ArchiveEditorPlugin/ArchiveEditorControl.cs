@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CSHO;
 using HoArchive;
-using Plankton.ArchiveEditorPlugin.Helpers;
 using PluginApi;
-using ArchiveEditorPlugin.Helpers;
+using ArchiveUI.Helpers;
 using ArchiveUI;
+
 
 namespace ArchiveEditorPlugin
 {
@@ -67,11 +67,11 @@ namespace ArchiveEditorPlugin
         {
             foreach(AssetInfo info in e.Assets)
             {
-                ListViewItem? entry = FindListViewItem(info.Entry);
+                AssetTreeNode? entry = FindListViewItem(info.Entry);
 
                 if (entry == null) continue;
 
-                entry.Text = handler.GetName(info.Entry.uidSelf);
+                entry.name = handler.GetName(info.Entry.uidSelf);
             }
 
             //host.Commands.Execute("plankton.console.add-entry", ("ArchiveEditorControl.IngoingAssetsRenamed", sender.ToString() + ", " + handler.GetName(e.Assets[0].Entry.uidSelf)));
@@ -128,7 +128,7 @@ namespace ArchiveEditorPlugin
 
             await ArchiveTreeViewOnSelect(node);
 
-            ListViewItem? item = FindListViewItem(entry);
+            AssetTreeNode? item = FindListViewItem(entry);
 
             if (item == null)
             {
@@ -137,15 +137,12 @@ namespace ArchiveEditorPlugin
             }
             host.Commands.Execute("plankton.console.add-entry", ("ArchiveEditorControl.Reveal", "Found ListViewItem"));
 
-            item.Focused = true;
-            item.Selected = true;
-
-            item.EnsureVisible();
+            tocEntryListView.SelectObject(item);
         }
 
-        private ListViewItem? FindListViewItem(TOCEntry entry)
+        private AssetTreeNode? FindListViewItem(TOCEntry entry)
         {
-            foreach (ListViewItem item in tocEntryListView.Items)
+            foreach (AssetTreeNode item in tocEntryListView.Items)
             {
                 if (entry == ((NodeTag)item.Tag).obj) return item;
             }
@@ -198,6 +195,8 @@ namespace ArchiveEditorPlugin
                 ArchiveTreeViewTools.CreateNode(handler.Archive.MasterTable)
             );
 
+            archiveTreeView.ExpandAll();
+            archiveTreeView.TopNode = archiveTreeView.Nodes[0];
         }
 
         /*private async Task ReloadListView(ParcelTOC toc)
@@ -439,7 +438,7 @@ namespace ArchiveEditorPlugin
             Reveal(asset);
         }
 
-        private TOCEntry GetTOCEntryFromItem(ListViewItem item)
+        private TOCEntry GetTOCEntryFromItem(AssetTreeNode item)
         {
             return (item.Tag as NodeTag).obj as TOCEntry;
         }

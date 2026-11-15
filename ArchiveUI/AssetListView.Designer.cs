@@ -28,34 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            treeListView = new BrightIdeasSoftware.FastObjectListView();
+            treeListView = new BrightIdeasSoftware.ObjectListView();
             ((System.ComponentModel.ISupportInitialize)treeListView).BeginInit();
             SuspendLayout();
             // 
             // treeListView
             // 
             treeListView.Dock = DockStyle.Fill;
+            treeListView.FullRowSelect = true;
             treeListView.Location = new Point(0, 0);
             treeListView.Name = "treeListView";
-            treeListView.ShowGroups = false;
-            treeListView.Size = new Size(360, 336);
+            treeListView.OwnerDraw = false;
+            treeListView.Size = new Size(315, 252);
             treeListView.TabIndex = 0;
+            treeListView.UseExplorerTheme = true;
             treeListView.View = View.Details;
-            treeListView.VirtualMode = true;
             // 
             // AssetListView
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(treeListView);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "AssetListView";
-            Size = new Size(360, 336);
+            Size = new Size(315, 252);
             ((System.ComponentModel.ISupportInitialize)treeListView).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private BrightIdeasSoftware.FastObjectListView treeListView;
+        private BrightIdeasSoftware.ObjectListView treeListView;
     }
 }

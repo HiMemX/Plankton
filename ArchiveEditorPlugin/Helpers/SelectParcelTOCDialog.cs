@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CSHO;
 using HoArchive;
+using ArchiveUI.Helpers;
 
 namespace ArchiveEditorPlugin.Helpers
 {

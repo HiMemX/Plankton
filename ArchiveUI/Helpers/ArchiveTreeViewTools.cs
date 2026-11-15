@@ -7,7 +7,7 @@ using HoArchive;
 
 namespace ArchiveUI.Helpers
 {
-    internal static class ArchiveTreeViewTools
+    public static class ArchiveTreeViewTools
     {
 
         public static TreeNode CreateNode(ParcelBase parcel, TableEntry? entry = null)
@@ -64,7 +64,7 @@ namespace ArchiveUI.Helpers
 
         
     }
-    internal class NodeTag
+    public class NodeTag
     {
         public object obj;
         public object? header;

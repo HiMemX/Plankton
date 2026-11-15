@@ -24,14 +24,17 @@ namespace ArchiveUI
         private object? dataSource = null;
 
         private List<TOCEntry> entries => GetEntries();
+        private OLVColumn NameColumn;
 
         public event EventHandler? OnBindingChanged;
         public event EventHandler? SelectedObjectsChanged;
 
-        public ListView.ListViewItemCollection Items => treeListView.Items;
+        public List<AssetTreeNode> Items => treeListView.Objects.Cast<AssetTreeNode>().ToList();
         public ListView.SelectedListViewItemCollection SelectedItems => treeListView.SelectedItems;
 
         public Func<TOCEntry, bool> Filter = (_) => { return true; };
+
+
 
         public AssetListView(IHost host, AssetListViewOptions options)
         {
@@ -44,6 +47,24 @@ namespace ArchiveUI
             Setup();
         }
 
+        public void SelectObject(AssetTreeNode node)
+        {
+            if (treeListView.ShowGroups)
+            {
+                var group = treeListView.OLVGroups?
+                    .FirstOrDefault(g =>
+                        Equals(g.Key, node.typeID.ToString()));
+
+                if (group != null)
+                    group.Collapsed = false;
+            }
+
+
+            treeListView.SelectedObject = node;
+            treeListView.SelectObject(node, true);
+            treeListView.EnsureModelVisible(node);
+        }
+
         private bool OptionEnabled(AssetListViewOptions option)
         {
             return (options & option) != 0;
@@ -54,46 +75,115 @@ namespace ArchiveUI
             OnBindingChanged += (_, _) => { ReloadList(); };
             treeListView.SelectedIndexChanged += (object? sender, EventArgs e) => { SelectedObjectsChanged?.Invoke(sender, e); };
 
+            treeListView.HeaderStyle = ColumnHeaderStyle.None;
+            AddNameColumn();
+            
+
             if (OptionEnabled(AssetListViewOptions.SHOW_DETAILS)) AddDetailViewColumns();
+            if (OptionEnabled(AssetListViewOptions.CATEGORIZE_TYPE)) SetupTypeGrouping();
         }
 
         private void ReloadList()
         {
 
-            List<AssetTreeNode> items = new();
-            foreach(TOCEntry entry in entries)
-            {
-                if (!Filter(entry)) continue;
+            var items = entries
+                .Where(Filter)
+                .Select(CreateTreeNode)
+                .ToList();
 
-                items.Add(CreateTreeNode(entry));
-            }
 
-            
             host
                 .Commands
                 .Execute("plankton.console.add-entry",
                 ("ReloadList",
                 items.Count.ToString()));
 
-            treeListView.ClearObjects();
-            treeListView.Roots = items;
+            treeListView.SetObjects(items);
 
+
+        }
+
+        private void AddNameColumn()
+        {
+
+            NameColumn = new OLVColumn("Name", "name") { Width = 400 };
+            NameColumn.AspectGetter = obj => ((AssetTreeNode)obj).name;
+
+
+            treeListView.AllColumns.Add(NameColumn);
+            treeListView.Columns.AddRange(new ColumnHeader[] { NameColumn });
         }
 
         private void AddDetailViewColumns()
         {
-            var NameColumn = new OLVColumn("Name", "name") { Width = 400 };
-            var TypeColumn = new OLVColumn("Type", "type") { Width = 200 };
-            var UIDColumn = new OLVColumn("UID", "uid") { Width = 200 };
-            var SizeColumn = new OLVColumn("Size", "size") { Width = 200 };
+            var TypeColumn = new OLVColumn("Type", "type")
+            {
+                Width = 200,
 
-            treeListView.AllColumns.AddRange(new[] { NameColumn, TypeColumn, UIDColumn, SizeColumn});
-            treeListView.Columns.AddRange(new ColumnHeader[] { NameColumn, TypeColumn, UIDColumn, SizeColumn });
+                // Sort by the actual type ID
+                AspectGetter = obj => ((AssetTreeNode)obj).typeID
+            };
 
-            // 3. Tell TreeListView how to expand nodes
-            treeListView.CanExpandGetter = model => (false);
-            treeListView.ChildrenGetter = model => new List<AssetTreeNode>();
+            var UIDColumn = new OLVColumn("UID", "uid")
+            {
+                Width = 200,
 
+                // Sort by the actual numeric UID
+                AspectGetter = obj => ((AssetTreeNode)obj).entry.uidSelf,
+
+                // Display as 16-digit hexadecimal
+                AspectToStringFormat = "{0:X16}"
+            };
+
+            var SizeColumn = new OLVColumn("Size", "size")
+            {
+                Width = 200,
+
+                // Sort by the actual byte count
+                AspectGetter = obj => ((AssetTreeNode)obj).entry.blobSize,
+
+                // Display a human-readable size
+                AspectToStringConverter = value =>
+                    DataProcessing.FormatBytes(Convert.ToInt64(value))
+            };
+
+            treeListView.AllColumns.AddRange(new[] { TypeColumn, UIDColumn, SizeColumn});
+            treeListView.Columns.AddRange(new ColumnHeader[] { TypeColumn, UIDColumn, SizeColumn });
+
+
+            treeListView.HeaderStyle = ColumnHeaderStyle.Clickable;
+        }
+
+        private void SetupTypeGrouping()
+        {
+            NameColumn.Groupable = true;
+
+            // Use the enum's string representation as the group key.
+            // Groups will now sort alphabetically.
+            NameColumn.GroupKeyGetter = obj =>
+                ((AssetTreeNode)obj).typeID.ToString();
+
+            NameColumn.GroupFormatter = (group, parameters) =>
+            {
+                group.Header = $"{group.Key} ({group.Items.Count})";
+                group.Collapsed = true;
+            };
+
+            // Always group by asset type.
+            treeListView.AlwaysGroupByColumn = NameColumn;
+
+            // Keep group ordering alphabetical, even when clicking a column.
+            treeListView.AlwaysGroupBySortOrder = SortOrder.Ascending;
+
+            // Sort items within groups by the clicked column,
+            // not always by the first column.
+            treeListView.SortGroupItemsByPrimaryColumn = false;
+
+            // Default sorting inside groups.
+            treeListView.PrimarySortColumn = NameColumn;
+            treeListView.PrimarySortOrder = SortOrder.Ascending;
+
+            treeListView.ShowGroups = true;
         }
 
         private List<TOCEntry> GetEntries()
@@ -124,24 +214,19 @@ namespace ArchiveUI
 
     public class AssetTreeNode
     {
-        public object Tag; // For compatibility reasons
+        public object Tag;
         public TOCEntry entry;
         public string name;
-        public string type;
-        public string uid;
-        public string size;
+        public wmlTypeID typeID;
 
         public AssetTreeNode(IHost host, TOCEntry entry)
         {
             this.entry = entry;
 
+            typeID = entry.wmlTypeID;
             name = host.Archive.Current.GetName(entry.uidSelf);
             Tag = new NodeTag(entry, entry, entry.entity);
-            type = entry.wmlTypeID.ToString();
-            uid = entry.uidSelf.ToString("X16");
-            size = DataProcessing.FormatBytes(entry.blobSize);
         }
-
     }
 
     public enum AssetListViewOptions
@@ -151,6 +236,6 @@ namespace ArchiveUI
         CATEGORIZE_TYPE = 4,
 
 
-        ARCHIVE_VIEWER = 1 + 2
+        ARCHIVE_VIEWER = 1 + 2 + 4// for testing
     }
 }
