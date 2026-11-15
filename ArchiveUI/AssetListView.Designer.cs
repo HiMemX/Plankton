@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             treeListView = new BrightIdeasSoftware.ObjectListView();
+            contextMenuStrip = new ContextMenuStrip(components);
             ((System.ComponentModel.ISupportInitialize)treeListView).BeginInit();
             SuspendLayout();
             // 
             // treeListView
             // 
+            treeListView.ContextMenuStrip = contextMenuStrip;
             treeListView.Dock = DockStyle.Fill;
             treeListView.FullRowSelect = true;
             treeListView.Location = new Point(0, 0);
@@ -43,6 +46,11 @@
             treeListView.TabIndex = 0;
             treeListView.UseExplorerTheme = true;
             treeListView.View = View.Details;
+            // 
+            // contextMenuStrip
+            // 
+            contextMenuStrip.Name = "contextMenuStrip";
+            contextMenuStrip.Size = new Size(61, 4);
             // 
             // AssetListView
             // 
@@ -59,5 +67,6 @@
         #endregion
 
         private BrightIdeasSoftware.ObjectListView treeListView;
+        private ContextMenuStrip contextMenuStrip;
     }
 }

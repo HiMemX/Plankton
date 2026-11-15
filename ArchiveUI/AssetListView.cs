@@ -23,6 +23,7 @@ namespace ArchiveUI
         private AssetListViewOptions options;
         private object? dataSource = null;
 
+        private Handler handler;
         private List<TOCEntry> entries => GetEntries();
         private OLVColumn NameColumn;
 
@@ -40,11 +41,30 @@ namespace ArchiveUI
         {
             InitializeComponent();
 
+            handler = host.Archive.Current;
+
+            var openInItem = new OpenInToolStripMenuItem(
+                host.Editors,
+                () =>
+                {
+                    AssetInfo? asset = GetSelectedAsset();
+
+                    return asset == null
+                        ? null
+                        : new EditorTarget(asset);
+                });
+
+            contextMenuStrip.Items.Add(openInItem);
 
             this.host = host;
             this.options = options;
 
             Setup();
+        }
+        private AssetInfo GetSelectedAsset()
+        {
+            if (treeListView.SelectedItems.Count == 0) return null;
+            return new AssetInfo(handler, (TOCEntry)((NodeTag)(treeListView.SelectedObjects[0] as AssetTreeNode).Tag).header);
         }
 
         public void SelectObject(AssetTreeNode node)

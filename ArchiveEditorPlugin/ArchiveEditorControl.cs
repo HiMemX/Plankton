@@ -41,18 +41,7 @@ namespace ArchiveEditorPlugin
 
             SetupListView();
 
-            var openInItem = new OpenInToolStripMenuItem(
-                host.Editors,
-                () =>
-                {
-                    AssetInfo? asset = GetSelectedAsset();
-
-                    return asset == null
-                        ? null
-                        : new EditorTarget(asset);
-                });
-
-            assetListViewContextMenu.Items.Add(openInItem);
+            
 
             host.Archive.AssetsRenamed += IngoingAssetsRenamed;
 
@@ -168,11 +157,7 @@ namespace ArchiveEditorPlugin
         }
 
 
-        private AssetInfo GetSelectedAsset()
-        {
-            if (tocEntryListView.SelectedItems.Count == 0) return null;
-            return new AssetInfo(handler, (TOCEntry)((NodeTag)tocEntryListView.SelectedItems[0].Tag).header);
-        }
+        
 
         public void ReloadData()
         {
