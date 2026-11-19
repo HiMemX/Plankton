@@ -29,6 +29,7 @@ using _3DLevelEditorPlugin;
 using Rendering;
 using Keybinds;
 using PluginApi;
+using ArchiveUI;
 
 namespace Plankton.Special_Editors.Level_Editor
 {
@@ -78,9 +79,10 @@ namespace Plankton.Special_Editors.Level_Editor
         public event EventHandler Undo;
         public event EventHandler Redo;
 
-        public LevelEditor(LevelEditorPreferences preferences)
+        public LevelEditor(IHost host, LevelEditorPreferences preferences)
         {
             InitializeComponent();
+
             this.renderer.SetPreferences(preferences.renderingPreferences);
             this.renderSettingsPropertyGrid.SelectedObject = this.renderer.GetRenderSettings();
 
@@ -99,8 +101,18 @@ namespace Plankton.Special_Editors.Level_Editor
             renderer.PostRender += UpdateInfo;
 
             this.preferences = preferences;
+            SetupAssetListView(host);
 
-            
+
+        }
+
+        private void SetupAssetListView(IHost host)
+        {
+            AssetListView assetListView = new(host, AssetListViewOptions.LEVEL_EDITOR) { Dock = DockStyle.Fill};
+            assetListView.Parent = assetListViewPanel;
+            assetListViewPanel.Controls.Add(assetListView);
+
+
         }
 
         private void OnLRSEditEndCallback()

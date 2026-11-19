@@ -26,7 +26,7 @@ internal sealed class LevelEditorInstance : IEditor
         this.host = host;
         Plankton.Debug.debugWindow.host = host; // Not the prettiest but it works for now
 
-        control = new LevelEditor(preferences)
+        control = new LevelEditor(host, preferences)
         {
             Dock = DockStyle.Fill
         };

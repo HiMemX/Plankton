@@ -50,6 +50,14 @@ namespace ArchiveEditorPlugin
             tocEntryListView = new(host, AssetListViewOptions.ARCHIVE_VIEWER) { Dock = DockStyle.Fill };
             tocEntryListView.Parent = tocEntryListViewPanel;
             tocEntryListViewPanel.Controls.Add(tocEntryListView);
+
+            tocEntryListView.SelectedObjectsChanged += SelectedObjectsChanged;
+        }
+
+        private void SelectedObjectsChanged(object? sender, EventArgs e)
+        {
+            List<NodeTag> nodes = tocEntryListView.SelectedItems.Select(k => k.Tag).Cast<NodeTag>().ToList();
+            SetPropertyGrid(nodes);
         }
 
         private void IngoingAssetsRenamed(object? sender, AssetEventArgs e)
@@ -283,7 +291,7 @@ namespace ArchiveEditorPlugin
 
 
         private bool ShouldBeVisible(
-            ListViewItem item,
+            AssetTreeNode item,
             wmlTypeID? typeFilter,
             string match)
         {
@@ -310,32 +318,29 @@ namespace ArchiveEditorPlugin
             return candidate.Replace(" ", "").Contains(match) || candidate2.Replace(" ", "").Contains(match);
         }
 
-        /*private void UpdateVisibleTOCEntries()
+        private void UpdateVisibleTOCEntries()
         {
-            tocEntryListView.Items.Clear();
-            foreach (ListViewItem item in tocEntryListViewItems)
-            {
-                if (ShouldBeVisible(item)) tocEntryListView.Items.Add(item);
-            }
-        }*/
-        /*
-        private async void wmlTypeIDComboBox_SelectedIndexChanged(object sender, EventArgs e)
+            if (tocEntryListView == null) return;
+            tocEntryListView.SetFilter((AssetTreeNode entry) => { return ShouldBeVisible(entry, wmlTypeIDComboBox.SelectedItem as wmlTypeID?, searchTextBox.Text); });
+        }
+        
+        private void wmlTypeIDComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await UpdateVisibleTOCEntries();
+            UpdateVisibleTOCEntries();
         }
 
-        private async void searchComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void searchComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            await UpdateVisibleTOCEntries();
+            UpdateVisibleTOCEntries();
         }
 
-        private async void searchTextBox_TextChanged(object sender, EventArgs e)
+        private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
 
-            await UpdateVisibleTOCEntries();
+            UpdateVisibleTOCEntries();
         }
-        */
+        
         /*private CancellationTokenSource _filterCts;
         private async Task UpdateVisibleTOCEntries()
         {

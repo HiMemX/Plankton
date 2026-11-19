@@ -58,6 +58,8 @@
             eventsTabPage = new System.Windows.Forms.TabPage();
             listBox1 = new System.Windows.Forms.ListBox();
             openLinkAssetButton = new System.Windows.Forms.Button();
+            transformTabPage = new System.Windows.Forms.TabPage();
+            assetListViewPanel = new System.Windows.Forms.Panel();
             levelViewRightClickMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -80,6 +82,7 @@
             splitContainer3.Panel2.SuspendLayout();
             splitContainer3.SuspendLayout();
             eventsTabPage.SuspendLayout();
+            transformTabPage.SuspendLayout();
             SuspendLayout();
             // 
             // levelViewRightClickMenu
@@ -197,7 +200,7 @@
             // 
             // splitContainer2.Panel1
             // 
-            splitContainer2.Panel1.Controls.Add(easyEditPanel);
+            splitContainer2.Panel1.Controls.Add(assetListViewPanel);
             // 
             // splitContainer2.Panel2
             // 
@@ -215,7 +218,7 @@
             easyEditPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             easyEditPanel.Location = new System.Drawing.Point(0, 0);
             easyEditPanel.Name = "easyEditPanel";
-            easyEditPanel.Size = new System.Drawing.Size(280, 238);
+            easyEditPanel.Size = new System.Drawing.Size(272, 391);
             easyEditPanel.TabIndex = 0;
             // 
             // scaleGroupBox
@@ -225,7 +228,7 @@
             scaleGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
             scaleGroupBox.Location = new System.Drawing.Point(0, 194);
             scaleGroupBox.Name = "scaleGroupBox";
-            scaleGroupBox.Size = new System.Drawing.Size(263, 97);
+            scaleGroupBox.Size = new System.Drawing.Size(272, 97);
             scaleGroupBox.TabIndex = 2;
             scaleGroupBox.TabStop = false;
             scaleGroupBox.Text = "Scale";
@@ -236,7 +239,7 @@
             scaleVectorInputBox.Location = new System.Drawing.Point(3, 19);
             scaleVectorInputBox.Name = "scaleVectorInputBox";
             scaleVectorInputBox.SetVector3Callback = null;
-            scaleVectorInputBox.Size = new System.Drawing.Size(257, 75);
+            scaleVectorInputBox.Size = new System.Drawing.Size(266, 75);
             scaleVectorInputBox.TabIndex = 0;
             scaleVectorInputBox.Value = ((float, float, float))resources.GetObject("scaleVectorInputBox.Value");
             scaleVectorInputBox.X = 0F;
@@ -250,7 +253,7 @@
             rotationGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
             rotationGroupBox.Location = new System.Drawing.Point(0, 97);
             rotationGroupBox.Name = "rotationGroupBox";
-            rotationGroupBox.Size = new System.Drawing.Size(263, 97);
+            rotationGroupBox.Size = new System.Drawing.Size(272, 97);
             rotationGroupBox.TabIndex = 1;
             rotationGroupBox.TabStop = false;
             rotationGroupBox.Text = "Rotation";
@@ -261,7 +264,7 @@
             rotationVectorInputBox.Location = new System.Drawing.Point(3, 19);
             rotationVectorInputBox.Name = "rotationVectorInputBox";
             rotationVectorInputBox.SetVector3Callback = null;
-            rotationVectorInputBox.Size = new System.Drawing.Size(257, 75);
+            rotationVectorInputBox.Size = new System.Drawing.Size(266, 75);
             rotationVectorInputBox.TabIndex = 0;
             rotationVectorInputBox.Value = ((float, float, float))resources.GetObject("rotationVectorInputBox.Value");
             rotationVectorInputBox.X = 0F;
@@ -275,7 +278,7 @@
             positionGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
             positionGroupBox.Location = new System.Drawing.Point(0, 0);
             positionGroupBox.Name = "positionGroupBox";
-            positionGroupBox.Size = new System.Drawing.Size(263, 97);
+            positionGroupBox.Size = new System.Drawing.Size(272, 97);
             positionGroupBox.TabIndex = 0;
             positionGroupBox.TabStop = false;
             positionGroupBox.Text = "Position";
@@ -286,7 +289,7 @@
             positionVectorInputBox.Location = new System.Drawing.Point(3, 19);
             positionVectorInputBox.Name = "positionVectorInputBox";
             positionVectorInputBox.SetVector3Callback = null;
-            positionVectorInputBox.Size = new System.Drawing.Size(257, 75);
+            positionVectorInputBox.Size = new System.Drawing.Size(266, 75);
             positionVectorInputBox.TabIndex = 0;
             positionVectorInputBox.Value = ((float, float, float))resources.GetObject("positionVectorInputBox.Value");
             positionVectorInputBox.X = 0F;
@@ -296,6 +299,7 @@
             // editOptionsTabControl
             // 
             editOptionsTabControl.Controls.Add(propertyGridTabPage);
+            editOptionsTabControl.Controls.Add(transformTabPage);
             editOptionsTabControl.Controls.Add(displaySettingsTabPage);
             editOptionsTabControl.Controls.Add(eventsTabPage);
             editOptionsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -417,6 +421,24 @@
             openLinkAssetButton.UseVisualStyleBackColor = true;
             openLinkAssetButton.Click += openLinkAssetButton_Click;
             // 
+            // transformTabPage
+            // 
+            transformTabPage.Controls.Add(easyEditPanel);
+            transformTabPage.Location = new System.Drawing.Point(4, 24);
+            transformTabPage.Name = "transformTabPage";
+            transformTabPage.Size = new System.Drawing.Size(272, 391);
+            transformTabPage.TabIndex = 3;
+            transformTabPage.Text = "Transform";
+            transformTabPage.UseVisualStyleBackColor = true;
+            // 
+            // assetListViewPanel
+            // 
+            assetListViewPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            assetListViewPanel.Location = new System.Drawing.Point(0, 0);
+            assetListViewPanel.Name = "assetListViewPanel";
+            assetListViewPanel.Size = new System.Drawing.Size(280, 238);
+            assetListViewPanel.TabIndex = 0;
+            // 
             // LevelEditor
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -449,6 +471,7 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
             splitContainer3.ResumeLayout(false);
             eventsTabPage.ResumeLayout(false);
+            transformTabPage.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -481,5 +504,7 @@
         private System.Windows.Forms.PropertyGrid renderSettingsPropertyGrid;
         private System.Windows.Forms.SplitContainer splitContainer3;
         public System.Windows.Forms.ContextMenuStrip levelViewRightClickMenu;
+        private System.Windows.Forms.TabPage transformTabPage;
+        private System.Windows.Forms.Panel assetListViewPanel;
     }
 }

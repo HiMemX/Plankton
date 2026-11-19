@@ -42,9 +42,11 @@
             treeListView.Location = new Point(0, 0);
             treeListView.Name = "treeListView";
             treeListView.OwnerDraw = false;
+            treeListView.ShowGroups = false;
             treeListView.Size = new Size(315, 252);
             treeListView.TabIndex = 0;
             treeListView.UseExplorerTheme = true;
+            treeListView.UseFiltering = true;
             treeListView.View = View.Details;
             // 
             // contextMenuStrip

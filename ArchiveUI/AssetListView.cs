@@ -31,9 +31,8 @@ namespace ArchiveUI
         public event EventHandler? SelectedObjectsChanged;
 
         public List<AssetTreeNode> Items => treeListView.Objects.Cast<AssetTreeNode>().ToList();
-        public ListView.SelectedListViewItemCollection SelectedItems => treeListView.SelectedItems;
+        public List<AssetTreeNode> SelectedItems => treeListView.SelectedObjects.Cast<AssetTreeNode>().ToList();
 
-        public Func<TOCEntry, bool> Filter = (_) => { return true; };
 
 
 
@@ -60,11 +59,33 @@ namespace ArchiveUI
             this.options = options;
 
             Setup();
+
+            ScrollWheelBugWorkaround();
         }
+
+        private void ScrollWheelBugWorkaround()
+        {
+            treeListView.MouseWheel += (sender, e) =>
+            {
+                if (treeListView.FocusedItem != null)
+                    treeListView.FocusedItem.Focused = false;
+            };
+        }
+
         private AssetInfo GetSelectedAsset()
         {
             if (treeListView.SelectedItems.Count == 0) return null;
             return new AssetInfo(handler, (TOCEntry)((NodeTag)(treeListView.SelectedObjects[0] as AssetTreeNode).Tag).header);
+        }
+
+        public void SetFilter(Func<AssetTreeNode, bool> filter)
+        {
+            treeListView.ModelFilter = new ModelFilter(obj =>
+            {
+                var node = (AssetTreeNode)obj;
+
+                return filter(node);
+            });
         }
 
         public void SelectObject(AssetTreeNode node)
@@ -93,21 +114,28 @@ namespace ArchiveUI
         private void Setup()
         {
             OnBindingChanged += (_, _) => { ReloadList(); };
-            treeListView.SelectedIndexChanged += (object? sender, EventArgs e) => { SelectedObjectsChanged?.Invoke(sender, e); };
+            treeListView.SelectionChanged += (object? sender, EventArgs e) => { SelectedObjectsChanged?.Invoke(sender, e); };
 
+            SetFilter((_) => { return true; });
             treeListView.HeaderStyle = ColumnHeaderStyle.None;
             AddNameColumn();
             
 
             if (OptionEnabled(AssetListViewOptions.SHOW_DETAILS)) AddDetailViewColumns();
             if (OptionEnabled(AssetListViewOptions.CATEGORIZE_TYPE)) SetupTypeGrouping();
+            if (OptionEnabled(AssetListViewOptions.ARCHIVE_BOUND)) BindArchive();
+        }
+
+        private void BindArchive()
+        {
+            host.Archive.Opened += (s, e) => { SetBinding(host.Archive.Current); };
+            host.Archive.Closed += (s, e) => { SetBinding(null); };
         }
 
         private void ReloadList()
         {
 
             var items = entries
-                .Where(Filter)
                 .Select(CreateTreeNode)
                 .ToList();
 
@@ -254,8 +282,10 @@ namespace ArchiveUI
         SHOW_DETAILS = 1,
         RENAMABLE = 2,
         CATEGORIZE_TYPE = 4,
+        ARCHIVE_BOUND = 8,
 
 
-        ARCHIVE_VIEWER = 1 + 2 + 4// for testing
+        ARCHIVE_VIEWER = 1 + 2,// for testing
+        LEVEL_EDITOR = 2 + 4 + 8
     }
 }

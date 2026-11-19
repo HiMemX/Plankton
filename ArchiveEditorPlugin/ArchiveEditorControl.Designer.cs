@@ -34,12 +34,12 @@ namespace ArchiveEditorPlugin
             dataPropertyGrid = new PropertyGrid();
             dataLabel = new Label();
             splitContainer2 = new SplitContainer();
+            tocEntryListViewPanel = new Panel();
             filterGroupBox = new GroupBox();
             searchTextBox = new TextBox();
             wmlTypeIDComboBox = new ComboBox();
             assetListViewContextMenu = new ContextMenuStrip(components);
             newToolStripMenuItem1 = new ToolStripMenuItem();
-            tocEntryListViewPanel = new Panel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -92,49 +92,49 @@ namespace ArchiveEditorPlugin
             treeViewContextMenu.ImageScalingSize = new Size(20, 20);
             treeViewContextMenu.Items.AddRange(new ToolStripItem[] { newToolStripMenuItem, deleteToolStripMenuItem });
             treeViewContextMenu.Name = "treeViewContextMenu";
-            treeViewContextMenu.Size = new Size(123, 52);
+            treeViewContextMenu.Size = new Size(108, 48);
             // 
             // newToolStripMenuItem
             // 
             newToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sECTToolStripMenuItem, pToolStripMenuItem, pTEXToolStripMenuItem, pFSTToolStripMenuItem, parcelTOCToolStripMenuItem });
             newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new Size(122, 24);
+            newToolStripMenuItem.Size = new Size(107, 22);
             newToolStripMenuItem.Text = "New...";
             // 
             // sECTToolStripMenuItem
             // 
             sECTToolStripMenuItem.Name = "sECTToolStripMenuItem";
-            sECTToolStripMenuItem.Size = new Size(158, 26);
+            sECTToolStripMenuItem.Size = new Size(128, 22);
             sECTToolStripMenuItem.Text = "SECT";
             // 
             // pToolStripMenuItem
             // 
             pToolStripMenuItem.Name = "pToolStripMenuItem";
-            pToolStripMenuItem.Size = new Size(158, 26);
+            pToolStripMenuItem.Size = new Size(128, 22);
             pToolStripMenuItem.Text = "P";
             // 
             // pTEXToolStripMenuItem
             // 
             pTEXToolStripMenuItem.Name = "pTEXToolStripMenuItem";
-            pTEXToolStripMenuItem.Size = new Size(158, 26);
+            pTEXToolStripMenuItem.Size = new Size(128, 22);
             pTEXToolStripMenuItem.Text = "PTEX";
             // 
             // pFSTToolStripMenuItem
             // 
             pFSTToolStripMenuItem.Name = "pFSTToolStripMenuItem";
-            pFSTToolStripMenuItem.Size = new Size(158, 26);
+            pFSTToolStripMenuItem.Size = new Size(128, 22);
             pFSTToolStripMenuItem.Text = "PFST";
             // 
             // parcelTOCToolStripMenuItem
             // 
             parcelTOCToolStripMenuItem.Name = "parcelTOCToolStripMenuItem";
-            parcelTOCToolStripMenuItem.Size = new Size(158, 26);
+            parcelTOCToolStripMenuItem.Size = new Size(128, 22);
             parcelTOCToolStripMenuItem.Text = "ParcelTOC";
             // 
             // deleteToolStripMenuItem
             // 
             deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            deleteToolStripMenuItem.Size = new Size(122, 24);
+            deleteToolStripMenuItem.Size = new Size(107, 22);
             deleteToolStripMenuItem.Text = "Delete";
             // 
             // searchGroupBox
@@ -166,7 +166,7 @@ namespace ArchiveEditorPlugin
             uidSearchTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             uidSearchTextBox.Location = new Point(6, 19);
             uidSearchTextBox.Name = "uidSearchTextBox";
-            uidSearchTextBox.Size = new Size(369, 27);
+            uidSearchTextBox.Size = new Size(369, 23);
             uidSearchTextBox.TabIndex = 0;
             // 
             // propertyGridTabControl
@@ -185,10 +185,10 @@ namespace ArchiveEditorPlugin
             // 
             headerTabPage.Controls.Add(headerPropertyGrid);
             headerTabPage.Controls.Add(headerLabel);
-            headerTabPage.Location = new Point(4, 29);
+            headerTabPage.Location = new Point(4, 24);
             headerTabPage.Name = "headerTabPage";
             headerTabPage.Padding = new Padding(3);
-            headerTabPage.Size = new Size(402, 351);
+            headerTabPage.Size = new Size(402, 356);
             headerTabPage.TabIndex = 0;
             headerTabPage.Text = "Header";
             headerTabPage.UseVisualStyleBackColor = true;
@@ -201,14 +201,14 @@ namespace ArchiveEditorPlugin
             headerPropertyGrid.Location = new Point(3, 3);
             headerPropertyGrid.Name = "headerPropertyGrid";
             headerPropertyGrid.PropertySort = PropertySort.NoSort;
-            headerPropertyGrid.Size = new Size(396, 331);
+            headerPropertyGrid.Size = new Size(396, 336);
             headerPropertyGrid.TabIndex = 0;
             headerPropertyGrid.ToolbarVisible = false;
             // 
             // headerLabel
             // 
             headerLabel.Dock = DockStyle.Bottom;
-            headerLabel.Location = new Point(3, 334);
+            headerLabel.Location = new Point(3, 339);
             headerLabel.Name = "headerLabel";
             headerLabel.RightToLeft = RightToLeft.No;
             headerLabel.Size = new Size(396, 14);
@@ -219,10 +219,10 @@ namespace ArchiveEditorPlugin
             // 
             dataTabPage.Controls.Add(dataPropertyGrid);
             dataTabPage.Controls.Add(dataLabel);
-            dataTabPage.Location = new Point(4, 29);
+            dataTabPage.Location = new Point(4, 24);
             dataTabPage.Name = "dataTabPage";
             dataTabPage.Padding = new Padding(3);
-            dataTabPage.Size = new Size(402, 351);
+            dataTabPage.Size = new Size(402, 356);
             dataTabPage.TabIndex = 1;
             dataTabPage.Text = "Data";
             dataTabPage.UseVisualStyleBackColor = true;
@@ -234,7 +234,7 @@ namespace ArchiveEditorPlugin
             dataPropertyGrid.Location = new Point(3, 3);
             dataPropertyGrid.Name = "dataPropertyGrid";
             dataPropertyGrid.PropertySort = PropertySort.NoSort;
-            dataPropertyGrid.Size = new Size(396, 331);
+            dataPropertyGrid.Size = new Size(396, 336);
             dataPropertyGrid.TabIndex = 0;
             dataPropertyGrid.ToolbarVisible = false;
             dataPropertyGrid.PropertyValueChanged += dataPropertyGrid_PropertyValueChanged;
@@ -242,7 +242,7 @@ namespace ArchiveEditorPlugin
             // dataLabel
             // 
             dataLabel.Dock = DockStyle.Bottom;
-            dataLabel.Location = new Point(3, 334);
+            dataLabel.Location = new Point(3, 339);
             dataLabel.Name = "dataLabel";
             dataLabel.RightToLeft = RightToLeft.No;
             dataLabel.Size = new Size(396, 14);
@@ -267,6 +267,14 @@ namespace ArchiveEditorPlugin
             splitContainer2.SplitterDistance = 995;
             splitContainer2.TabIndex = 0;
             // 
+            // tocEntryListViewPanel
+            // 
+            tocEntryListViewPanel.Dock = DockStyle.Fill;
+            tocEntryListViewPanel.Location = new Point(0, 48);
+            tocEntryListViewPanel.Name = "tocEntryListViewPanel";
+            tocEntryListViewPanel.Size = new Size(995, 619);
+            tocEntryListViewPanel.TabIndex = 4;
+            // 
             // filterGroupBox
             // 
             filterGroupBox.Controls.Add(searchTextBox);
@@ -284,9 +292,9 @@ namespace ArchiveEditorPlugin
             searchTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             searchTextBox.Location = new Point(6, 19);
             searchTextBox.Name = "searchTextBox";
-            searchTextBox.Size = new Size(809, 27);
+            searchTextBox.Size = new Size(809, 23);
             searchTextBox.TabIndex = 1;
-            //searchTextBox.TextChanged += searchTextBox_TextChanged;
+            searchTextBox.TextChanged += searchTextBox_TextChanged;
             // 
             // wmlTypeIDComboBox
             // 
@@ -297,30 +305,22 @@ namespace ArchiveEditorPlugin
             wmlTypeIDComboBox.FormattingEnabled = true;
             wmlTypeIDComboBox.Location = new Point(821, 19);
             wmlTypeIDComboBox.Name = "wmlTypeIDComboBox";
-            wmlTypeIDComboBox.Size = new Size(168, 28);
+            wmlTypeIDComboBox.Size = new Size(168, 23);
             wmlTypeIDComboBox.TabIndex = 2;
-            //wmlTypeIDComboBox.SelectedIndexChanged += wmlTypeIDComboBox_SelectedIndexChanged;
+            wmlTypeIDComboBox.SelectedIndexChanged += wmlTypeIDComboBox_SelectedIndexChanged;
             // 
             // assetListViewContextMenu
             // 
             assetListViewContextMenu.ImageScalingSize = new Size(20, 20);
             assetListViewContextMenu.Items.AddRange(new ToolStripItem[] { newToolStripMenuItem1 });
             assetListViewContextMenu.Name = "assetListViewContextMenu";
-            assetListViewContextMenu.Size = new Size(118, 28);
+            assetListViewContextMenu.Size = new Size(108, 26);
             // 
             // newToolStripMenuItem1
             // 
             newToolStripMenuItem1.Name = "newToolStripMenuItem1";
-            newToolStripMenuItem1.Size = new Size(117, 24);
+            newToolStripMenuItem1.Size = new Size(107, 22);
             newToolStripMenuItem1.Text = "New...";
-            // 
-            // tocEntryListViewPanel
-            // 
-            tocEntryListViewPanel.Dock = DockStyle.Fill;
-            tocEntryListViewPanel.Location = new Point(0, 48);
-            tocEntryListViewPanel.Name = "tocEntryListViewPanel";
-            tocEntryListViewPanel.Size = new Size(995, 619);
-            tocEntryListViewPanel.TabIndex = 4;
             // 
             // ArchiveEditorControl
             // 
